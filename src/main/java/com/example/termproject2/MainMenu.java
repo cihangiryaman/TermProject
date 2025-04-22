@@ -17,12 +17,14 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 //150123038 Deniz Arda Şanal
-public class MainMenu extends Application {
+public class MainMenu extends Application
+{
     Button bt1,bt2,bt3;
     Scene scene1, scene2;
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) throws Exception
+    {
         //Start Button
         bt1 = new Button("Start Game");
         bt1.setFont(Font.font("Arial", FontWeight.BOLD, 20));
@@ -86,14 +88,14 @@ public class MainMenu extends Application {
 
         scene1 = new Scene(vb, 800, 600);
         stage.setTitle("Game Menu");
+        stage.setFullScreen(true);
         stage.setScene(scene1);
         stage.show();
 
-
     }
 
-    public static void main(String[] args) {
-
+    public static void main(String[] args)
+    {
         launch();
     }
 
