@@ -7,6 +7,8 @@ public abstract class Tower
     private int _price;
     private int _damage;
     private int _range;
+    private int _positionX;
+    private int _positionY;
     private InputStream _image = Tower.class.getResourceAsStream("/Images/Meltdown_3F.webp");
 
     Tower(int price, int damage, int range)
@@ -22,6 +24,11 @@ public abstract class Tower
         _price = price;
         _range = range;
         _image = Tower.class.getResourceAsStream("/Images/" + ImageName);
+    }
+
+    public void shoot()
+    {
+
     }
 
     public int get_price()
