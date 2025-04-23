@@ -1,4 +1,4 @@
-package com.example.termproject2;
+package com.example.leveldesign;
 
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -14,12 +14,13 @@ public class Map extends Application
     @Override
     public void start(Stage stage) throws Exception
     {
-        GridPane map = Pane.getPane(new File("level5.txt"));
+        Pane pane = new Pane(new File("level5.txt"));
+        GridPane map = pane.getPane();
         map.setAlignment(Pos.CENTER);
 
         BorderPane mainLayout = new BorderPane();
         mainLayout.setCenter(map);
-        mainLayout.setRight(CastlesAndBars.returnRightPane());
+        mainLayout.setRight(pane.returnRightPane());
 
         Scene scene = new Scene(mainLayout);
 
