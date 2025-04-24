@@ -1,10 +1,13 @@
 package com.example.termproject2;
 
 import java.io.File;
+import java.io.FileInputStream;
 
 import javafx.animation.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -16,18 +19,20 @@ import javafx.util.Duration;
 public abstract class Enemy {
     private int _health;
     private double _speed;
-    private File _imagePath = new File("C:\\Users\\Cihangir\\IdeaProjects\\TermProject1\\src\\main\\resources\\com\\example\\termproject1\\Images\\Meltdown_3F.webp");
+    ImageView _image = new ImageView(new Image("warrior.jpg"));
+
 
     Enemy(int initialHealth, double initialSpeed) {
         _speed = initialSpeed;
         _health = initialHealth;
-        _imagePath = new File("C:\\Users\\Cihangir\\IdeaProjects\\TermProject1\\src\\main\\resources\\com\\example\\termproject1\\Images\\Meltdown_3F.webp");
+        _image.setFitHeight(32);
+        _image.setFitWidth(32);
     }
 
-    Enemy(String imagePath, int initialHealth, double initialSpeed) {
+    Enemy(String imageName, int initialHealth, double initialSpeed) {
         _speed = initialSpeed;
         _health = initialHealth;
-        _imagePath = new File(imagePath);
+        _image = new ImageView(new Image(imageName));
     }
 
     public void walk(int level, Pane pane) throws Exception {
