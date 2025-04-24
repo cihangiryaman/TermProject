@@ -20,6 +20,7 @@ public class Map extends Application
 
         Enemy testEnemy = new Infantry(300, 0.2);
         testEnemy.walk(5,map);
+        
         BorderPane mainLayout = new BorderPane();
         mainLayout.setCenter(map);
         mainLayout.setRight(pane.returnRightPane());
