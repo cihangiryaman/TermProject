@@ -14,7 +14,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
-public class CastlesAndBars
+public class CastlesAndBars_Deprecated
 {
     public static Label moneyLabel = new Label("Money: 150$");
     public static Label livesLabel = new Label("Lives: 5");

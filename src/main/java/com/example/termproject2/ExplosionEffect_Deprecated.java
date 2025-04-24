@@ -13,7 +13,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 //150123038 Deniz Arda Şanal
-public class ExplosionEffect extends Application {
+public class ExplosionEffect_Deprecated extends Application {
 
     Scene scene;
     Button bt1;
