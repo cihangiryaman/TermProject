@@ -8,9 +8,13 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Map extends Application
 {
+    public static List<Enemy> activeEnemies = new ArrayList<>();
+
     @Override
     public void start(Stage stage) throws Exception
     {
@@ -19,6 +23,7 @@ public class Map extends Application
         map.setAlignment(Pos.CENTER);
 
         Enemy testEnemy = new Infantry(300, 0.2);
+        activeEnemies.add(testEnemy);
         testEnemy.walk(5,map);
         
         BorderPane mainLayout = new BorderPane();

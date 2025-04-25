@@ -213,6 +213,7 @@ public class MapPane
         fade.setDelay(Duration.millis((row + column) * 50));
         fade.play();
     }
+
     public StackPane returnCastle(String name, String cost, String imagePath, Color color,int radius)
     {
         Rectangle background = new Rectangle(180,80);
@@ -264,6 +265,7 @@ public class MapPane
 
         return pane;
     }
+
     public VBox returnRightPane()
     {
         StackPane castle1 = returnCastle("Single Shot Tower", "50$","Tower.png", Color.WHEAT, 50);

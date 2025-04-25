@@ -9,6 +9,7 @@ import javafx.event.EventHandler;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.LineTo;
@@ -19,20 +20,25 @@ import javafx.util.Duration;
 public abstract class Enemy {
     private int _health;
     private double _speed;
+    private double _positionX;
+    private double _positionY;
+    private StackPane _container;
     ImageView _image = new ImageView(new Image("warrior.jpg"));
 
 
     Enemy(int initialHealth, double initialSpeed) {
         _speed = initialSpeed;
         _health = initialHealth;
-        _image.setFitHeight(32);
-        _image.setFitWidth(32);
+        _image.setFitHeight(20);
+        _image.setFitWidth(20);
     }
 
     Enemy(String imageName, int initialHealth, double initialSpeed) {
         _speed = initialSpeed;
         _health = initialHealth;
         _image = new ImageView(new Image(imageName));
+        _image.setFitHeight(20);
+        _image.setFitWidth(20);
     }
 
     public void walk(int level, Pane pane) throws Exception {
@@ -45,7 +51,7 @@ public abstract class Enemy {
         Path path;
 
         double durationPerTile = _speed;//0.2
-
+        double tileSize = 40;
         Circle circle = new Circle(10, Color.RED);
 
         if (level == 1) {
@@ -68,6 +74,11 @@ public abstract class Enemy {
             pt.jumpTo(Duration.ZERO);
             pt.setDuration(javafx.util.Duration.seconds(totalDuration)); // adjusting speed and time
             pt.setInterpolator(Interpolator.LINEAR);
+
+            pt.currentTimeProperty().addListener((obs, oldTime, newTime) -> {
+                javafx.geometry.Bounds bounds = circle.localToScene(circle.getBoundsInLocal());
+                setPosition(bounds.getCenterX(), bounds.getCenterY());
+            });
 
             pane.getChildren().add(circle);
             st.getChildren().add(pt);
@@ -92,6 +103,11 @@ public abstract class Enemy {
             pt.setDuration(javafx.util.Duration.seconds(totalDuration));
             pt.setInterpolator(Interpolator.LINEAR);
 
+            pt.currentTimeProperty().addListener((obs, oldTime, newTime) -> {
+                javafx.geometry.Bounds bounds = circle.localToScene(circle.getBoundsInLocal());
+                setPosition(bounds.getCenterX(), bounds.getCenterY());
+            });
+
             pane.getChildren().add(circle);
             st.getChildren().add(pt);
             st.setCycleCount(1);
@@ -115,6 +131,11 @@ public abstract class Enemy {
             pt.jumpTo(Duration.ZERO);
             pt.setDuration(javafx.util.Duration.seconds(totalDuration));
             pt.setInterpolator(Interpolator.LINEAR);
+
+            pt.currentTimeProperty().addListener((obs, oldTime, newTime) -> {
+                javafx.geometry.Bounds bounds = circle.localToScene(circle.getBoundsInLocal());
+                setPosition(bounds.getCenterX(), bounds.getCenterY());
+            });
 
             pane.getChildren().add(circle);
             st.getChildren().add(pt);
@@ -141,23 +162,33 @@ public abstract class Enemy {
             pt.setDuration(javafx.util.Duration.seconds(totalDuration));
             pt.setInterpolator(Interpolator.LINEAR);
 
+            pt.currentTimeProperty().addListener((obs, oldTime, newTime) -> {
+                javafx.geometry.Bounds bounds = circle.localToScene(circle.getBoundsInLocal());
+                setPosition(bounds.getCenterX(), bounds.getCenterY());
+            });
+
             pane.getChildren().add(circle);
             st.getChildren().add(pt);
             st.setCycleCount(1);
             st.play();
         } else if (level == 5) {
 
+            circle.setCenterX(coordinates5[0][1]* tileSize + tileSize/2);
+            circle.setCenterY(coordinates5[0][0]*tileSize + tileSize/2);
+            pane.getChildren().add(circle);
+
             path = new Path();
-            path.getElements().add(new MoveTo(coordinates5[0][1] * 50, coordinates5[0][0] * 50));
+            path.getElements().add(new MoveTo(coordinates5[0][1] *tileSize + tileSize/2.0 + 130, coordinates5[0][0]*tileSize + tileSize/2.0));
 
             //Using this for multiple animations
             SequentialTransition st = new SequentialTransition();
             for (int i = 0; i < coordinates5.length; i++) {
-                path.getElements().add(new LineTo(coordinates5[i][1] * 50, coordinates5[i][0] * 50));
+                path.getElements().add(new LineTo(coordinates5[i][1] * tileSize + tileSize/2.0 + 130, coordinates5[i][0] * tileSize + tileSize/2.0));
             }
-            circle.setCenterX(coordinates1[0][1]);
-            circle.setCenterY(coordinates1[0][0]);
+
+
             double totalDuration = coordinates5.length * durationPerTile;
+            PauseTransition pauseTransition = new PauseTransition(Duration.seconds(1.5));
             PathTransition pt = new PathTransition();
 
             pt.setPath(path);
@@ -166,8 +197,7 @@ public abstract class Enemy {
             pt.setDuration(javafx.util.Duration.seconds(totalDuration));
             pt.setInterpolator(Interpolator.LINEAR);
 
-            pane.getChildren().add(circle);
-            st.getChildren().add(pt);
+            st.getChildren().addAll(pauseTransition, pt);
             st.setCycleCount(1);
             st.play();
         } else {
@@ -251,19 +281,27 @@ public abstract class Enemy {
         else return Color.YELLOW;
     }
 
-    public double get_speed() {
+    public double getSpeed() {
         return _speed;
     }
 
-    public void set_speed(int speed) {
+    public void setSpeed(int speed) {
         this._speed = speed;
     }
 
-    public int get_health() {
+    public int getHealth() {
         return _health;
     }
 
-    public void set_health(int health) {
+    public void setHealth(int health) {
         this._health = health;
+    }
+
+    public double getPositionX() { return _positionX; }
+    public double getPositionY() { return _positionY; }
+
+    public void setPosition(double x, double y) {
+        this._positionX = x;
+        this._positionY = y;
     }
 }

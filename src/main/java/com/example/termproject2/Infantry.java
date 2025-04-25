@@ -1,5 +1,7 @@
 package com.example.termproject2;
 
+import javafx.scene.layout.StackPane;
+
 public class Infantry extends Enemy
 {
     Infantry(int initialHealth, double initialSpeed)
