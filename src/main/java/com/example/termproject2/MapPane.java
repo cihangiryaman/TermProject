@@ -1,4 +1,4 @@
-package com.example.termproject2;
+package com.example.leveldesign;
 
 import javafx.animation.FadeTransition;
 import javafx.geometry.Pos;
@@ -26,12 +26,18 @@ public class MapPane
 {
     int money;
     int lives;
+    //These values are given at the levels.txt file as the third parameter after the row "Wave_Data:"
     int[] waveDelays;
+    //First parameter at the rows after the row "Wave_Data:"
     int[] enemyCountPerWave;
+    //Second parameter
     double[] enemySpawnDelayPerWave;
+    //This array holds the every row of the .txt file as a string
     String[] rows;
+    //This label holds the money at the right up corner of the map
     Label moneyLabel;
     Label livesLabel;
+    //This label shows how many seconds has left to other wave
     Label waveLabel;
 
     MapPane(File levelFile)
@@ -45,6 +51,7 @@ public class MapPane
         moneyLabel = new Label("Money: " + money + "$");
         livesLabel = new Label("Lives: " + lives );
         waveLabel = new Label("Next wave: " + waveDelays[0] + "s");
+        /*Since we don't have an actual method that sets how many seconds have left to the other wave this value is static.*/
     }
 
     public GridPane getPane()
@@ -55,6 +62,8 @@ public class MapPane
         int width = Integer.parseInt((rows[0].split(":"))[1]);
         int height = Integer.parseInt((rows[1].split(":"))[1]);
 
+        /*This for loop will find every grey rectangle's coordinates by looking after the second
+          row which holds the values of x and y coordinates in the .txt file until the Wave_Data:*/
         for (int i = 2; i < rows.length; i++)
         {
             if(rows[i].equals("WAVE_DATA:"))
@@ -70,11 +79,17 @@ public class MapPane
             }
         }
 
+        /*This triple for loop will check every coordinate one by one and also look for if it's coordinates are same as the gray rectangles coordinates
+          which we had found these values and put those values into an arrayList as the x values as even and y values as odd.*/
+
         for (int i = 0; i < width; i++)
         {
             for (int j = 0; j < height; j++)
             {
                 boolean isGray = false;
+
+                /*For this loop we increase k value by to because k will as even will give x
+                 value of a grey rectangle coordinate and k+1 will give y value of that coordinate*/
                 for (int k = 0; k < coordinates.size(); k += 2)
                 {
                     if (i == coordinates.get(k) && j == coordinates.get(k+1))
@@ -84,11 +99,17 @@ public class MapPane
                 }
                 if (isGray)
                 {
+
+                    /*We have to use stack pane for each cell because there is a probability that player can put a castle on a cell
+                    And yes for grey cell by that cause we don't have to use stack pane on gray ones. But who cares.*/
                     StackPane cell = new StackPane();
                     Rectangle rectangle = new Rectangle(40,40);
                     rectangle.setFill(Color.GRAY);
                     cell.getChildren().add(rectangle);
                     map.add(cell, j, i);
+
+                    /*Any animation must play after the node had initialized
+                    otherwise animation cannot be displayed*/
                     playFadeAnimation(cell, j, i);
                 }
                 else
@@ -98,14 +119,21 @@ public class MapPane
                     rectangle.setFill(Color.GOLD);
                     cell.getChildren().add(rectangle);
 
+                    /*There are three event that takes place for drag on drop the one that
+                    below is the one event that runs while the player drags the image to the map*/
                     rectangle.setOnDragOver(event ->
                     {
+                        //This method will make sure that the dragged object is moving and the original one stays
                         event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                        //This method makes sure that event that take place properly ends and does not put itself into a loop
                         event.consume();
                     });
                     rectangle.setOnDragDropped(event ->
                     {
+                        //Get the content of the dragged object
                         Dragboard db = event.getDragboard();
+                        /*The string in our example is the image path and the cost of the castle.
+                         Which means if there is no string there is no object that is being dragged*/
                         if (db.hasString())
                         {
                             String data = db.getString();
@@ -117,6 +145,7 @@ public class MapPane
                             {
                                 money -= cost;
                                 moneyLabel.setText("Money: " + money + "$");
+                                //Gets the image of the castle and puts on the cell on the map
                                 ImageView castleImage = new ImageView(new Image(imagePath));
                                 castleImage.setFitWidth(32);
                                 castleImage.setFitHeight(32);
@@ -139,6 +168,7 @@ public class MapPane
                 }
             }
         }
+        //Gets rid of the lines between cells
         map.setHgap(0);
         map.setVgap(0);
         return map;
@@ -206,6 +236,8 @@ public class MapPane
     }
     private void playFadeAnimation(Node node, int row, int column)
     {
+        /*First sets the node to be invisible then by a duration sets the node to be visible grade by grade. And the setDelay method
+        will make sure that animation will start from top most left corner of the map to the bottom most right corner of the map*/
         node.setOpacity(0);
         FadeTransition fade = new FadeTransition(Duration.millis(300), node);
         fade.setFromValue(0);
@@ -213,9 +245,10 @@ public class MapPane
         fade.setDelay(Duration.millis((row + column) * 50));
         fade.play();
     }
-
     public StackPane returnCastle(String name, String cost, String imagePath, Color color,int radius)
     {
+        /*Rectangle will act as a container for
+        castle image, castle name and castle cost.*/
         Rectangle background = new Rectangle(180,80);
         background.setFill(color);
         background.setStroke(Color.BLACK);
@@ -228,19 +261,27 @@ public class MapPane
 
         Label nameLabel = new Label(name);
         Label costLabel = new Label(cost);
+        //Puts labels vertically with 2 bits of spacing
         VBox labelBox = new VBox(nameLabel, costLabel);
         labelBox.setAlignment(Pos.CENTER);
         labelBox.setSpacing(2);
-
+        //Puts image of the castle and labels of it vertically
         VBox contentBox = new VBox(castleImage, labelBox);
         contentBox.setAlignment(Pos.CENTER);
         contentBox.setSpacing(5);
 
         StackPane pane = new StackPane(background, contentBox);
+
+        /*This event is the first event that takes place in the drag and drop event series
+        and will determinate what starts the event and what will be carried with it.*/
         pane.setOnDragDetected(event ->
         {
+            /*The drag board carries dragged object's data. By using clip board
+            object we can put these data into the drag board object */
             Dragboard dragboard = castleImage.startDragAndDrop(TransferMode.COPY);
             ClipboardContent content = new ClipboardContent();
+            /*We have to put this image path data because when we put
+            the object into map we copy the image and out in there*/
             content.putString(imagePath + ";" + cost.replace("$",""));
             dragboard.setContent(content);
 
@@ -254,18 +295,19 @@ public class MapPane
 
             StackPane visual = new StackPane();
             visual.getChildren().addAll(range,smallView);
-
+            /*These methods and objects will set the dragging view, by using snapshot
+            object we can set the inside of the view to be transparent*/
             SnapshotParameters params = new SnapshotParameters();
             params.setFill(Color.TRANSPARENT);
             Image image = visual.snapshot(params,null);
-
+            /*This one will make sure the cursor is at the center of the image while carrying it*/
             dragboard.setDragView(image, image.getWidth()/2, image.getHeight()/2);
             event.consume();
         });
 
         return pane;
     }
-
+    //Creates the right pane of the map
     public VBox returnRightPane()
     {
         StackPane castle1 = returnCastle("Single Shot Tower", "50$","Tower.png", Color.WHEAT, 50);
