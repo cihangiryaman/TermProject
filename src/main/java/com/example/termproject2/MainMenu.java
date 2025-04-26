@@ -84,8 +84,6 @@ public class MainMenu extends Application
         vb.setAlignment(Pos.CENTER);
         vb.setBackground(new Background(new BackgroundFill(Color.DARKORANGE, CornerRadii.EMPTY, null)));
 
-
-
         scene1 = new Scene(vb, 800, 600);
         stage.setTitle("Game Menu");
         stage.setFullScreen(true);

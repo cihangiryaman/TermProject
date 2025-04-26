@@ -14,6 +14,7 @@ import java.util.List;
 public class Map extends Application
 {
     public static List<Enemy> activeEnemies = new ArrayList<>();
+    public static List<Tower> activeTowers = new ArrayList<>();
 
     @Override
     public void start(Stage stage) throws Exception

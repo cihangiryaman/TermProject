@@ -4,6 +4,7 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 import java.io.InputStream;
@@ -33,7 +34,7 @@ public abstract class Tower
         _image = Tower.class.getResourceAsStream("/Images/" + ImageName);
     }
 
-    public void shoot(StackPane cell)
+    public void shoot(VBox cell)
     {
         Timeline shootTimer = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
             for (Enemy enemy : Map.activeEnemies) {

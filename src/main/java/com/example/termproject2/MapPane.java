@@ -1,4 +1,4 @@
-package com.example.leveldesign;
+package com.example.termproject2;
 
 import javafx.animation.FadeTransition;
 import javafx.geometry.Pos;
@@ -245,7 +245,7 @@ public class MapPane
         fade.setDelay(Duration.millis((row + column) * 50));
         fade.play();
     }
-    public StackPane returnCastle(String name, String cost, String imagePath, Color color,int radius)
+    public StackPane returnCastle(String name, int cost, String imagePath, Color color,int radius)
     {
         /*Rectangle will act as a container for
         castle image, castle name and castle cost.*/
@@ -260,7 +260,7 @@ public class MapPane
         castleImage.setFitWidth(32);
 
         Label nameLabel = new Label(name);
-        Label costLabel = new Label(cost);
+        Label costLabel = new Label(String.valueOf(cost));
         //Puts labels vertically with 2 bits of spacing
         VBox labelBox = new VBox(nameLabel, costLabel);
         labelBox.setAlignment(Pos.CENTER);
@@ -282,7 +282,7 @@ public class MapPane
             ClipboardContent content = new ClipboardContent();
             /*We have to put this image path data because when we put
             the object into map we copy the image and out in there*/
-            content.putString(imagePath + ";" + cost.replace("$",""));
+            content.putString(imagePath + ";" + String.valueOf(cost).replace("$",""));
             dragboard.setContent(content);
 
             Circle range = new Circle(radius);
@@ -292,6 +292,15 @@ public class MapPane
             ImageView smallView = new ImageView(castleImage.getImage());
             smallView.setFitWidth(32);
             smallView.setFitHeight(32);
+
+            /*VBox cell = (VBox)pane.getParent(); // bulunduğu Cell'i elde ediyoruz
+            Tower newTower = new SingleShotTower(cost, 50, 100);
+            int columnIndex = GridPane.getColumnIndex(cell);
+            int rowIndex = GridPane.getRowIndex(cell);
+            newTower.setPosition(columnIndex * 40, rowIndex * 40);
+            Map.activeTowers.add(newTower); // haritadaki kulelere ekliyoruz.
+            newTower.shoot(cell);
+            System.out.println(Map.activeTowers.size());*/
 
             StackPane visual = new StackPane();
             visual.getChildren().addAll(range,smallView);
@@ -310,10 +319,10 @@ public class MapPane
     //Creates the right pane of the map
     public VBox returnRightPane()
     {
-        StackPane castle1 = returnCastle("Single Shot Tower", "50$","Tower.png", Color.WHEAT, 50);
-        StackPane castle2 = returnCastle("Laser Tower", "120$", "Castle.png",Color.WHEAT, 75);
-        StackPane castle3 = returnCastle("Triple Shot Tower", "150$", "Castle2.png", Color.WHEAT, 100);
-        StackPane castle4 = returnCastle("Missile Launcher Tower", "200$", "Castle3.png",Color.WHEAT, 125);
+        StackPane castle1 = returnCastle("Single Shot Tower", 50,"Tower.png", Color.WHEAT, 50);
+        StackPane castle2 = returnCastle("Laser Tower", 120, "Castle.png",Color.WHEAT, 75);
+        StackPane castle3 = returnCastle("Triple Shot Tower", 150, "Castle2.png", Color.WHEAT, 100);
+        StackPane castle4 = returnCastle("Missile Launcher Tower", 200, "Castle3.png",Color.WHEAT, 125);
 
         VBox rightPane = new VBox(livesLabel, moneyLabel, waveLabel, castle1, castle2, castle3, castle4);
         rightPane.setAlignment(Pos.CENTER);
