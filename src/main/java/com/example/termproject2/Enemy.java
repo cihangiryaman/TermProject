@@ -19,9 +19,7 @@ public abstract class Enemy {
     private double _speed;
     private double _positionX;
     private double _positionY;
-    private StackPane _container;
-    ImageView _image = new ImageView(new Image("warrior.jpg"));
-
+    private ImageView _image = new ImageView(new Image("warrior.jpg"));
 
     Enemy(int initialHealth, double initialSpeed) {
         _speed = initialSpeed;

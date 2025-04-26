@@ -3,6 +3,8 @@ package com.example.termproject2;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
@@ -12,29 +14,37 @@ import java.util.ArrayList;
 
 public abstract class Tower
 {
+    private String _name;
     private int _price;
     private int _damage;
     private int _range;
     private int _positionX;
     private int _positionY;
-    private InputStream _image = Tower.class.getResourceAsStream("/Castle.png");
+    private ImageView _image;
 
-    Tower(int price, int damage, int range)
+    Tower(String name,int price, int damage, int range)
     {
+        _name = name;
         _damage = damage;
         _price = price;
         _range = range;
+        _image = new ImageView(new Image("Tower.png"));
+        _image.setFitHeight(32);
+        _image.setFitWidth(32);
     }
 
-    Tower(String ImageName, int price, int damage, int range)
+    Tower(String name,String ImageName, int price, int damage, int range)
     {
+        _name = name;
         _damage = damage;
         _price = price;
         _range = range;
-        _image = Tower.class.getResourceAsStream("/Images/" + ImageName);
+        _image = new ImageView(new Image(ImageName));
+        _image.setFitHeight(32);
+        _image.setFitWidth(32);
     }
 
-    public void shoot(StackPane cell)
+    public void shoot()
     {
         Timeline shootTimer = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
             for (Enemy enemy : Map.activeEnemies) {
@@ -46,7 +56,7 @@ public abstract class Tower
                     enemy.setHealth(enemy.getHealth() - _damage);
                     if (enemy.getHealth() <= 0)
                     {
-                        // remove visual and from active list
+                        //Burada Enemy patlatılacak.
                     }
                     break;
                 }
@@ -83,7 +93,17 @@ public abstract class Tower
 
     public void setPosition(int x, int y)
     {
-        this._positionY = x;
         this._positionX = x;
+        this._positionY = y;
+    }
+
+    public ImageView getImage()
+    {
+        return _image;
+    }
+
+    public String get_name()
+    {
+        return _name;
     }
 }
