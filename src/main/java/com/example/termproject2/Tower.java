@@ -34,7 +34,7 @@ public abstract class Tower
         _image = Tower.class.getResourceAsStream("/Images/" + ImageName);
     }
 
-    public void shoot(VBox cell)
+    public void shoot(StackPane cell)
     {
         Timeline shootTimer = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
             for (Enemy enemy : Map.activeEnemies) {

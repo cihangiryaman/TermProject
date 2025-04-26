@@ -151,6 +151,14 @@ public class MapPane
                                 castleImage.setFitHeight(32);
                                 cell.getChildren().add(castleImage);
                                 event.setDropCompleted(true);
+
+                                Tower newTower = new SingleShotTower(cost, 50, 100);
+                                int columnIndex = GridPane.getColumnIndex(cell);
+                                int rowIndex = GridPane.getRowIndex(cell);
+                                newTower.setPosition(columnIndex * 40, rowIndex * 40);
+                                Map.activeTowers.add(newTower); // haritadaki kulelere ekliyoruz.
+                                newTower.shoot(cell);
+                                System.out.println(Map.activeTowers.size());
                             }
                             else
                             {
@@ -292,15 +300,6 @@ public class MapPane
             ImageView smallView = new ImageView(castleImage.getImage());
             smallView.setFitWidth(32);
             smallView.setFitHeight(32);
-
-            /*VBox cell = (VBox)pane.getParent(); // bulunduğu Cell'i elde ediyoruz
-            Tower newTower = new SingleShotTower(cost, 50, 100);
-            int columnIndex = GridPane.getColumnIndex(cell);
-            int rowIndex = GridPane.getRowIndex(cell);
-            newTower.setPosition(columnIndex * 40, rowIndex * 40);
-            Map.activeTowers.add(newTower); // haritadaki kulelere ekliyoruz.
-            newTower.shoot(cell);
-            System.out.println(Map.activeTowers.size());*/
 
             StackPane visual = new StackPane();
             visual.getChildren().addAll(range,smallView);
