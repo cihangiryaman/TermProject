@@ -16,7 +16,7 @@ public abstract class Tower
 {
     private String _name;
     private int _price;
-    private int _damage;
+    private int _damage = 1000;
     private int _range;
     private int _positionX;
     private int _positionY;
@@ -56,7 +56,7 @@ public abstract class Tower
                     enemy.setHealth(enemy.getHealth() - _damage);
                     if (enemy.getHealth() <= 0)
                     {
-                        //Burada Enemy patlatılacak.
+                        enemy.explode();
                     }
                     break;
                 }

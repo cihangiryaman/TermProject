@@ -14,21 +14,27 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.util.Duration;
 
-public abstract class Enemy {
-    private int _health;
+public abstract class Enemy
+{
+    private Pane _pane;
+    private int _health = 10;
     private double _speed;
     private double _positionX;
     private double _positionY;
     private ImageView _image = new ImageView(new Image("warrior.jpg"));
 
-    Enemy(int initialHealth, double initialSpeed) {
+    Enemy(Pane pane, int initialHealth, double initialSpeed)
+    {
+        _pane = pane;
         _speed = initialSpeed;
         _health = initialHealth;
         _image.setFitHeight(20);
         _image.setFitWidth(20);
     }
 
-    Enemy(String imageName, int initialHealth, double initialSpeed) {
+    Enemy(Pane pane, String imageName, int initialHealth, double initialSpeed)
+    {
+        _pane = pane;
         _speed = initialSpeed;
         _health = initialHealth;
         _image = new ImageView(new Image(imageName));
@@ -191,7 +197,6 @@ public abstract class Enemy {
                 path.getElements().add(new LineTo(coordinates5[i][1] * tileSize + tileSize/2.0 + 130, coordinates5[i][0] * tileSize + tileSize/2.0));
             }
 
-
             double totalDuration = coordinates5.length * durationPerTile;
             PauseTransition pauseTransition = new PauseTransition(Duration.seconds(1.5)); //Delay
             PathTransition pt = new PathTransition();
@@ -211,9 +216,9 @@ public abstract class Enemy {
         }
     }
 
-    public void explode(Pane p, double x, double y) {
+    public void explode() {
         // Shockwave
-        Circle shockwave = new Circle(x, y, 1);
+        Circle shockwave = new Circle(_positionX, _positionY, 1);
         shockwave.setFill(Color.DARKORANGE);
         shockwave.setStroke(Color.DARKORANGE);
         shockwave.setStrokeWidth(1);
@@ -223,12 +228,12 @@ public abstract class Enemy {
         Circle[] particles = new Circle[particleCount];
         for (int i = 0; i < particleCount; i++) {
             particles[i] = new Circle(2.25, randomColor());
-            particles[i].setCenterX(x);
-            particles[i].setCenterY(y);
+            particles[i].setCenterX(_positionX);
+            particles[i].setCenterY(_positionY);
             particles[i].setOpacity(0);
         }
-        p.getChildren().addAll(shockwave);
-        p.getChildren().addAll(particles);
+        _pane.getChildren().addAll(shockwave);
+        _pane.getChildren().addAll(particles);
 
         // Shockwave animation
         ScaleTransition shockwaveScale = new ScaleTransition(Duration.millis(100), shockwave);
@@ -272,8 +277,8 @@ public abstract class Enemy {
 
             @Override
             public void handle(ActionEvent arg0) {
-                p.getChildren().removeAll(shockwave);
-                p.getChildren().removeAll(particles);
+                _pane.getChildren().removeAll(shockwave);
+                _pane.getChildren().removeAll(particles);
 
             }
         });
