@@ -23,9 +23,9 @@ public class Map extends Application
         GridPane map = pane.getPane();
         map.setAlignment(Pos.CENTER);
 
-        Enemy testEnemy = new Infantry(300, 0.2);
+        Enemy testEnemy = new Infantry(map,300, 0.2);
         activeEnemies.add(testEnemy);
-        testEnemy.walk(5,map);
+        testEnemy.walk(5);
         
         BorderPane mainLayout = new BorderPane();
         mainLayout.setCenter(map);

@@ -17,7 +17,7 @@ import javafx.util.Duration;
 public abstract class Enemy
 {
     private Pane _pane;
-    private int _health = 10;
+    private int _health;
     private double _speed;
     private double _positionX;
     private double _positionY;
@@ -42,7 +42,7 @@ public abstract class Enemy
         _image.setFitWidth(20);
     }
 
-    public void walk(int level, Pane pane) throws Exception {
+    public void walk(int level) throws Exception {
         int[][] coordinates1 = {{2, 0}, {2, 1}, {2, 2}, {2, 3}, {3, 3}, {4, 3}, {5, 3}, {5, 4}, {5, 5}, {5, 6}, {5, 7}, {5, 8}, {5, 9}};
         int[][] coordinates2 = {{0, 2}, {1, 2}, {2, 2}, {3, 2}, {3, 3}, {3, 4}, {3, 5}, {2, 5}, {1, 5}, {1, 6}, {1, 7}, {2, 7}, {3, 7}, {4, 7}, {5, 7}, {6, 7}, {7, 7}, {7, 8}, {7, 9}};
         int[][] coordinates3 = {{5, 0}, {5, 1}, {5, 2}, {4, 2}, {3, 2}, {3, 3}, {3, 4}, {4, 4}, {5, 4}, {6, 4}, {7, 4}, {7, 5}, {7, 6}, {7, 7}, {6, 7}, {5, 7}, {4, 7}, {4, 8}, {4, 9}};
@@ -59,7 +59,7 @@ public abstract class Enemy
             //Initializing circle coordinates
             circle.setCenterX(coordinates1[0][1] *tileSize + tileSize/2 - 10);
             circle.setCenterY(coordinates1[0][0]* tileSize + tileSize/2);
-            pane.getChildren().add(circle);
+            _pane.getChildren().add(circle);
 
             path = new Path();
             //Initial path coordinates
@@ -86,11 +86,12 @@ public abstract class Enemy
             st.getChildren().addAll(pauseTransition, pt);
             st.setCycleCount(1);
             st.play();
-        } else if (level == 2) {
+        }
+        else if (level == 2) {
             //Initializing circle coordinates
             circle.setCenterX(coordinates2[0][1] * tileSize + tileSize/2 -90);
             circle.setCenterY(coordinates2[0][0]* tileSize + tileSize/2 + 80);
-            pane.getChildren().add(circle);
+            _pane.getChildren().add(circle);
 
             path = new Path();
             //Initial path coordinates
@@ -117,11 +118,12 @@ public abstract class Enemy
             st.getChildren().addAll(pauseTransition, pt);
             st.setCycleCount(1);
             st.play();
-        } else if (level == 3) {
+        }
+        else if (level == 3) {
             //Initializing circle coordinates
             circle.setCenterX(coordinates3[0][1]* tileSize + tileSize/2 + 120);
             circle.setCenterY(coordinates3[0][0]*tileSize + tileSize/2 - 200);
-            pane.getChildren().add(circle);
+            _pane.getChildren().add(circle);
 
             path = new Path();
             //Initial path coordinates
@@ -148,11 +150,12 @@ public abstract class Enemy
             st.getChildren().addAll(pauseTransition, pt);
             st.setCycleCount(1);
             st.play();
-        } else if (level == 4) {
+        }
+        else if (level == 4) {
             //Initializing circle coordinates
             circle.setCenterX(coordinates4[0][1]* tileSize + tileSize/2 + 120);
             circle.setCenterY(coordinates4[0][0]*tileSize + tileSize/2 - 80);
-            pane.getChildren().add(circle);
+            _pane.getChildren().add(circle);
 
             path = new Path();
             //Initializing path coordinates
@@ -179,12 +182,14 @@ public abstract class Enemy
             st.getChildren().addAll(pauseTransition, pt);
             st.setCycleCount(1);
             st.play();
-        } else if (level == 5) {
+        }
+        else if (level == 5)
+        {
 
             //Initializing circle coordinates
             circle.setCenterX(coordinates5[0][1]* tileSize + tileSize/2);
             circle.setCenterY(coordinates5[0][0]*tileSize + tileSize/2);
-            pane.getChildren().add(circle);
+            _pane.getChildren().add(circle);
 
             path = new Path();
             //Initial path coordinates
@@ -209,6 +214,16 @@ public abstract class Enemy
 
             st.getChildren().addAll(pauseTransition, pt);
             st.setCycleCount(1);
+
+            AnimationTimer timer = new AnimationTimer() {
+                @Override
+                public void handle(long now) {
+                    setPosition(circle.getTranslateX() + circle.getCenterX(), circle.getTranslateY() + circle.getCenterY());
+                    System.out.println(_health);
+                }
+            };
+            timer.start();
+
             st.play();
         }
         else {

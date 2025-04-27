@@ -1,16 +1,17 @@
 package com.example.termproject2;
 
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
 public class Infantry extends Enemy
 {
-    Infantry(int initialHealth, double initialSpeed)
+    Infantry(Pane pane, int initialHealth, double initialSpeed)
     {
-        super(initialHealth, initialSpeed);
+        super(pane, initialHealth, initialSpeed);
     }
 
-    Infantry(String imagePath, int initialHealth, double initialSpeed)
+    Infantry(Pane pane, String imagePath, int initialHealth, double initialSpeed)
     {
-        super(imagePath, initialHealth, initialSpeed);
+        super(pane, imagePath, initialHealth, initialSpeed);
     }
 }
