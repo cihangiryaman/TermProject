@@ -50,80 +50,76 @@ public class MapPane
         GridPane map = new GridPane();
 
         ArrayList<Cell> grayCells = textDecoder.getGrayCells();
-        for (int i = 0; i < grayCells.size(); i++)
+        ArrayList<Cell> cells = textDecoder.cells;
+        for (int i = 0; i < cells.size(); i++)
         {
-                if (grayCells.get(i).isGray)
+            StackPane cell = new StackPane();
+            Rectangle rectangle = new Rectangle(40,40);
+
+            if (cells.get(i).isGray)
+            {
+
+                rectangle.setFill(Color.GRAY);
+                cell.getChildren().add(rectangle);
+
+            }
+            else
+            {
+                rectangle.setFill(Color.GOLD);
+                cell.getChildren().add(rectangle);
+
+                rectangle.setOnDragOver(event ->
                 {
-
-                    /*We have to use stack pane for each cell because there is a probability that player can put a castle on a cell
-                    And yes for grey cell by that  we don't have to use stack pane on gray ones. But who cares.*/
-                    StackPane cell = new StackPane();
-                    Rectangle rectangle = new Rectangle(40,40);
-                    rectangle.setFill(Color.GRAY);
-                    cell.getChildren().add(rectangle);
-                    map.add(cell, grayCells.get(i).y, grayCells.get(i).x);
-
-                    playFadeAnimation(cell, grayCells.get(i).y, grayCells.get(i).x);
-                }
-                else
+                    //This method will make sure that the dragged object is moving and the original one stays
+                    event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                    //This method makes sure that event that take place properly ends and does not put itself into a loop
+                    event.consume();
+                });
+                rectangle.setOnDragDropped(event ->
                 {
-                    StackPane cell = new StackPane();
-                    Rectangle rectangle = new Rectangle(40,40);
-                    rectangle.setFill(Color.GOLD);
-                    cell.getChildren().add(rectangle);
+                    //Get the content of the dragged object
+                    Dragboard db = event.getDragboard();
 
-                    rectangle.setOnDragOver(event ->
+                    if (db.hasString())
                     {
-                        //This method will make sure that the dragged object is moving and the original one stays
-                        event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-                        //This method makes sure that event that take place properly ends and does not put itself into a loop
-                        event.consume();
-                    });
-                    rectangle.setOnDragDropped(event ->
-                    {
-                        //Get the content of the dragged object
-                        Dragboard db = event.getDragboard();
+                        String data = db.getString();
+                        String[] parts = data.split(";");
+                        String imagePath = parts[0];
+                        int cost = Integer.parseInt(parts[1]);
 
-                        if (db.hasString())
+                        if ( money >= cost)
                         {
-                            String data = db.getString();
-                            String[] parts = data.split(";");
-                            String imagePath = parts[0];
-                            int cost = Integer.parseInt(parts[1]);
+                            money -= cost;
+                            moneyLabel.setText("Money: " + money + "$");
+                            //Gets the image of the castle and puts on the cell on the map
+                            ImageView castleImage = new ImageView(new Image(imagePath));
+                            castleImage.setFitWidth(32);
+                            castleImage.setFitHeight(32);
+                            cell.getChildren().add(castleImage);
+                            event.setDropCompleted(true);
 
-                            if ( money >= cost)
-                            {
-                                money -= cost;
-                                moneyLabel.setText("Money: " + money + "$");
-                                //Gets the image of the castle and puts on the cell on the map
-                                ImageView castleImage = new ImageView(new Image(imagePath));
-                                castleImage.setFitWidth(32);
-                                castleImage.setFitHeight(32);
-                                cell.getChildren().add(castleImage);
-                                event.setDropCompleted(true);
-
-                                Tower newTower = new SingleShotTower(cost, 50, 100);
-                                int columnIndex = GridPane.getColumnIndex(cell);
-                                int rowIndex = GridPane.getRowIndex(cell);
-                                newTower.setPosition(columnIndex * 40, rowIndex * 40);
-                                Map.activeTowers.add(newTower); // haritadaki kulelere ekliyoruz.
-                                newTower.shoot();
-                                System.out.println(Map.activeTowers.size());
-                            }
-                            else
-                            {
-                                event.setDropCompleted(false);
-                            }
+                            Tower newTower = new SingleShotTower(cost, 50, 100);
+                            int columnIndex = GridPane.getColumnIndex(cell);
+                            int rowIndex = GridPane.getRowIndex(cell);
+                            newTower.setPosition(columnIndex * 40, rowIndex * 40);
+                            Map.activeTowers.add(newTower); // haritadaki kulelere ekliyoruz.
+                            newTower.shoot();
+                            System.out.println(Map.activeTowers.size());
                         }
                         else
                         {
                             event.setDropCompleted(false);
                         }
-                        event.consume();
-                    });
-                    map.add(cell, grayCells.get(i).y, grayCells.get(i).x);
-                    playFadeAnimation(cell, grayCells.get(i).y, grayCells.get(i).x);
-                }
+                    }
+                    else
+                    {
+                        event.setDropCompleted(false);
+                    }
+                    event.consume();
+                });
+            }
+            map.add(cell, cells.get(i).y, cells.get(i).x);
+            playFadeAnimation(cell, cells.get(i).y, cells.get(i).x);
 
         }
         //Gets rid of the lines between cells

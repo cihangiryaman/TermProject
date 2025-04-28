@@ -118,6 +118,7 @@ public class TextDecoder
             {
                 int x = Integer.parseInt((rows[i].split(","))[0]);
                 int y = Integer.parseInt((rows[i].split(","))[1]);
+
                 for (Cell cell : cells)
                 {
                     if(cell.x == x && cell.y == y)
