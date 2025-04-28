@@ -26,91 +26,43 @@ public class MapPane
 {
     int money;
     int lives;
-    //These values are given at the levels.txt file as the third parameter after the row "Wave_Data:"
-    int[] waveDelays;
-    //First parameter at the rows after the row "Wave_Data:"
-    int[] enemyCountPerWave;
-    //Second parameter
-    double[] enemySpawnDelayPerWave;
-    //This array holds the every row of the .txt file as a string
     String[] rows;
-    //This label holds the money at the right up corner of the map
     Label moneyLabel;
     Label livesLabel;
-    //This label shows how many seconds has left to other wave
     Label waveLabel;
+    TextDecoder textDecoder;
 
     MapPane(File levelFile)
     {
+        textDecoder = new TextDecoder(levelFile);
         lives = 5;
         money = 100;
-        rows = getLines(levelFile);
-        waveDelays = getDelayToOtherWave();
-        enemyCountPerWave = getEnemyCountPerWave();
-        enemySpawnDelayPerWave = getEnemySpawnDelayPerWave();
+        rows = TextDecoder.getLines(levelFile);
         moneyLabel = new Label("Money: " + money + "$");
         livesLabel = new Label("Lives: " + lives );
-        waveLabel = new Label("Next wave: " + waveDelays[0] + "s");
+        waveLabel = new Label("Next wave: " + textDecoder.waveDelays[0] + "s");
         /*Since we don't have an actual method that sets how many seconds have left to the other wave this value is static.*/
     }
 
     public GridPane getPane()
     {
         GridPane map = new GridPane();
-        ArrayList<Integer> coordinates = new ArrayList<>();
 
-        int width = Integer.parseInt((rows[0].split(":"))[1]);
-        int height = Integer.parseInt((rows[1].split(":"))[1]);
-
-        /*This for loop will find every grey rectangle's coordinates by looking after the second
-          row which holds the values of x and y coordinates in the .txt file until the Wave_Data:*/
-        for (int i = 2; i < rows.length; i++)
+        ArrayList<Cell> grayCells = textDecoder.getGrayCells();
+        for (int i = 0; i < grayCells.size(); i++)
         {
-            if(rows[i].equals("WAVE_DATA:"))
-            {
-                break;
-            }
-            else
-            {
-                int x = Integer.parseInt((rows[i].split(","))[0]);
-                int y = Integer.parseInt((rows[i].split(","))[1]);
-                coordinates.add(x);
-                coordinates.add(y);
-            }
-        }
-
-        /*This triple for loop will check every coordinate one by one and also look for if it's coordinates are same as the gray rectangles coordinates
-          which we had found these values and put those values into an arrayList as the x values as even and y values as odd.*/
-
-        for (int i = 0; i < width; i++)
-        {
-            for (int j = 0; j < height; j++)
-            {
-                boolean isGray = false;
-
-                /*For this loop we increase k value by to because k will as even will give x
-                 value of a grey rectangle coordinate and k+1 will give y value of that coordinate*/
-                for (int k = 0; k < coordinates.size(); k += 2)
-                {
-                    if (i == coordinates.get(k) && j == coordinates.get(k+1))
-                    {
-                        isGray = true;
-                    }
-                }
-                if (isGray)
+                if (grayCells.get(i).isGray)
                 {
 
                     /*We have to use stack pane for each cell because there is a probability that player can put a castle on a cell
-                    And yes for grey cell by that cause we don't have to use stack pane on gray ones. But who cares.*/
+                    And yes for grey cell by that  we don't have to use stack pane on gray ones. But who cares.*/
                     StackPane cell = new StackPane();
                     Rectangle rectangle = new Rectangle(40,40);
                     rectangle.setFill(Color.GRAY);
                     cell.getChildren().add(rectangle);
-                    map.add(cell, j, i);
+                    map.add(cell, grayCells.get(i).y, grayCells.get(i).x);
 
-                    /*Any animation must play after the node had initialized
-                    otherwise animation cannot be displayed*/
-                    playFadeAnimation(cell, j, i);
+                    playFadeAnimation(cell, grayCells.get(i).y, grayCells.get(i).x);
                 }
                 else
                 {
@@ -119,8 +71,6 @@ public class MapPane
                     rectangle.setFill(Color.GOLD);
                     cell.getChildren().add(rectangle);
 
-                    /*There are three event that takes place for drag on drop the one that
-                    below is the one event that runs while the player drags the image to the map*/
                     rectangle.setOnDragOver(event ->
                     {
                         //This method will make sure that the dragged object is moving and the original one stays
@@ -132,8 +82,7 @@ public class MapPane
                     {
                         //Get the content of the dragged object
                         Dragboard db = event.getDragboard();
-                        /*The string in our example is the image path and the cost of the castle.
-                         Which means if there is no string there is no object that is being dragged*/
+
                         if (db.hasString())
                         {
                             String data = db.getString();
@@ -171,10 +120,10 @@ public class MapPane
                         }
                         event.consume();
                     });
-                    map.add(cell, j, i);
-                    playFadeAnimation(cell, j, i);
+                    map.add(cell, grayCells.get(i).y, grayCells.get(i).x);
+                    playFadeAnimation(cell, grayCells.get(i).y, grayCells.get(i).x);
                 }
-            }
+
         }
         //Gets rid of the lines between cells
         map.setHgap(0);
@@ -182,66 +131,6 @@ public class MapPane
         return map;
     }
 
-    private static String[] getLines(File levelFile)
-    {
-        ArrayList<String> lines = new ArrayList<>();
-        try
-        {
-            Scanner scan = new Scanner(levelFile);
-            while(scan.hasNext())
-            {
-                lines.add(scan.nextLine());
-            }
-            scan.close();
-        }
-        catch (FileNotFoundException e)
-        {
-            throw new RuntimeException(e);
-        }
-        return lines.toArray(new String[0]);
-    }
-    private int[] getEnemyCountPerWave()
-    {
-        ArrayList<Integer> waveData = new ArrayList<>();
-        for (int i = 15; i < rows.length; i++)
-        {
-            String[] row = rows[i].split(",");
-            if (row.length == 3)
-            {
-                String enemyCount = row[0].trim();
-                waveData.add(Integer.parseInt(enemyCount));
-            }
-        }
-        return waveData.stream().mapToInt(Integer::intValue).toArray();
-    }
-    private double[] getEnemySpawnDelayPerWave()
-    {
-        ArrayList<Double> waveData = new ArrayList<>();
-        for (int i = 15; i < rows.length; i++)
-        {
-            String[] row = rows[i].split(",");
-            if (row.length == 3)
-            {
-                String spawnDelay = row[1].trim();
-                waveData.add(Double.parseDouble(spawnDelay));
-            }
-        }
-        return waveData.stream().mapToDouble(Double::doubleValue).toArray();
-    }
-    private int[] getDelayToOtherWave()
-    {
-        ArrayList<Integer> waveData = new ArrayList<>();
-        for (int i = 15; i < rows.length; i++)
-        {
-            String[] row = rows[i].split(",");
-            if (row.length == 3)
-            {
-                String delay = row[2].trim();
-                waveData.add(Integer.parseInt(delay));
-            }
-        }
-        return waveData.stream().mapToInt(Integer::intValue).toArray();
-    }
     private void playFadeAnimation(Node node, int row, int column)
     {
         /*First sets the node to be invisible then by a duration sets the node to be visible grade by grade. And the setDelay method
