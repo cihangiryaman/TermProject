@@ -48,7 +48,7 @@ public abstract class Tower
                 double distanceSquared = dx * dx + dy * dy;
 
                 if (distanceSquared <= _range * _range) {
-                    enemy.setHealth(_damage);
+                    enemy.setHealth(-_damage);
                     if (enemy.getHealth() <= 0)
                     {
                         enemy.explode();
