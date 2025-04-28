@@ -14,6 +14,8 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.util.Duration;
 
+import java.io.File;
+
 public abstract class Enemy
 {
     private Pane _pane;
@@ -183,8 +185,7 @@ public abstract class Enemy
             st.setCycleCount(1);
             st.play();
         }
-        else if (level == 5)
-        {
+        else if (level == 5) {
 
             //Initializing circle coordinates
             circle.setCenterX(coordinates5[0][1]* tileSize + tileSize/2);
@@ -319,8 +320,8 @@ public abstract class Enemy
         return _health;
     }
 
-    public void setHealth(int health) {
-        this._health = health;
+    public void setHealth(int amount) {
+        this._health += amount;
     }
 
     public double getPositionX()

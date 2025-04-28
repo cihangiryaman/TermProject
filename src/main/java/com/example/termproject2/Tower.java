@@ -16,7 +16,7 @@ public abstract class Tower
 {
     private String _name;
     private int _price;
-    private int _damage = 1000;
+    private int _damage = 300;
     private int _range;
     private int _positionX;
     private int _positionY;
@@ -46,14 +46,14 @@ public abstract class Tower
 
     public void shoot()
     {
-        Timeline shootTimer = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+        Timeline shootTimer = new Timeline(new KeyFrame(Duration.seconds(0.2), e -> {
             for (Enemy enemy : Map.activeEnemies) {
                 double dx = enemy.getPositionX() - _positionX;
                 double dy = enemy.getPositionY() - _positionY;
                 double distanceSquared = dx * dx + dy * dy;
 
                 if (distanceSquared <= _range * _range) {
-                    enemy.setHealth(enemy.getHealth() - _damage);
+                    enemy.setHealth(_damage);
                     if (enemy.getHealth() <= 0)
                     {
                         enemy.explode();
