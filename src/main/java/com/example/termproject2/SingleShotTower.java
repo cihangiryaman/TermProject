@@ -1,7 +1,5 @@
 package com.example.termproject2;
 
-import java.net.URISyntaxException;
-
 public class SingleShotTower extends Tower
 {
     SingleShotTower(int price, int damage, int range)
