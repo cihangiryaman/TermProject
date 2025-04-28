@@ -5,19 +5,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-class Cell
-{
-    public int x;
-    public int y;
-    public boolean isGray;
-    public Cell(int x,int y,boolean isGray)
-    {
-        this.x = x;
-        this.y = y;
-        this.isGray = isGray;
-    }
-}
-
 public class TextDecoder
 {
     ArrayList<Cell> cells = new ArrayList<Cell>();
