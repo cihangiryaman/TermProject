@@ -1,7 +1,6 @@
 package com.example.termproject2;
 
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 
 public class Infantry extends Enemy
 {

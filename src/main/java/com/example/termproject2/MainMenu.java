@@ -14,8 +14,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-
 //150123038 Deniz Arda Şanal
 public class MainMenu extends Application
 {
