@@ -141,7 +141,7 @@ public class MapPane
     }
     public StackPane returnCastle(Tower tower, Color color)//Şu anda Tower class'ında image oluşturma sorunu yüzünden diğer metodu kullanın
     {
-        /*Rectangle will act as a container for
+        /*Rectangle will act as a container fo
         castle image, castle name and castle cost.*/
         Rectangle background = new Rectangle(180,80);
         background.setFill(color);
