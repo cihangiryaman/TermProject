@@ -98,10 +98,10 @@ public class MapPane
                             cell.getChildren().add(castleImage);
                             event.setDropCompleted(true);
 
-                            Tower newTower = new SingleShotTower(cost, 50, 100);
+                            Tower newTower = new SingleShotTower(cost, 50, 50);
                             int columnIndex = GridPane.getColumnIndex(cell);
                             int rowIndex = GridPane.getRowIndex(cell);
-                            newTower.setPosition(columnIndex * 40, rowIndex * 40);
+                            newTower.setPosition(columnIndex * 40 + 20, rowIndex * 40 + 20);
                             Map.activeTowers.add(newTower); // haritadaki kulelere ekliyoruz.
                             newTower.shoot();
                             System.out.println(Map.activeTowers.size());
@@ -266,8 +266,8 @@ public class MapPane
     //Creates the right pane of the map
     public VBox returnRightPane()
     {
-        //StackPane castle1 = returnCastle(new SingleShotTower("Tower.png",50,10,50),Color.WHEAT);
-        StackPane castle1 = returnCastle("Single Shot Tower", 50, "Tower.png",Color.WHEAT, 50);
+        //StackPane castle1 = returnCastle(new SingleShotTower(50,10,50),Color.WHEAT);
+        StackPane castle1 = returnCastle("Single Shot Tower", 50, "Tower.png",Color.WHEAT, 500);
         StackPane castle2 = returnCastle("Laser Tower", 120, "Castle.png",Color.WHEAT, 75);
         StackPane castle3 = returnCastle("Triple Shot Tower", 150, "Castle2.png", Color.WHEAT, 100);
         StackPane castle4 = returnCastle("Missile Launcher Tower", 200, "Castle3.png",Color.WHEAT, 125);

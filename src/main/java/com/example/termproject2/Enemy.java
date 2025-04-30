@@ -63,6 +63,7 @@ public abstract class Enemy
 
         if (level == 1) {
             //Initializing circle coordinates
+            //Buralarda kullandığın coordiantes yerine grayCells listesinin x'i veya y'sini yaz ***********
             circle.setCenterX(coordinates1[0][1] *tileSize + tileSize/2 - 10);
             circle.setCenterY(coordinates1[0][0]* tileSize + tileSize/2);
             _pane.getChildren().add(circle);
@@ -77,7 +78,6 @@ public abstract class Enemy
                 //Drawing the line that following indicated coordinates
                 path.getElements().add(new LineTo(coordinates1[i][1] * tileSize + tileSize/2.0, coordinates1[i][0] * tileSize + tileSize/2.0+80 ));
             }
-
 
             double totalDuration = coordinates1.length * durationPerTile;
             PauseTransition pauseTransition = new PauseTransition(Duration.seconds(1.5)); //Delay
@@ -198,7 +198,7 @@ public abstract class Enemy
 
             path = new Path();
             //Initial path coordinates
-            path.getElements().add(new MoveTo(coordinates5[0][1] *tileSize + tileSize/2.0 + 130, coordinates5[0][0]*tileSize + tileSize/2.0));
+                path.getElements().add(new MoveTo(coordinates5[0][1] *tileSize + tileSize/2.0 + 130, coordinates5[0][0]*tileSize + tileSize/2.0));
 
             //Using this for multiple animations
             SequentialTransition st = new SequentialTransition();
@@ -219,12 +219,10 @@ public abstract class Enemy
 
             st.getChildren().addAll(pauseTransition, pt);
             st.setCycleCount(1);
-
             AnimationTimer timer = new AnimationTimer() {
                 @Override
                 public void handle(long now) {
                     setPosition(circle.getTranslateX() + circle.getCenterX(), circle.getTranslateY() + circle.getCenterY());
-                    System.out.println(_health);
                 }
             };
             timer.start();

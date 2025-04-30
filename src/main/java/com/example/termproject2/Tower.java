@@ -7,6 +7,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 
+import java.io.File;
+
 public abstract class Tower
 {
     private String _name;
@@ -42,17 +44,19 @@ public abstract class Tower
     public void shoot()
     {
         Timeline shootTimer = new Timeline(new KeyFrame(Duration.seconds(0.2), e -> {
+            System.out.println("Tower konumu: ("+_positionX+", "+_positionY+"), menzil²="+(_range*_range));
             for (Enemy enemy : Map.activeEnemies) {
                 double dx = enemy.getPositionX() - _positionX;
                 double dy = enemy.getPositionY() - _positionY;
-                double distanceSquared = dx * dx + dy * dy;
-
-                if (distanceSquared <= _range * _range) {
-                    enemy.setHealth(-_damage);
+                double dist2 = dx*dx + dy*dy;
+                System.out.println("  Enemy konumu: ("+enemy.getPositionX()+", "+enemy.getPositionY()+"), dist²="+dist2);
+                if (dist2 <= _range*_range) {
                     if (enemy.getHealth() <= 0)
                     {
                         enemy.explode();
+                        Map.activeEnemies.remove(enemy);
                     }
+                    else { enemy.setHealth(-_damage); }
                     break;
                 }
             }
@@ -90,6 +94,16 @@ public abstract class Tower
     {
         this._positionX = x;
         this._positionY = y;
+    }
+
+    public double getPositionX()
+    {
+        return _positionX;
+    }
+
+    public double getPositionY()
+    {
+        return _positionY;
     }
 
     public ImageView getImage()
