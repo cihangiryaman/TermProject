@@ -37,7 +37,7 @@ public class MapPane
     {
         textDecoder = new TextDecoder(levelFile);
         lives = 5;
-        money = 100;
+        money = 1000;
         rows = TextDecoder.getLines(levelFile);
         moneyLabel = new Label("Money: " + money + "$");
         livesLabel = new Label("Lives: " + lives );
@@ -98,11 +98,11 @@ public class MapPane
                             cell.getChildren().add(castleImage);
                             event.setDropCompleted(true);
 
-                            Tower newTower = new SingleShotTower(cost, 50, 50);
+                            Tower newTower = new SingleShotTower(cost, 300, 50);
                             int columnIndex = GridPane.getColumnIndex(cell);
                             int rowIndex = GridPane.getRowIndex(cell);
                             newTower.setPosition(columnIndex * 40 + 20, rowIndex * 40 + 20);
-                            Map.activeTowers.add(newTower); // haritadaki kulelere ekliyoruz.
+                            Map.activeTowers.add(newTower);
                             newTower.shoot();
                             System.out.println(Map.activeTowers.size());
                         }

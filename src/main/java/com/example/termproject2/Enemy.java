@@ -1,10 +1,17 @@
 package com.example.termproject2;
 
 import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -23,6 +30,8 @@ public abstract class Enemy
     private double _speed;
     private double _positionX;
     private double _positionY;
+    private boolean _isExploding = false;
+    double tileSize = 40;
     private ImageView _image = new ImageView(new Image("warrior.jpg"));
 
     Enemy(Pane pane, int initialHealth, double initialSpeed)
@@ -44,44 +53,42 @@ public abstract class Enemy
         _image.setFitWidth(20);
     }
 
+    PathTransition pt;
+    SequentialTransition st;
+
+
+    Circle circle = new Circle(10,Color.RED);
+
     public void walk(int level) throws Exception {
 
-        TextDecoder textDecoder = new TextDecoder(new File("level"+ level + ".txt"));
-        ArrayList<Cell> grayCells =textDecoder.getGrayCells();//Coordinates yerine buradaki arraylist kullanılabilir
-
-        int[][] coordinates1 = {{2, 0}, {2, 1}, {2, 2}, {2, 3}, {3, 3}, {4, 3}, {5, 3}, {5, 4}, {5, 5}, {5, 6}, {5, 7}, {5, 8}, {5, 9}};
-        int[][] coordinates2 = {{0, 2}, {1, 2}, {2, 2}, {3, 2}, {3, 3}, {3, 4}, {3, 5}, {2, 5}, {1, 5}, {1, 6}, {1, 7}, {2, 7}, {3, 7}, {4, 7}, {5, 7}, {6, 7}, {7, 7}, {7, 8}, {7, 9}};
-        int[][] coordinates3 = {{5, 0}, {5, 1}, {5, 2}, {4, 2}, {3, 2}, {3, 3}, {3, 4}, {4, 4}, {5, 4}, {6, 4}, {7, 4}, {7, 5}, {7, 6}, {7, 7}, {6, 7}, {5, 7}, {4, 7}, {4, 8}, {4, 9}};
-        int[][] coordinates4 = {{2, 0}, {2, 1}, {2, 2}, {2, 3}, {3, 3}, {4, 3}, {5, 3}, {6, 3}, {7, 3}, {8, 3}, {8, 4}, {8, 5}, {8, 6}, {7, 6}, {6, 6}, {5, 6}, {4, 6}, {4, 7}, {4, 8}, {4, 9}, {5, 9}, {6, 9}, {7, 9}, {8, 9}, {9, 9}, {10, 9}, {10, 8}, {10, 7}, {10, 6}, {11, 6}, {12, 6}, {12, 7}, {12, 8}, {12, 9}, {12, 10}, {12, 11}, {12, 12}, {11, 12}, {10, 12}, {9, 12}, {8, 12}, {8, 13}, {8, 14}};
-        int[][] coordinates5 = {{0, 3}, {1, 3}, {2, 3}, {3, 3}, {3, 2}, {3, 1}, {4, 1}, {5, 1}, {6, 1}, {6, 2}, {6, 3}, {6, 4}, {6, 5}, {6, 6}, {7, 6}, {8, 6}, {8, 5}, {8, 4}, {9, 4}, {10, 4}, {10, 5}, {10, 6}, {10, 7}, {10, 8}, {10, 9}, {9, 9}, {8, 9}, {7, 9}, {6, 9}, {5, 9}, {4, 9}, {3, 9}, {3, 10}, {3, 11}, {3, 12}, {4, 12}, {5, 12}, {6, 12}, {7, 12}, {8, 12}, {9, 12}, {10, 12}, {11, 12}, {12, 12}, {12, 13}, {12, 14}};
+        TextDecoder textDecoder = new TextDecoder(new File("level" + level + ".txt"));
+        ArrayList<Cell> coordinates = textDecoder.getGrayCells();
 
         Path path;
-
         double durationPerTile = _speed;//0.2
-        double tileSize = 40;
-        Circle circle = new Circle(10, Color.RED);
 
         if (level == 1) {
             //Initializing circle coordinates
-            //Buralarda kullandığın coordiantes yerine grayCells listesinin x'i veya y'sini yaz ***********
-            circle.setCenterX(coordinates1[0][1] *tileSize + tileSize/2 - 10);
-            circle.setCenterY(coordinates1[0][0]* tileSize + tileSize/2);
+            circle.setCenterX(coordinates.get(0).x*tileSize + tileSize/2 - 90);
+            circle.setCenterY(coordinates.get(0).y* tileSize + tileSize/2);
             _pane.getChildren().add(circle);
 
             path = new Path();
             //Initial path coordinates
-            path.getElements().add(new MoveTo(coordinates1[0][1] *tileSize + tileSize/2.0, coordinates1[0][0]*tileSize + tileSize/2.0 + 80));
+            path.getElements().add(new MoveTo(coordinates.get(0).y *tileSize + tileSize/2.0, coordinates.get(0).x*tileSize + tileSize/2.0));
 
+            pt = new PathTransition();
             //Using this for multiple animations
-            SequentialTransition st = new SequentialTransition();
-            for (int i = 0; i < coordinates1.length; i++) {
+            st = new SequentialTransition();
+            for (int i = 0; i < coordinates.size(); i++) {
                 //Drawing the line that following indicated coordinates
-                path.getElements().add(new LineTo(coordinates1[i][1] * tileSize + tileSize/2.0, coordinates1[i][0] * tileSize + tileSize/2.0+80 ));
+                path.getElements().add(new LineTo(coordinates.get(i).y * tileSize + tileSize/2.0, coordinates.get(i).x * tileSize + tileSize/2.0));
             }
 
-            double totalDuration = coordinates1.length * durationPerTile;
+
+            double totalDuration = coordinates.size() * durationPerTile;
             PauseTransition pauseTransition = new PauseTransition(Duration.seconds(1.5)); //Delay
-            PathTransition pt = new PathTransition();
+
 
             pt.setPath(path);
             pt.setNode(circle);
@@ -95,25 +102,26 @@ public abstract class Enemy
         }
         else if (level == 2) {
             //Initializing circle coordinates
-            circle.setCenterX(coordinates2[0][1] * tileSize + tileSize/2 -90);
-            circle.setCenterY(coordinates2[0][0]* tileSize + tileSize/2 + 80);
+            circle.setCenterX(coordinates.get(0).x * tileSize + tileSize/2 - 10);
+            circle.setCenterY(coordinates.get(0).y* tileSize + tileSize/2 - 80);
             _pane.getChildren().add(circle);
 
             path = new Path();
             //Initial path coordinates
-            path.getElements().add(new MoveTo(coordinates2[0][1] *tileSize + tileSize/2.0, coordinates2[0][0]*tileSize + tileSize/2.0 + 80));
+            path.getElements().add(new MoveTo(coordinates.get(0).y *tileSize + tileSize/2.0, coordinates.get(0).x*tileSize + tileSize/2.0));
 
+            pt = new PathTransition();
             //Using this for multiple animations
-            SequentialTransition st = new SequentialTransition();
-            for (int i = 0; i < coordinates2.length; i++) {
+            st = new SequentialTransition();
+            for (int i = 0; i < coordinates.size(); i++) {
                 //Drawing the line that following indicated coordinates
-                path.getElements().add(new LineTo(coordinates2[i][1] * tileSize + tileSize/2.0, coordinates2[i][0] * tileSize + tileSize/2.0+80 ));
+                path.getElements().add(new LineTo(coordinates.get(i).y * tileSize + tileSize/2.0, coordinates.get(i).x * tileSize + tileSize/2.0));
             }
 
 
-            double totalDuration = coordinates2.length * durationPerTile;
+            double totalDuration = coordinates.size() * durationPerTile;
             PauseTransition pauseTransition = new PauseTransition(Duration.seconds(1.5)); //Delay
-            PathTransition pt = new PathTransition();
+
 
             pt.setPath(path);
             pt.setNode(circle);
@@ -127,25 +135,26 @@ public abstract class Enemy
         }
         else if (level == 3) {
             //Initializing circle coordinates
-            circle.setCenterX(coordinates3[0][1]* tileSize + tileSize/2 + 120);
-            circle.setCenterY(coordinates3[0][0]*tileSize + tileSize/2 - 200);
+            circle.setCenterX(coordinates.get(0).x* tileSize + tileSize/2 - 210);
+            circle.setCenterY(coordinates.get(0).y*tileSize + tileSize/2 );
             _pane.getChildren().add(circle);
 
             path = new Path();
             //Initial path coordinates
-            path.getElements().add(new MoveTo(coordinates3[0][1] *tileSize + tileSize/2.0 + 130, coordinates3[0][0]*tileSize + tileSize/2.0));
+            path.getElements().add(new MoveTo(coordinates.get(0).y *tileSize + tileSize/2.0, coordinates.get(0).x*tileSize + tileSize/2.0));
 
+            pt = new PathTransition();
             //Using this for multiple animations
-            SequentialTransition st = new SequentialTransition();
-            for (int i = 0; i < coordinates3.length; i++) {
+            st = new SequentialTransition();
+            for (int i = 0; i < coordinates.size(); i++) {
                 //Drawing the line that following indicated coordinates
-                path.getElements().add(new LineTo(coordinates3[i][1] * tileSize + tileSize/2.0 + 130, coordinates3[i][0] * tileSize + tileSize/2.0));
+                path.getElements().add(new LineTo(coordinates.get(i).y * tileSize + tileSize/2.0, coordinates.get(i).x * tileSize + tileSize/2.0));
             }
 
 
-            double totalDuration = coordinates3.length * durationPerTile;
+            double totalDuration = coordinates.size() * durationPerTile;
             PauseTransition pauseTransition = new PauseTransition(Duration.seconds(1.5)); //Delay
-            PathTransition pt = new PathTransition();
+
 
             pt.setPath(path);
             pt.setNode(circle);
@@ -156,28 +165,31 @@ public abstract class Enemy
             st.getChildren().addAll(pauseTransition, pt);
             st.setCycleCount(1);
             st.play();
+
+
         }
         else if (level == 4) {
             //Initializing circle coordinates
-            circle.setCenterX(coordinates4[0][1]* tileSize + tileSize/2 + 120);
-            circle.setCenterY(coordinates4[0][0]*tileSize + tileSize/2 - 80);
+            circle.setCenterX(coordinates.get(0).x* tileSize + tileSize/2 - 90);
+            circle.setCenterY(coordinates.get(0).y*tileSize + tileSize/2);
             _pane.getChildren().add(circle);
 
             path = new Path();
             //Initializing path coordinates
-            path.getElements().add(new MoveTo(coordinates4[0][1] *tileSize + tileSize/2.0 + 130, coordinates4[0][0]*tileSize + tileSize/2.0));
+            path.getElements().add(new MoveTo(coordinates.get(0).y *tileSize + tileSize/2.0, coordinates.get(0).x*tileSize + tileSize/2.0));
 
+            pt = new PathTransition();
             //Using this for multiple animations
-            SequentialTransition st = new SequentialTransition();
-            for (int i = 0; i < coordinates4.length; i++) {
+            st = new SequentialTransition();
+            for (int i = 0; i < coordinates.size(); i++) {
                 //Drawing the line that following indicated coordinates
-                path.getElements().add(new LineTo(coordinates4[i][1] * tileSize + tileSize/2.0 + 130, coordinates4[i][0] * tileSize + tileSize/2.0));
+                path.getElements().add(new LineTo(coordinates.get(i).y * tileSize + tileSize/2.0, coordinates.get(i).x * tileSize + tileSize/2.0));
             }
 
 
-            double totalDuration = coordinates4.length * durationPerTile;
+            double totalDuration = coordinates.size() * durationPerTile;
             PauseTransition pauseTransition = new PauseTransition(Duration.seconds(1.5)); //Delay
-            PathTransition pt = new PathTransition();
+
 
             pt.setPath(path);
             pt.setNode(circle);
@@ -188,28 +200,33 @@ public abstract class Enemy
             st.getChildren().addAll(pauseTransition, pt);
             st.setCycleCount(1);
             st.play();
+
+
         }
         else if (level == 5) {
 
             //Initializing circle coordinates
-            circle.setCenterX(coordinates5[0][1]* tileSize + tileSize/2);
-            circle.setCenterY(coordinates5[0][0]*tileSize + tileSize/2);
+            circle.setCenterX(coordinates.get(0).x* tileSize + tileSize/2 - 10);
+            circle.setCenterY(coordinates.get(0).y*tileSize + tileSize/2 - 120);
+
             _pane.getChildren().add(circle);
 
             path = new Path();
             //Initial path coordinates
-                path.getElements().add(new MoveTo(coordinates5[0][1] *tileSize + tileSize/2.0 + 130, coordinates5[0][0]*tileSize + tileSize/2.0));
+            path.getElements().add(new MoveTo(coordinates.get(0).y *tileSize + tileSize/2.0, coordinates.get(0).x*tileSize + tileSize/2.0));
 
+            pt = new PathTransition();
             //Using this for multiple animations
-            SequentialTransition st = new SequentialTransition();
-            for (int i = 0; i < coordinates5.length; i++) {
+            st = new SequentialTransition();
+            for (int i = 0; i < coordinates.size(); i++) {
                 //Drawing the line that following indicated coordinates
-                path.getElements().add(new LineTo(coordinates5[i][1] * tileSize + tileSize/2.0 + 130, coordinates5[i][0] * tileSize + tileSize/2.0));
+                path.getElements().add(new LineTo(coordinates.get(i).y * tileSize + tileSize/2.0, coordinates.get(i).x * tileSize + tileSize/2.0));
+
             }
 
-            double totalDuration = coordinates5.length * durationPerTile;
+            double totalDuration = coordinates.size() * durationPerTile;
             PauseTransition pauseTransition = new PauseTransition(Duration.seconds(1.5)); //Delay
-            PathTransition pt = new PathTransition();
+
 
             pt.setPath(path);
             pt.setNode(circle);
@@ -219,6 +236,8 @@ public abstract class Enemy
 
             st.getChildren().addAll(pauseTransition, pt);
             st.setCycleCount(1);
+            st.play();
+
             AnimationTimer timer = new AnimationTimer() {
                 @Override
                 public void handle(long now) {
@@ -226,8 +245,6 @@ public abstract class Enemy
                 }
             };
             timer.start();
-
-            st.play();
         }
         else {
             throw new Exception("Invalid level number.");
@@ -235,72 +252,80 @@ public abstract class Enemy
     }
 
     public void explode() {
-        // Shockwave
-        Circle shockwave = new Circle(_positionX, _positionY, 1);
+        // 1. Patlama noktasını al (tüm transform'ları hesaba katar)
+        double explodeX = circle.getTranslateX() + circle.getCenterX();
+        double explodeY = circle.getTranslateY() + circle.getCenterY();
+
+        // 2. Shockwave
+        Circle shockwave = new Circle(0, 0, 1);
+        shockwave.setTranslateX(explodeX);
+        shockwave.setTranslateY(explodeY);
         shockwave.setFill(Color.DARKORANGE);
         shockwave.setStroke(Color.DARKORANGE);
         shockwave.setStrokeWidth(1);
 
-        // Particles
+        // 3. Partiküller
         int particleCount = 20;
         Circle[] particles = new Circle[particleCount];
         for (int i = 0; i < particleCount; i++) {
-            particles[i] = new Circle(2.25, randomColor());
-            particles[i].setCenterX(_positionX);
-            particles[i].setCenterY(_positionY);
-            particles[i].setOpacity(0);
+            Circle p = new Circle(0, 0, 2.25, randomColor());
+            p.setTranslateX(explodeX);
+            p.setTranslateY(explodeY);
+            p.setOpacity(0);
+            particles[i] = p;
         }
-        _pane.getChildren().addAll(shockwave);
+
+        // 4. Shockwave Animasyonu
+        ScaleTransition shockScale = new ScaleTransition(Duration.millis(100), shockwave);
+        shockScale.setFromX(1); shockScale.setFromY(1);
+        shockScale.setToX(30); shockScale.setToY(30);
+
+        FadeTransition shockFade = new FadeTransition(Duration.millis(150), shockwave);
+        shockFade.setFromValue(0.8); shockFade.setToValue(0);
+
+        ParallelTransition shockAnim = new ParallelTransition(shockScale, shockFade);
+
+        // 5. Partikül Animasyonları
+        ParallelTransition particlesAnim = new ParallelTransition();
+        for (Circle p : particles) {
+            FadeTransition in = new FadeTransition(Duration.millis(10), p);
+            in.setFromValue(0); in.setToValue(1);
+
+            TranslateTransition move = new TranslateTransition(Duration.millis(500), p);
+            move.setByX(Math.random() * 120 - 60);
+            move.setByY(Math.random() * 120 - 60);
+
+            FadeTransition out = new FadeTransition(Duration.millis(50), p);
+            out.setFromValue(1); out.setToValue(0);
+            out.setDelay(Duration.millis(30));
+
+            SequentialTransition seq = new SequentialTransition(in, move, out);
+            particlesAnim.getChildren().add(seq);
+        }
+
+        // 6. Circle'ın Kendi Patlama Animasyonu
+        ScaleTransition circleScale = new ScaleTransition(Duration.millis(200), circle);
+        circleScale.setFromX(1); circleScale.setFromY(1);
+        circleScale.setToX(5); circleScale.setToY(5);
+
+        FadeTransition circleFade = new FadeTransition(Duration.millis(200), circle);
+        circleFade.setFromValue(1); circleFade.setToValue(0);
+
+        // 7. Tümünü Birleştir
+        ParallelTransition all = new ParallelTransition(shockAnim, particlesAnim, circleScale, circleFade);
+
+        // 8. Sahneye ekle ve bitince temizle
+        _pane.getChildren().add(shockwave);
         _pane.getChildren().addAll(particles);
 
-        // Shockwave animation
-        ScaleTransition shockwaveScale = new ScaleTransition(Duration.millis(100), shockwave);
-        shockwaveScale.setFromX(1);
-        shockwaveScale.setFromY(1);
-        shockwaveScale.setToX(30);
-        shockwaveScale.setToY(30);
-
-        FadeTransition shockwaveFade = new FadeTransition(Duration.millis(150), shockwave);
-        shockwaveFade.setFromValue(0.8);
-        shockwaveFade.setToValue(0);
-
-        ParallelTransition shockwaveAnim = new ParallelTransition(shockwaveScale, shockwaveFade);
-
-        // Particle animations
-        ParallelTransition particleAnim = new ParallelTransition();
-        for (int i = 0; i < particleCount; i++) {
-            Circle p1 = particles[i];
-
-            FadeTransition ft = new FadeTransition(Duration.millis(10), p1);
-            ft.setFromValue(0);
-            ft.setToValue(1);
-
-            TranslateTransition tt = new TranslateTransition(Duration.millis(500), p1);
-            tt.setByX(Math.random() * 120 - 60);
-            tt.setByY(Math.random() * 120 - 60);
-
-            FadeTransition fadeOut = new FadeTransition(Duration.millis(50), p1);
-            fadeOut.setFromValue(1);
-            fadeOut.setToValue(0);
-            fadeOut.setDelay(Duration.millis(30));
-
-            SequentialTransition st = new SequentialTransition(ft, tt, fadeOut);
-            particleAnim.getChildren().add(st);
-        }
-
-        // Combining all animations
-        SequentialTransition explosion = new SequentialTransition(new ParallelTransition(shockwaveAnim), particleAnim);
-
-        explosion.setOnFinished(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent arg0) {
-                _pane.getChildren().removeAll(shockwave);
-                _pane.getChildren().removeAll(particles);
-
-            }
+        all.setOnFinished(e -> {
+            _pane.getChildren().remove(shockwave);
+            _pane.getChildren().removeAll(particles);
+            _pane.getChildren().remove(circle);
+            Map.activeEnemies.remove(this);
         });
-        explosion.play();
+
+        all.play();
     }
 
     public Color randomColor() {
@@ -340,4 +365,16 @@ public abstract class Enemy
         this._positionX = x;
         this._positionY = y;
     }
+    public boolean isExploding(){
+        return _isExploding;
+    }
+    public void setExploding(boolean exploding){
+        this._isExploding = exploding;
+    }
+    public void stopMovement(){
+        if(st != null){
+            st.stop();
+        }
+    }
+
 }
