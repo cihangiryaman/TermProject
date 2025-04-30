@@ -1,6 +1,8 @@
 package com.example.termproject2;
 
 import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
@@ -14,8 +16,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 import java.io.File;
@@ -32,6 +36,8 @@ public class MapPane
     Label livesLabel;
     Label waveLabel;
     TextDecoder textDecoder;
+    Label waveCountdownLabel;
+    int waveCountdownTime = 30;
 
     MapPane(File levelFile)
     {
@@ -43,6 +49,21 @@ public class MapPane
         livesLabel = new Label("Lives: " + lives );
         waveLabel = new Label("Next wave: " + textDecoder.waveDelays[0] + "s");
         /*Since we don't have an actual method that sets how many seconds have left to the other wave this value is static.*/
+        waveCountdownLabel = new Label("Next wave in: " + waveCountdownTime + "s");
+        waveCountdownLabel.setFont(Font.font("Arial", 18));
+        waveCountdownLabel.setTextFill(Paint.valueOf("red"));
+
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+            if (waveCountdownTime > 0) {
+                waveCountdownTime--;
+                waveCountdownLabel.setText("Next wave in: " + waveCountdownTime + "s");
+            } else {
+                waveCountdownLabel.setText("Wave started!");
+                // Yeni dalgayı başlatma kodunu buraya entegre edebilirsiniz.
+            }
+        }));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
     }
 
     public GridPane getPane()
@@ -272,7 +293,7 @@ public class MapPane
         StackPane castle3 = returnCastle("Triple Shot Tower", 150, "Castle2.png", Color.WHEAT, 100);
         StackPane castle4 = returnCastle("Missile Launcher Tower", 200, "Castle3.png",Color.WHEAT, 125);
 
-        VBox rightPane = new VBox(livesLabel, moneyLabel, waveLabel, castle1, castle2, castle3, castle4);
+        VBox rightPane = new VBox(livesLabel, moneyLabel, waveCountdownLabel, castle1, castle2, castle3, castle4);
         rightPane.setAlignment(Pos.CENTER);
         rightPane.setSpacing(5);
 

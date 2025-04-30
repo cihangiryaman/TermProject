@@ -60,7 +60,11 @@ public class MainMenu extends Application
         bt1.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent arg0) {
-                System.out.println("Game Started");
+                try {
+                    new Map().start(stage);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -85,6 +89,7 @@ public class MainMenu extends Application
         scene1 = new Scene(vb, 800, 600);
         stage.setTitle("Game Menu");
         stage.setFullScreen(true);
+        stage.setFullScreenExitHint("");
         stage.setScene(scene1);
         stage.show();
 

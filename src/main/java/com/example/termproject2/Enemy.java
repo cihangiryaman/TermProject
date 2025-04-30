@@ -65,7 +65,7 @@ public abstract class Enemy
         ArrayList<Cell> coordinates = textDecoder.getGrayCells();
 
         Path path;
-        double durationPerTile = _speed;//0.2
+        double durationPerTile = 1/_speed;
 
         if (level == 1) {
             //Initializing circle coordinates
@@ -376,5 +376,7 @@ public abstract class Enemy
             st.stop();
         }
     }
-
+    public Circle getCircle() {
+        return circle;
+    }
 }
