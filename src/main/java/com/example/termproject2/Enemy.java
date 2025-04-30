@@ -14,6 +14,7 @@ import javafx.scene.shape.Path;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public abstract class Enemy
 {
@@ -44,6 +45,10 @@ public abstract class Enemy
     }
 
     public void walk(int level) throws Exception {
+
+        TextDecoder textDecoder = new TextDecoder(new File("level"+ level + ".txt"));
+        ArrayList<Cell> grayCells =textDecoder.getGrayCells();//Coordinates yerine buradaki arraylist kullanılabilir
+
         int[][] coordinates1 = {{2, 0}, {2, 1}, {2, 2}, {2, 3}, {3, 3}, {4, 3}, {5, 3}, {5, 4}, {5, 5}, {5, 6}, {5, 7}, {5, 8}, {5, 9}};
         int[][] coordinates2 = {{0, 2}, {1, 2}, {2, 2}, {3, 2}, {3, 3}, {3, 4}, {3, 5}, {2, 5}, {1, 5}, {1, 6}, {1, 7}, {2, 7}, {3, 7}, {4, 7}, {5, 7}, {6, 7}, {7, 7}, {7, 8}, {7, 9}};
         int[][] coordinates3 = {{5, 0}, {5, 1}, {5, 2}, {4, 2}, {3, 2}, {3, 3}, {3, 4}, {4, 4}, {5, 4}, {6, 4}, {7, 4}, {7, 5}, {7, 6}, {7, 7}, {6, 7}, {5, 7}, {4, 7}, {4, 8}, {4, 9}};
