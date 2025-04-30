@@ -382,7 +382,5 @@ public abstract class Enemy
             st.stop();
         }
     }
-    public Circle getCircle() {
-        return circle;
-    }
+    
 }
