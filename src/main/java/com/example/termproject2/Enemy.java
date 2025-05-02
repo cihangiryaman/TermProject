@@ -56,7 +56,6 @@ public abstract class Enemy
     PathTransition pt;
     SequentialTransition st;
 
-
     Circle circle = new Circle(10,Color.RED);
 
     public void walk(int level) throws Exception {
@@ -68,187 +67,66 @@ public abstract class Enemy
         double durationPerTile = 1/_speed;
 
         if (level == 1) {
-            //Initializing circle coordinates
             circle.setCenterX(coordinates.get(0).x*tileSize + tileSize/2 - 90);
             circle.setCenterY(coordinates.get(0).y* tileSize + tileSize/2);
-            _pane.getChildren().add(circle);
-
-            path = new Path();
-            //Initial path coordinates
-            path.getElements().add(new MoveTo(coordinates.get(0).y *tileSize + tileSize/2.0, coordinates.get(0).x*tileSize + tileSize/2.0));
-
-            pt = new PathTransition();
-            //Using this for multiple animations
-            st = new SequentialTransition();
-            for (int i = 0; i < coordinates.size(); i++) {
-                //Drawing the line that following indicated coordinates
-                path.getElements().add(new LineTo(coordinates.get(i).y * tileSize + tileSize/2.0, coordinates.get(i).x * tileSize + tileSize/2.0));
-            }
-
-
-            double totalDuration = coordinates.size() * durationPerTile;
-            PauseTransition pauseTransition = new PauseTransition(Duration.seconds(1.5)); //Delay
-
-
-            pt.setPath(path);
-            pt.setNode(circle);
-            pt.jumpTo(Duration.ZERO);
-            pt.setDuration(javafx.util.Duration.seconds(totalDuration));
-            pt.setInterpolator(Interpolator.LINEAR);
-
-            st.getChildren().addAll(pauseTransition, pt);
-            st.setCycleCount(1);
-            st.play();
         }
         else if (level == 2) {
-            //Initializing circle coordinates
             circle.setCenterX(coordinates.get(0).x * tileSize + tileSize/2 - 10);
             circle.setCenterY(coordinates.get(0).y* tileSize + tileSize/2 - 80);
-            _pane.getChildren().add(circle);
-
-            path = new Path();
-            //Initial path coordinates
-            path.getElements().add(new MoveTo(coordinates.get(0).y *tileSize + tileSize/2.0, coordinates.get(0).x*tileSize + tileSize/2.0));
-
-            pt = new PathTransition();
-            //Using this for multiple animations
-            st = new SequentialTransition();
-            for (int i = 0; i < coordinates.size(); i++) {
-                //Drawing the line that following indicated coordinates
-                path.getElements().add(new LineTo(coordinates.get(i).y * tileSize + tileSize/2.0, coordinates.get(i).x * tileSize + tileSize/2.0));
-            }
-
-
-            double totalDuration = coordinates.size() * durationPerTile;
-            PauseTransition pauseTransition = new PauseTransition(Duration.seconds(1.5)); //Delay
-
-
-            pt.setPath(path);
-            pt.setNode(circle);
-            pt.jumpTo(Duration.ZERO);
-            pt.setDuration(javafx.util.Duration.seconds(totalDuration));
-            pt.setInterpolator(Interpolator.LINEAR);
-
-            st.getChildren().addAll(pauseTransition, pt);
-            st.setCycleCount(1);
-            st.play();
         }
         else if (level == 3) {
-            //Initializing circle coordinates
             circle.setCenterX(coordinates.get(0).x* tileSize + tileSize/2 - 210);
-            circle.setCenterY(coordinates.get(0).y*tileSize + tileSize/2 );
-            _pane.getChildren().add(circle);
-
-            path = new Path();
-            //Initial path coordinates
-            path.getElements().add(new MoveTo(coordinates.get(0).y *tileSize + tileSize/2.0, coordinates.get(0).x*tileSize + tileSize/2.0));
-
-            pt = new PathTransition();
-            //Using this for multiple animations
-            st = new SequentialTransition();
-            for (int i = 0; i < coordinates.size(); i++) {
-                //Drawing the line that following indicated coordinates
-                path.getElements().add(new LineTo(coordinates.get(i).y * tileSize + tileSize/2.0, coordinates.get(i).x * tileSize + tileSize/2.0));
-            }
-
-
-            double totalDuration = coordinates.size() * durationPerTile;
-            PauseTransition pauseTransition = new PauseTransition(Duration.seconds(1.5)); //Delay
-
-
-            pt.setPath(path);
-            pt.setNode(circle);
-            pt.jumpTo(Duration.ZERO);
-            pt.setDuration(javafx.util.Duration.seconds(totalDuration));
-            pt.setInterpolator(Interpolator.LINEAR);
-
-            st.getChildren().addAll(pauseTransition, pt);
-            st.setCycleCount(1);
-            st.play();
-
-
+            circle.setCenterY(coordinates.get(0).y*tileSize + tileSize/2);
         }
         else if (level == 4) {
-            //Initializing circle coordinates
             circle.setCenterX(coordinates.get(0).x* tileSize + tileSize/2 - 90);
             circle.setCenterY(coordinates.get(0).y*tileSize + tileSize/2);
-            _pane.getChildren().add(circle);
-
-            path = new Path();
-            //Initializing path coordinates
-            path.getElements().add(new MoveTo(coordinates.get(0).y *tileSize + tileSize/2.0, coordinates.get(0).x*tileSize + tileSize/2.0));
-
-            pt = new PathTransition();
-            //Using this for multiple animations
-            st = new SequentialTransition();
-            for (int i = 0; i < coordinates.size(); i++) {
-                //Drawing the line that following indicated coordinates
-                path.getElements().add(new LineTo(coordinates.get(i).y * tileSize + tileSize/2.0, coordinates.get(i).x * tileSize + tileSize/2.0));
-            }
-
-
-            double totalDuration = coordinates.size() * durationPerTile;
-            PauseTransition pauseTransition = new PauseTransition(Duration.seconds(1.5)); //Delay
-
-
-            pt.setPath(path);
-            pt.setNode(circle);
-            pt.jumpTo(Duration.ZERO);
-            pt.setDuration(javafx.util.Duration.seconds(totalDuration));
-            pt.setInterpolator(Interpolator.LINEAR);
-
-            st.getChildren().addAll(pauseTransition, pt);
-            st.setCycleCount(1);
-            st.play();
-
-
         }
         else if (level == 5) {
-
-            //Initializing circle coordinates
             circle.setCenterX(coordinates.get(0).x* tileSize + tileSize/2 - 10);
             circle.setCenterY(coordinates.get(0).y*tileSize + tileSize/2 - 120);
-
-            _pane.getChildren().add(circle);
-
-            path = new Path();
-            //Initial path coordinates
-            path.getElements().add(new MoveTo(coordinates.get(0).y *tileSize + tileSize/2.0, coordinates.get(0).x*tileSize + tileSize/2.0));
-
-            pt = new PathTransition();
-            //Using this for multiple animations
-            st = new SequentialTransition();
-            for (int i = 0; i < coordinates.size(); i++) {
-                //Drawing the line that following indicated coordinates
-                path.getElements().add(new LineTo(coordinates.get(i).y * tileSize + tileSize/2.0, coordinates.get(i).x * tileSize + tileSize/2.0));
-
-            }
-
-            double totalDuration = coordinates.size() * durationPerTile;
-            PauseTransition pauseTransition = new PauseTransition(Duration.seconds(1.5)); //Delay
-
-
-            pt.setPath(path);
-            pt.setNode(circle);
-            pt.jumpTo(Duration.ZERO);
-            pt.setDuration(javafx.util.Duration.seconds(totalDuration));
-            pt.setInterpolator(Interpolator.LINEAR);
-
-            st.getChildren().addAll(pauseTransition, pt);
-            st.setCycleCount(1);
-            st.play();
-
-            AnimationTimer timer = new AnimationTimer() {
-                @Override
-                public void handle(long now) {
-                    setPosition(circle.getTranslateX() + circle.getCenterX(), circle.getTranslateY() + circle.getCenterY());
-                }
-            };
-            timer.start();
         }
         else {
             throw new Exception("Invalid level number.");
         }
+
+        _pane.getChildren().add(circle);
+
+        path = new Path();
+        //Initial path coordinates
+        path.getElements().add(new MoveTo(coordinates.get(0).y *tileSize + tileSize/2.0, coordinates.get(0).x*tileSize + tileSize/2.0));
+
+        pt = new PathTransition();
+        //Using this for multiple animations
+        st = new SequentialTransition();
+
+        for (int i = 0; i < coordinates.size(); i++) {
+            //Drawing the line that following indicated coordinates
+            path.getElements().add(new LineTo(coordinates.get(i).y * tileSize + tileSize/2.0, coordinates.get(i).x * tileSize + tileSize/2.0));
+
+        }
+
+        double totalDuration = coordinates.size() * durationPerTile;
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(1.5)); //Delay
+
+
+        pt.setPath(path);
+        pt.setNode(circle);
+        pt.jumpTo(Duration.ZERO);
+        pt.setDuration(javafx.util.Duration.seconds(totalDuration));
+        pt.setInterpolator(Interpolator.LINEAR);
+
+        st.getChildren().addAll(pauseTransition, pt);
+        st.setCycleCount(1);
+        st.play();
+
+        AnimationTimer timer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                setPosition(circle.getTranslateX() + circle.getCenterX(), circle.getTranslateY() + circle.getCenterY());
+            }
+        };
+        timer.start();
     }
 
     public void explode() {
