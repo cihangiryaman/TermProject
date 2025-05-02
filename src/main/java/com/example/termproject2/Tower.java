@@ -46,56 +46,7 @@ public abstract class Tower
         _image.setFitWidth(32);
     }
 
-    public void shoot()
-    {
-        attackFirstEnemyInRange();
-
-        Timeline shootTimer = new Timeline(new KeyFrame(Duration.seconds(_reloadTimeSeconds), e -> {
-            attackFirstEnemyInRange();
-        }));
-        shootTimer.setCycleCount(Animation.INDEFINITE);
-        shootTimer.play();
-    }
-
-    private void attackFirstEnemyInRange() {
-        for (Enemy enemy : Map.activeEnemies)
-        {
-            double dx = enemy.getPositionX() - _positionX;
-            double dy = enemy.getPositionY() - _positionY;
-            double dist2 = dx * dx + dy * dy;
-            if (dist2 <= _range * _range) {
-                enemy.setHealth(-_damage);
-
-                // Mermi animasyonu
-                Circle bullet = new Circle(5, Color.ORANGERED);
-                bullet.setTranslateX(_positionX - 10);
-                bullet.setTranslateY(_positionY - 10);
-
-                Pane enemyPane = (Pane) enemy.getCircle().getParent();
-                if (enemyPane != null) {
-                    enemyPane.getChildren().add(bullet);
-
-                    TranslateTransition transition = new TranslateTransition(Duration.millis(200), bullet);
-                    transition.setToX(enemy.getPositionX());
-                    transition.setToY(enemy.getPositionY());
-
-                    transition.setOnFinished(event1 -> enemyPane.getChildren().remove(bullet));
-                    transition.play();
-                }
-
-                if (enemy.getHealth() <= 0 && !enemy.isExploding()) {
-                    enemy.setExploding(true);
-                    Platform.runLater(() -> {
-                        enemy.stopMovement();
-                        PauseTransition delay = new PauseTransition(Duration.millis(50));
-                        delay.setOnFinished(ev -> enemy.explode());
-                        delay.play();
-                    });
-                }
-                break;
-            }
-        }
-    }
+    public void shoot() { }
 
     public int getPrice()
     {
@@ -143,8 +94,13 @@ public abstract class Tower
         return _image;
     }
 
-    public String get_name()
+    public String getName()
     {
         return _name;
+    }
+
+    public double getReloadTimeSeconds()
+    {
+        return _reloadTimeSeconds;
     }
 }
