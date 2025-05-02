@@ -174,7 +174,7 @@ public class MapPane
         castleImage.setFitHeight(32);
         castleImage.setFitWidth(32);
 
-        Label nameLabel = new Label(tower.get_name());
+        Label nameLabel = new Label(tower.getName());
         Label costLabel = new Label(String.valueOf(tower.getPrice()));
         //Puts labels vertically with 2 bits of spacing
         VBox labelBox = new VBox(nameLabel, costLabel);

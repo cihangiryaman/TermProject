@@ -23,13 +23,10 @@ public class Map extends Application
         GridPane map = pane.getPane();
         map.setAlignment(Pos.CENTER);
 
-        Enemy testEnemy = new Infantry(map,300, 2);
-        activeEnemies.add(testEnemy);
-        testEnemy.walk(5);
-        Enemy testEnemy2 = new Infantry(map,300, 3);
+        Enemy testEnemy2 = new TankEnemy(map,1500, 2);
         activeEnemies.add(testEnemy2);
         testEnemy2.walk(5);
-        Enemy testEnemy3 = new Infantry(map,300, 2.5);
+        Enemy testEnemy3 = new FastEnemy(map,300, 2.5);
         activeEnemies.add(testEnemy3);
         testEnemy3.walk(5);
 
