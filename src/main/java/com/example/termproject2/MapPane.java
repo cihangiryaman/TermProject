@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
@@ -141,7 +142,7 @@ public class MapPane
                                 newTower = new LaserTower(imagePath, cost, 400,400);
                             } else if (towerType.equals("TripleShotTower"))
                             {
-                                newTower = new TripleShotTower(imagePath, cost, 200, 400, 2);
+                                newTower = new TripleShotTower(imagePath, cost, 200, 400);
                             } else if (towerType.equals("MissileLauncherTower")) {
                                 newTower = new MissileLauncherTower(imagePath, cost, 500, 300, 3);
                             } else {

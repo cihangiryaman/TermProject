@@ -2,16 +2,11 @@ package com.example.termproject2;
 
 public class MissileLauncherTower extends Tower
 {
-    MissileLauncherTower(String name, String ImageName, int price, int damage, int range, double reloadTimeSeconds) {
-        super(name, ImageName, price, damage, range, reloadTimeSeconds);
+    MissileLauncherTower(String ImageName, int price, int damage, int range) {
+        super("Missile Launcher Tower", ImageName, price, damage, range, 1);
     }
 
-    @Override
-    public void levelUp() {
-
-    }
-
-    MissileLauncherTower(String name, int price, int damage, int range, double reloadTimeSeconds) {
-        super(name, price, damage, range, reloadTimeSeconds);
+    MissileLauncherTower(int price, int damage, int range) {
+        super("Missile Launcher Tower", price, damage, range, 1);
     }
 }

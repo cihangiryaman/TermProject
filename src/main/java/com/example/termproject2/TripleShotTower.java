@@ -14,73 +14,67 @@ import java.util.List;
 
 public class TripleShotTower extends Tower
 {
-    Pane pane;
-    TripleShotTower(String name, int price, int damage, int range, double reloadTimeSeconds) {
-        super(name, price, damage, range, reloadTimeSeconds);
-        pane = new MapPane(new File("level5.txt")).getPane();
+    TripleShotTower(int price, int damage, int range) {
+        super("Triple Shot Tower", price, damage, range, 0.5);
     }
 
-    TripleShotTower(String name, String ImageName, int price, int damage, int range, double reloadTimeSeconds) {
-        super(name, ImageName, price, damage, range, reloadTimeSeconds);
+    TripleShotTower(String ImageName, int price, int damage, int range) {
+        super("Triple Shot Tower", ImageName, price, damage, range, 0.5);
     }
 
     @Override
     public void shoot()
     {
-        attackClosestEnemiesInRange(3);
-
+        attackEnemiesInRange();
         Timeline shootTimer = new Timeline(new KeyFrame(Duration.seconds(getReloadTimeSeconds()), e -> {
-            attackClosestEnemiesInRange(3);
+            attackEnemiesInRange();
         }));
         shootTimer.setCycleCount(Animation.INDEFINITE);
         shootTimer.play();
     }
 
-    @Override
-    public void levelUp() {
-
-    }
-
-    private void attackClosestEnemiesInRange(int count) {
+    private void attackEnemiesInRange() {
         double centerX = getPositionX() - 5;
         double centerY = getPositionY() - 20;
 
         List<Enemy> enemiesInRange = new ArrayList<>();
-
         for (Enemy enemy : Map.activeEnemies) {
             double dx = enemy.getPositionX() - getPositionX();
             double dy = enemy.getPositionY() - getPositionY();
             double dist2 = dx * dx + dy * dy;
-
             if (dist2 <= getRange() * getRange()) {
                 enemiesInRange.add(enemy);
             }
         }
 
-        enemiesInRange.sort(Comparator.comparingDouble(e ->
-                Math.pow(e.getPositionX() - getPositionX(), 2) +
-                        Math.pow(e.getPositionY() - getPositionY(), 2)));
+        // En yakın 3 düşmanı sırala ve al
+        enemiesInRange.sort((a, b) -> {
+            double distA = Math.pow(a.getPositionX() - getPositionX(), 2) + Math.pow(a.getPositionY() - getPositionY(), 2);
+            double distB = Math.pow(b.getPositionX() - getPositionX(), 2) + Math.pow(b.getPositionY() - getPositionY(), 2);
+            return Double.compare(distA, distB);
+        });
 
-        // Aynı anda 3 mermi gönder
-        List<Enemy> targets = enemiesInRange.subList(0, Math.min(3, enemiesInRange.size()));
-        for (Enemy enemy : targets) {
-            shootBulletAt(enemy, centerX, centerY);
+        int shotsFired = 0;
+        for (Enemy enemy : enemiesInRange) {
+            if (shotsFired >= 3) break;
+            fireBulletAt(enemy, centerX, centerY);
+            shotsFired++;
         }
     }
 
-    private void shootBulletAt(Enemy enemy, double centerX, double centerY) {
+    private void fireBulletAt(Enemy enemy, double startX, double startY) {
         Circle bullet = new Circle(5, Color.ORANGERED);
-        bullet.setTranslateX(centerX);
-        bullet.setTranslateY(centerY - 5);
+        bullet.setTranslateX(startX);
+        bullet.setTranslateY(startY - 5);
 
-        javafx.scene.Parent parent = enemy.getCircle().getParent();
-        if (parent instanceof Pane enemyPane) {
+        Pane enemyPane = (Pane) enemy.getCircle().getParent();
+        if (enemyPane != null) {
             enemyPane.getChildren().add(bullet);
 
             double dx = enemy.getPositionX() - getPositionX();
             double dy = enemy.getPositionY() - getPositionY();
             double distance = Math.sqrt(dx * dx + dy * dy);
-            double bulletSpeed = 300.0;
+            double bulletSpeed = 300.0; // px/s
             double durationMillis = (distance / bulletSpeed) * 1000;
 
             TranslateTransition transition = new TranslateTransition(Duration.millis(durationMillis), bullet);
@@ -88,7 +82,7 @@ public class TripleShotTower extends Tower
             transition.setToY(enemy.getPositionY() - 12);
             transition.setInterpolator(Interpolator.EASE_BOTH);
 
-            transition.setOnFinished(event -> {
+            transition.setOnFinished(event1 -> {
                 enemyPane.getChildren().remove(bullet);
                 enemy.setHealth(-getDamage());
 

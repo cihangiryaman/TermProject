@@ -20,6 +20,7 @@ public abstract class Tower
     private int _positionX;
     private int _positionY;
     private ImageView _image;
+    private String _imagePath;
     private double _reloadTimeSeconds;
 
     Tower(String name,int price, int damage, int range, double reloadTimeSeconds)
@@ -32,6 +33,7 @@ public abstract class Tower
         _image = new ImageView(new Image("Tower.png"));
         _image.setFitHeight(32);
         _image.setFitWidth(32);
+        _imagePath = "Tower.png";
     }
 
     Tower(String name,String ImageName, int price, int damage, int range, double reloadTimeSeconds)
@@ -44,6 +46,7 @@ public abstract class Tower
         _image = new ImageView(new Image(ImageName));
         _image.setFitHeight(32);
         _image.setFitWidth(32);
+        _imagePath = ImageName;
     }
 
     public void shoot() { }
@@ -120,5 +123,18 @@ public abstract class Tower
     public double getReloadTimeSeconds()
     {
         return _reloadTimeSeconds;
+    }
+
+    public void setReloadTimeSeconds(double reloadTimeSeconds)
+    {
+        _reloadTimeSeconds = reloadTimeSeconds;
+    }
+
+    public String get_imagePath() {
+        return _imagePath;
+    }
+
+    public void set_imagePath(String _imagePath) {
+        this._imagePath = _imagePath;
     }
 }
