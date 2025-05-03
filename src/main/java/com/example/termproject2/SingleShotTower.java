@@ -31,6 +31,13 @@ public class SingleShotTower extends Tower
         shootTimer.play();
     }
 
+    @Override
+    public void levelUp() {
+        setprice(100);
+        setimage("Castle1Upgrade.png");
+        set_damage(getDamage() * 2);
+    }
+
     private void attackFirstEnemyInRange()
     {
         for (Enemy enemy : Map.activeEnemies) {

@@ -22,4 +22,8 @@ public class LaserTower extends Tower
     {
 
     }
+
+    public void levelUp() {
+
+    }
 }

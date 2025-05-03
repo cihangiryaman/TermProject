@@ -36,6 +36,11 @@ public class TripleShotTower extends Tower
         shootTimer.play();
     }
 
+    @Override
+    public void levelUp() {
+
+    }
+
     private void attackClosestEnemiesInRange(int count) {
         double centerX = getPositionX() - 5;
         double centerY = getPositionY() - 20;

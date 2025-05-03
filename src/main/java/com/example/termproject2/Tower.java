@@ -48,6 +48,24 @@ public abstract class Tower
 
     public void shoot() { }
 
+    public void setprice(int price)
+    {
+        _price = price;
+    }
+
+    public void set_damage(int damage)
+    {
+        _damage = damage;
+    }
+    public void setimage(String imagePath)
+    {
+        _image = new ImageView(new Image(imagePath));
+    }
+
+    public void levelUp() {
+
+    }
+
     public int getPrice()
     {
         return _price;

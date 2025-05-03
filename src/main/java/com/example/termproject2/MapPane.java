@@ -6,6 +6,7 @@ import javafx.animation.Timeline;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -96,8 +97,19 @@ public class MapPane
                     //This method makes sure that event that take place properly ends and does not put itself into a loop
                     event.consume();
                 });
+                int finalI = i;
                 rectangle.setOnDragDropped(event ->
                 {
+                    int x = cells.get(finalI).x;
+                    int y = cells.get(finalI).y;
+                    Node node = getNodeAt(map, x, y);
+                    if(node instanceof StackPane stackPane)
+                    {
+                        if (stackPane.getChildren().size() > 1)
+                        {
+                            event.consume();
+                        }
+                    }
                     //Get the content of the dragged object
                     Dragboard db = event.getDragboard();
 
@@ -105,8 +117,9 @@ public class MapPane
                     {
                         String data = db.getString();
                         String[] parts = data.split(";");
-                        String imagePath = parts[0];
-                        int cost = Integer.parseInt(parts[1]);
+                        String towerType = parts[0];
+                        String imagePath = parts[1];
+                        int cost = Integer.parseInt(parts[2]);
 
                         if ( money >= cost)
                         {
@@ -117,15 +130,48 @@ public class MapPane
                             castleImage.setFitWidth(32);
                             castleImage.setFitHeight(32);
                             cell.getChildren().add(castleImage);
-                            event.setDropCompleted(true);
 
-                            Tower newTower = new SingleShotTower(cost, 300, 50);
+                            Tower newTower;
+
+                            if (towerType.equals("SingleShotTower"))
+                            {
+                                newTower = new SingleShotTower(imagePath, cost, 300, 150);
+                            } else if (towerType.equals("LaserTower"))
+                            {
+                                newTower = new LaserTower(imagePath, cost, 400,400);
+                            } else if (towerType.equals("TripleShotTower"))
+                            {
+                                newTower = new TripleShotTower(imagePath, cost, 200, 400, 2);
+                            } else if (towerType.equals("MissileLauncherTower")) {
+                                newTower = new MissileLauncherTower(imagePath, cost, 500, 300, 3);
+                            } else {
+                                newTower = null;
+                            }
+
                             int columnIndex = GridPane.getColumnIndex(cell);
                             int rowIndex = GridPane.getRowIndex(cell);
+                            assert newTower != null;
                             newTower.setPosition(columnIndex * 40 + 20, rowIndex * 40 + 20);
                             Map.activeTowers.add(newTower);
                             newTower.shoot();
                             System.out.println(Map.activeTowers.size());
+
+                            castleImage.setOnMouseEntered(event1 ->
+                            {
+                                Button upgradeButton = new Button("Upgrade");
+                                upgradeButton.setStyle("-fx-font-size: 10px;");
+
+                                upgradeButton.setOnAction(event2 ->
+                                {
+                                    newTower.levelUp();
+                                });
+
+                                if (!cell.getChildren().contains(upgradeButton))
+                                {
+                                    cell.getChildren().add(upgradeButton);
+                                }
+                            });
+                            event.setDropCompleted(true);
                         }
                         else
                         {
@@ -160,11 +206,9 @@ public class MapPane
         fade.setDelay(Duration.millis((row + column) * 50));
         fade.play();
     }
-    public StackPane returnCastle(Tower tower, Color color)//Şu anda Tower class'ında image oluşturma sorunu yüzünden diğer metodu kullanın
-    {
-        /*Rectangle will act as a container fo
-        castle image, castle name and castle cost.*/
-        Rectangle background = new Rectangle(180,80);
+
+    public StackPane returnCastle(Tower tower, Color color) {
+        Rectangle background = new Rectangle(180, 80);
         background.setFill(color);
         background.setStroke(Color.BLACK);
         background.setArcHeight(10);
@@ -175,128 +219,72 @@ public class MapPane
         castleImage.setFitWidth(32);
 
         Label nameLabel = new Label(tower.getName());
-        Label costLabel = new Label(String.valueOf(tower.getPrice()));
-        //Puts labels vertically with 2 bits of spacing
+        Label costLabel = new Label("Cost: " + tower.getPrice() + "$");
+
         VBox labelBox = new VBox(nameLabel, costLabel);
         labelBox.setAlignment(Pos.CENTER);
         labelBox.setSpacing(2);
-        //Puts image of the castle and labels of it vertically
+
         VBox contentBox = new VBox(castleImage, labelBox);
         contentBox.setAlignment(Pos.CENTER);
         contentBox.setSpacing(5);
 
         StackPane pane = new StackPane(background, contentBox);
 
-        /*This event is the first event that takes place in the drag and drop event series
-        and will determinate what starts the event and what will be carried with it.*/
-        pane.setOnDragDetected(event ->
-        {
-            /*The drag board carries dragged object's data. By using clip board
-            object we can put these data into the drag board object */
+        pane.setOnDragDetected(event -> {
             Dragboard dragboard = castleImage.startDragAndDrop(TransferMode.COPY);
             ClipboardContent content = new ClipboardContent();
-            /*We have to put this image path data because when we put
-            the object into map we copy the image and out in there*/
-            content.putString(tower.getImage().toString() + ";" + String.valueOf(tower.getPrice()).replace("$",""));
+
+            content.putString(tower.getClass().getSimpleName() + ";" + tower.getImage().getImage().getUrl() + ";" + tower.getPrice());
             dragboard.setContent(content);
 
             Circle range = new Circle(tower.getRange());
-            range.setFill(Color.rgb(255, 0, 0, 0.2));
-            range.setStroke(Color.TRANSPARENT);
+            range.setFill(Color.RED.deriveColor(0, 1, 1, 0.5));
+            range.setStroke(Color.RED);
+            range.setStrokeWidth(3);
 
             ImageView smallView = new ImageView(castleImage.getImage());
             smallView.setFitWidth(32);
             smallView.setFitHeight(32);
 
-            StackPane visual = new StackPane();
-            visual.getChildren().addAll(range,smallView);
-            /*These methods and objects will set the dragging view, by using snapshot
-            object we can set the inside of the view to be transparent*/
+            StackPane visual = new StackPane(range, smallView);
             SnapshotParameters params = new SnapshotParameters();
             params.setFill(Color.TRANSPARENT);
-            Image image = visual.snapshot(params,null);
-            /*This one will make sure the cursor is at the center of the image while carrying it*/
-            dragboard.setDragView(image, image.getWidth()/2, image.getHeight()/2);
+            Image image = visual.snapshot(params, null);
+
+            dragboard.setDragView(image, image.getWidth() / 2, image.getHeight() / 2);
             event.consume();
         });
 
         return pane;
     }
-    public StackPane returnCastle(String name, int cost, String imagePath, Color color,int radius)
-    {
-        /*Rectangle will act as a container for
-        castle image, castle name and castle cost.*/
-        Rectangle background = new Rectangle(180,80);
-        background.setFill(color);
-        background.setStroke(Color.BLACK);
-        background.setArcHeight(10);
-        background.setArcWidth(10);
 
-        ImageView castleImage = new ImageView(new Image(imagePath));
-        castleImage.setFitHeight(32);
-        castleImage.setFitWidth(32);
-
-        Label nameLabel = new Label(name);
-        Label costLabel = new Label(String.valueOf(cost));
-        //Puts labels vertically with 2 bits of spacing
-        VBox labelBox = new VBox(nameLabel, costLabel);
-        labelBox.setAlignment(Pos.CENTER);
-        labelBox.setSpacing(2);
-        //Puts image of the castle and labels of it vertically
-        VBox contentBox = new VBox(castleImage, labelBox);
-        contentBox.setAlignment(Pos.CENTER);
-        contentBox.setSpacing(5);
-
-        StackPane pane = new StackPane(background, contentBox);
-
-        /*This event is the first event that takes place in the drag and drop event series
-        and will determinate what starts the event and what will be carried with it.*/
-        pane.setOnDragDetected(event ->
-        {
-            /*The drag board carries dragged object's data. By using clip board
-            object we can put these data into the drag board object */
-            Dragboard dragboard = castleImage.startDragAndDrop(TransferMode.COPY);
-            ClipboardContent content = new ClipboardContent();
-            /*We have to put this image path data because when we put
-            the object into map we copy the image and out in there*/
-            content.putString(imagePath + ";" + String.valueOf(cost).replace("$",""));
-            dragboard.setContent(content);
-
-            Circle range = new Circle(radius);
-            range.setFill(Color.rgb(255, 0, 0, 0.2));
-            range.setStroke(Color.TRANSPARENT);
-
-            ImageView smallView = new ImageView(castleImage.getImage());
-            smallView.setFitWidth(32);
-            smallView.setFitHeight(32);
-
-            StackPane visual = new StackPane();
-            visual.getChildren().addAll(range,smallView);
-            /*These methods and objects will set the dragging view, by using snapshot
-            object we can set the inside of the view to be transparent*/
-            SnapshotParameters params = new SnapshotParameters();
-            params.setFill(Color.TRANSPARENT);
-            Image image = visual.snapshot(params,null);
-            /*This one will make sure the cursor is at the center of the image while carrying it*/
-            dragboard.setDragView(image, image.getWidth()/2, image.getHeight()/2);
-            event.consume();
-        });
-
-        return pane;
-    }
     //Creates the right pane of the map
-    public VBox returnRightPane()
-    {
-        //StackPane castle1 = returnCastle(new SingleShotTower(50,10,50),Color.WHEAT);
-        StackPane castle1 = returnCastle("Single Shot Tower", 50, "Tower.png",Color.WHEAT, 500);
-        StackPane castle2 = returnCastle("Laser Tower", 120, "Castle.png",Color.WHEAT, 75);
-        StackPane castle3 = returnCastle("Triple Shot Tower", 150, "Castle2.png", Color.WHEAT, 100);
-        StackPane castle4 = returnCastle("Missile Launcher Tower", 200, "Castle3.png",Color.WHEAT, 125);
+    public VBox returnRightPane() {
+        StackPane castle1 = returnCastle(new SingleShotTower("Tower.png", 50, 300, 150), Color.WHEAT);
+        StackPane castle2 = returnCastle(new LaserTower("Castle1.png", 120, 100, 200), Color.WHEAT);
+        StackPane castle3 = returnCastle(new TripleShotTower("Triple Shot Tower","Castle2.png", 150, 75, 180,2), Color.WHEAT);
+        StackPane castle4 = returnCastle(new MissileLauncherTower("Missile Launcher Tower","Castle3.png", 200, 500, 220, 2), Color.WHEAT);
 
         VBox rightPane = new VBox(livesLabel, moneyLabel, waveCountdownLabel, castle1, castle2, castle3, castle4);
         rightPane.setAlignment(Pos.CENTER);
         rightPane.setSpacing(5);
 
         return rightPane;
+    }
+
+    public Node getNodeAt(GridPane gridPane, int col, int row) {
+        for (Node node : gridPane.getChildren()) {
+            Integer column = GridPane.getColumnIndex(node);
+            Integer rowIndex = GridPane.getRowIndex(node);
+
+            if (column == null) column = 0;
+            if (rowIndex == null) rowIndex = 0;
+
+            if (column == col && rowIndex == row) {
+                return node;
+            }
+        }
+        return null;
     }
 }
