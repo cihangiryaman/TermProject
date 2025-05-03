@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Label;
+import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
@@ -119,7 +120,7 @@ public class MapPane
                             cell.getChildren().add(castleImage);
                             event.setDropCompleted(true);
 
-                            Tower newTower = new SingleShotTower(cost, 300, 50);
+                            Tower newTower = new LaserTower(cost, 50, 50);
                             int columnIndex = GridPane.getColumnIndex(cell);
                             int rowIndex = GridPane.getRowIndex(cell);
                             newTower.setPosition(columnIndex * 40 + 20, rowIndex * 40 + 20);
@@ -148,7 +149,6 @@ public class MapPane
         map.setVgap(0);
         return map;
     }
-
     private void playFadeAnimation(Node node, int row, int column)
     {
         /*First sets the node to be invisible then by a duration sets the node to be visible grade by grade. And the setDelay method
@@ -162,7 +162,7 @@ public class MapPane
     }
     public StackPane returnCastle(Tower tower, Color color)//Şu anda Tower class'ında image oluşturma sorunu yüzünden diğer metodu kullanın
     {
-        /*Rectangle will act as a container fo
+        /*Rectangle will act as a container for
         castle image, castle name and castle cost.*/
         Rectangle background = new Rectangle(180,80);
         background.setFill(color);
@@ -197,7 +197,7 @@ public class MapPane
             ClipboardContent content = new ClipboardContent();
             /*We have to put this image path data because when we put
             the object into map we copy the image and out in there*/
-            content.putString(tower.getImage().toString() + ";" + String.valueOf(tower.getPrice()).replace("$",""));
+            content.putString(tower.get_imagePath() + ";" + tower.getPrice());
             dragboard.setContent(content);
 
             Circle range = new Circle(tower.getRange());
@@ -287,11 +287,10 @@ public class MapPane
     //Creates the right pane of the map
     public VBox returnRightPane()
     {
-        //StackPane castle1 = returnCastle(new SingleShotTower(50,10,50),Color.WHEAT);
-        StackPane castle1 = returnCastle("Single Shot Tower", 50, "Tower.png",Color.WHEAT, 500);
-        StackPane castle2 = returnCastle("Laser Tower", 120, "Castle.png",Color.WHEAT, 75);
-        StackPane castle3 = returnCastle("Triple Shot Tower", 150, "Castle2.png", Color.WHEAT, 100);
-        StackPane castle4 = returnCastle("Missile Launcher Tower", 200, "Castle3.png",Color.WHEAT, 125);
+        StackPane castle1 = returnCastle(new SingleShotTower("Tower.png",50,10,50),Color.WHEAT);
+        StackPane castle2 = returnCastle(new LaserTower("Castle.png",120,5,75),Color.WHEAT);
+        StackPane castle3 = returnCastle(new TripleShotTower("Castle2.png",150,10,100),Color.WHEAT);
+        StackPane castle4 = returnCastle(new MissileLauncherTower("Castle3.png",200,50,125),Color.WHEAT);
 
         VBox rightPane = new VBox(livesLabel, moneyLabel, waveCountdownLabel, castle1, castle2, castle3, castle4);
         rightPane.setAlignment(Pos.CENTER);
