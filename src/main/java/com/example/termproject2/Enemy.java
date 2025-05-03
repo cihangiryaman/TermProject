@@ -67,24 +67,24 @@ public abstract class Enemy
         double durationPerTile = 1/_speed;
 
         if (level == 1) {
-            circle.setCenterX(coordinates.get(0).x*tileSize + tileSize/2 - 90);
-            circle.setCenterY(coordinates.get(0).y* tileSize + tileSize/2);
+            circle.setCenterX(coordinates.getFirst().x * tileSize + tileSize/2 - 90);
+            circle.setCenterY(coordinates.getFirst().y * tileSize + tileSize/2);
         }
         else if (level == 2) {
-            circle.setCenterX(coordinates.get(0).x * tileSize + tileSize/2 - 10);
-            circle.setCenterY(coordinates.get(0).y* tileSize + tileSize/2 - 80);
+            circle.setCenterX(coordinates.getFirst().x * tileSize + tileSize/2 - 10);
+            circle.setCenterY(coordinates.getFirst().y * tileSize + tileSize/2 - 80);
         }
         else if (level == 3) {
-            circle.setCenterX(coordinates.get(0).x* tileSize + tileSize/2 - 210);
-            circle.setCenterY(coordinates.get(0).y*tileSize + tileSize/2);
+            circle.setCenterX(coordinates.getFirst().x * tileSize + tileSize/2 - 210);
+            circle.setCenterY(coordinates.getFirst().y * tileSize + tileSize/2);
         }
         else if (level == 4) {
-            circle.setCenterX(coordinates.get(0).x* tileSize + tileSize/2 - 90);
-            circle.setCenterY(coordinates.get(0).y*tileSize + tileSize/2);
+            circle.setCenterX(coordinates.getFirst().x * tileSize + tileSize/2 - 90);
+            circle.setCenterY(coordinates.getFirst().y * tileSize + tileSize/2);
         }
         else if (level == 5) {
-            circle.setCenterX(coordinates.get(0).x* tileSize + tileSize/2 - 10);
-            circle.setCenterY(coordinates.get(0).y*tileSize + tileSize/2 - 120);
+            circle.setCenterX(coordinates.getFirst().x * tileSize + tileSize/2 - 10);
+            circle.setCenterY(coordinates.getFirst().y * tileSize + tileSize/2 - 120);
         }
         else {
             throw new Exception("Invalid level number.");
@@ -94,7 +94,7 @@ public abstract class Enemy
 
         path = new Path();
         //Initial path coordinates
-        path.getElements().add(new MoveTo(coordinates.get(0).y *tileSize + tileSize/2.0, coordinates.get(0).x*tileSize + tileSize/2.0));
+        path.getElements().add(new MoveTo(coordinates.getFirst().y *tileSize + tileSize/2.0, coordinates.getFirst().x*tileSize + tileSize/2.0));
 
         pt = new PathTransition();
         //Using this for multiple animations
@@ -103,7 +103,6 @@ public abstract class Enemy
         for (int i = 0; i < coordinates.size(); i++) {
             //Drawing the line that following indicated coordinates
             path.getElements().add(new LineTo(coordinates.get(i).y * tileSize + tileSize/2.0, coordinates.get(i).x * tileSize + tileSize/2.0));
-
         }
 
         double totalDuration = coordinates.size() * durationPerTile;

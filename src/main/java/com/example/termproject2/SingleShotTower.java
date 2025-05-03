@@ -37,16 +37,15 @@ public class SingleShotTower extends Tower
             double centerX = getPositionX() - 5;
             double centerY = getPositionY() - 20;
 
-            double dx = enemy.getPositionX() - centerX;
-            double dy = enemy.getPositionY() - centerY;
+            double dx = enemy.getPositionX() - getPositionX();
+            double dy = enemy.getPositionY() - getPositionY();
             double dist2 = dx * dx + dy * dy;
             if (dist2 <= getRange() * getRange()) {
 
                 // Mermi animasyonu
                 Circle bullet = new Circle(5, Color.ORANGERED);
-
                 bullet.setTranslateX(centerX);
-                bullet.setTranslateY(centerY);
+                bullet.setTranslateY(centerY - 5);
 
                 Pane enemyPane = (Pane) enemy.getCircle().getParent();
                 if (enemyPane != null) {
@@ -58,7 +57,7 @@ public class SingleShotTower extends Tower
 
                     TranslateTransition transition = new TranslateTransition(Duration.millis(durationMillis), bullet);
                     transition.setToX(enemy.getPositionX());
-                    transition.setToY(enemy.getPositionY());
+                    transition.setToY(enemy.getPositionY() - 12);
                     transition.setInterpolator(Interpolator.EASE_BOTH);
 
                     transition.setOnFinished(event1 -> {

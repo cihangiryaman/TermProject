@@ -26,9 +26,15 @@ public class Map extends Application
         Enemy testEnemy2 = new TankEnemy(map,1500, 2);
         activeEnemies.add(testEnemy2);
         testEnemy2.walk(5);
-        Enemy testEnemy3 = new FastEnemy(map,300, 2.5);
+        /*Enemy testEnemy3 = new FastEnemy(map,300, 3.8);
         activeEnemies.add(testEnemy3);
-        testEnemy3.walk(5);
+        testEnemy3.walk(5);*/
+        Enemy testEnemy4 = new FastEnemy(map,900, 2.5);
+        activeEnemies.add(testEnemy4);
+        testEnemy4.walk(5);
+        Enemy testEnemy5 = new FastEnemy(map,900, 3);
+        activeEnemies.add(testEnemy5);
+        testEnemy5.walk(5);
 
         
         BorderPane mainLayout = new BorderPane();
