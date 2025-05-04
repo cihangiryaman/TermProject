@@ -137,15 +137,21 @@ public class MapPane
                             if (towerType.equals("SingleShotTower"))
                             {
                                 newTower = new SingleShotTower(imagePath, cost, 300, 150);
-                            } else if (towerType.equals("LaserTower"))
+                            }
+                            else if (towerType.equals("LaserTower"))
                             {
                                 newTower = new LaserTower(imagePath, cost, 400,400);
-                            } else if (towerType.equals("TripleShotTower"))
+                            }
+                            else if (towerType.equals("TripleShotTower"))
                             {
                                 newTower = new TripleShotTower(imagePath, cost, 200, 400);
-                            } else if (towerType.equals("MissileLauncherTower")) {
-                                newTower = new MissileLauncherTower(imagePath, cost, 500, 300, 3);
-                            } else {
+                            }
+                            else if (towerType.equals("MissileLauncherTower"))
+                            {
+                                newTower = new MissileLauncherTower(imagePath, cost, 500, 300);
+                            }
+                            else
+                            {
                                 newTower = null;
                             }
 
@@ -262,10 +268,10 @@ public class MapPane
 
     //Creates the right pane of the map
     public VBox returnRightPane() {
-        StackPane castle1 = returnCastle(new SingleShotTower("Tower.png", 50, 300, 150), Color.WHEAT);
-        StackPane castle2 = returnCastle(new LaserTower("Castle1.png", 120, 100, 200), Color.WHEAT);
-        StackPane castle3 = returnCastle(new TripleShotTower("Triple Shot Tower","Castle2.png", 150, 75, 180,2), Color.WHEAT);
-        StackPane castle4 = returnCastle(new MissileLauncherTower("Missile Launcher Tower","Castle3.png", 200, 500, 220, 2), Color.WHEAT);
+        StackPane castle1 = returnCastle(new SingleShotTower("Tower.png", 50, 300, 100), Color.WHEAT);
+        StackPane castle2 = returnCastle(new LaserTower("Castle1Upgrade.png", 120, 100, 180), Color.WHEAT);
+        StackPane castle3 = returnCastle(new TripleShotTower("Castle2.png", 150, 75, 150), Color.WHEAT);
+        StackPane castle4 = returnCastle(new MissileLauncherTower("Castle3.png", 200, 500, 200), Color.WHEAT);
 
         VBox rightPane = new VBox(livesLabel, moneyLabel, waveCountdownLabel, castle1, castle2, castle3, castle4);
         rightPane.setAlignment(Pos.CENTER);

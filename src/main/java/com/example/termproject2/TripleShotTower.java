@@ -63,7 +63,7 @@ public class TripleShotTower extends Tower
     }
 
     private void fireBulletAt(Enemy enemy, double startX, double startY) {
-        Circle bullet = new Circle(5, Color.ORANGERED);
+        Circle bullet = new Circle(3.5, Color.ORANGERED);
         bullet.setTranslateX(startX);
         bullet.setTranslateY(startY - 5);
 
