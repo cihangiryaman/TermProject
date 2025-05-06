@@ -1,11 +1,14 @@
 package com.example.termproject2;
 
+import javafx.animation.PauseTransition;
+import javafx.animation.SequentialTransition;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -23,20 +26,33 @@ public class Map extends Application
         GridPane map = pane.getPane();
         map.setAlignment(Pos.CENTER);
 
-        Enemy testEnemy2 = new TankEnemy(map,1500, 2);
-        activeEnemies.add(testEnemy2);
-        testEnemy2.walk(5);
-        /*Enemy testEnemy3 = new FastEnemy(map,300, 3.8);
-        activeEnemies.add(testEnemy3);
-        testEnemy3.walk(5);*/
-        Enemy testEnemy4 = new FastEnemy(map,900, 2.5);
-        activeEnemies.add(testEnemy4);
-        testEnemy4.walk(5);
-        Enemy testEnemy5 = new FastEnemy(map,900, 3);
-        activeEnemies.add(testEnemy5);
-        testEnemy5.walk(5);
+        int[] waveDelays = pane.textDecoder.waveDelays;
+        int[] enemyCountPerWave = pane.textDecoder.enemyCountPerWave;
+        double[] enemySpawnDelayPerWave = pane.textDecoder.enemySpawnDelayPerWave;
 
-        
+        SequentialTransition sequentialTransition = new SequentialTransition();
+
+        for (int i = 0; i < waveDelays.length; i++) {
+            PauseTransition waveDelay = new PauseTransition(Duration.seconds(waveDelays[i]));
+            sequentialTransition.getChildren().add(waveDelay);
+
+            for (int j = 0; j < enemyCountPerWave[i]; j++) {
+                PauseTransition spawnDelay = new PauseTransition(Duration.seconds(enemySpawnDelayPerWave[i]));
+                spawnDelay.setOnFinished(spawnEvent -> {
+                    Enemy enemy = new FastEnemy(map, 900, 2.5);
+                    activeEnemies.add(enemy);
+                    try {
+                        enemy.walk(5);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+                sequentialTransition.getChildren().add(spawnDelay);
+            }
+        }
+
+        sequentialTransition.play(); // Tüm işlemleri sıralı olarak başlatır
+
         BorderPane mainLayout = new BorderPane();
         mainLayout.setCenter(map);
         mainLayout.setRight(pane.returnRightPane());

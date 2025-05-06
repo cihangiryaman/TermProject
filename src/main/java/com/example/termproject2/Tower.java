@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
@@ -22,6 +23,8 @@ public abstract class Tower
     private ImageView _image;
     private String _imagePath;
     private double _reloadTimeSeconds;
+    private StackPane parentCell;
+    private int level = 1;
 
     Tower(String name,int price, int damage, int range, double reloadTimeSeconds)
     {
@@ -49,7 +52,7 @@ public abstract class Tower
         _imagePath = ImageName;
     }
 
-    public void shoot() { }
+    public void shoot() {}
 
     public void setprice(int price)
     {
@@ -136,5 +139,24 @@ public abstract class Tower
 
     public void set_imagePath(String _imagePath) {
         this._imagePath = _imagePath;
+    }
+
+    public StackPane getParentCell()
+    {
+        return parentCell;
+    }
+
+    public void setParentCell(StackPane cell)
+    {
+        parentCell = cell;
+    }
+
+    public int getLevel()
+    {
+        return level;
+    }
+    public void setLevel(int level)
+    {
+        this.level = level;
     }
 }

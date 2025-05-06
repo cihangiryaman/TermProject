@@ -98,6 +98,17 @@ public class LaserTower extends Tower
     }
 
     public void levelUp() {
+        int level = getLevel();
+        if (level < 3)
+        {
+            level++;
+            setLevel(level);
+            setprice(getPrice() * 2);
+            set_damage(getDamage() * 2);
+        }
+        else
+        {
 
+        }
     }
 }

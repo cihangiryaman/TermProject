@@ -96,8 +96,23 @@ public class TripleShotTower extends Tower
                     });
                 }
             });
-
             transition.play();
+        }
+    }
+
+    @Override
+    public void levelUp() {
+        int level = getLevel();
+        if (level < 3)
+        {
+            level++;
+            setLevel(level);
+            setprice(getPrice() * 2);
+            set_damage(getDamage() * 2);
+        }
+        else
+        {
+
         }
     }
 }

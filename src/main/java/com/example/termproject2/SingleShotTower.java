@@ -2,6 +2,9 @@ package com.example.termproject2;
 
 import javafx.animation.*;
 import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -33,9 +36,18 @@ public class SingleShotTower extends Tower
 
     @Override
     public void levelUp() {
-        setprice(100);
-        setimage("Castle1Upgrade.png");
-        set_damage(getDamage() * 2);
+        int level = getLevel();
+        if (level < 3) {
+            level++;
+            setLevel(level);
+            setprice(getPrice() * 2);
+            set_damage(getDamage() * 2);
+            //This one should have the codes that will change the imageView of the castle according to level
+        }
+        else
+        {
+            //This one should have something to inform player that the castle already at max level
+        }
     }
 
     private void attackFirstEnemyInRange()
@@ -81,10 +93,8 @@ public class SingleShotTower extends Tower
                             });
                         }
                     });
-
                     transition.play();
                 }
-
                 break;
             }
         }
