@@ -7,7 +7,6 @@ import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
@@ -24,9 +23,7 @@ import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import static com.example.termproject2.Map.activeTowers;
 
@@ -90,10 +87,8 @@ public class MapPane
 
             if (cells.get(i).isGray)
             {
-
                 rectangle.setFill(Color.GRAY);
                 cell.getChildren().add(rectangle);
-
             }
             else
             {
@@ -232,10 +227,12 @@ public class MapPane
                                 });
                                 upgradeButton.setOnAction(e -> {
                                     if (tower.getPrice() * 2 < money) {
+                                        int level = tower.getLevel();
                                         money -= tower.getPrice() * 2;
                                         moneyLabel.setText("Money: " + money + "$");
                                         tower.levelUp();
-                                        System.out.println("Tower upgraded!");
+                                        castleImage.setImage(getLevelUpImage(level, tower));
+                                        System.out.println("Tower upgraded");
                                     }
                                 });
                             }
@@ -253,7 +250,6 @@ public class MapPane
             }
             map.add(cell, cells.get(i).y, cells.get(i).x);
             playFadeAnimation(cell, cells.get(i).y, cells.get(i).x);
-
         }
         //Gets rid of the lines between cells
         map.setHgap(0);
@@ -262,29 +258,15 @@ public class MapPane
     }
 
     private static Tower getTower(String towerType, String imagePath, int cost) {
-        Tower newTower;
 
-        if (towerType.equals("SingleShotTower"))
-        {
-            newTower = new SingleShotTower(imagePath, cost, 300, 150);
-        }
-        else if (towerType.equals("LaserTower"))
-        {
-            newTower = new LaserTower(imagePath, cost, 400,400);
-        }
-        else if (towerType.equals("TripleShotTower"))
-        {
-            newTower = new TripleShotTower(imagePath, cost, 200, 400);
-        }
-        else if (towerType.equals("MissileLauncherTower"))
-        {
-            newTower = new MissileLauncherTower(imagePath, cost, 500, 300);
-        }
-        else
-        {
-            newTower = null;
-        }
-        return newTower;
+        return switch (towerType) {
+            case "SingleShotTower" -> new SingleShotTower(imagePath, cost, 300, 150);
+            case "LaserTower" -> new LaserTower(imagePath, cost, 400, 400);
+            case "TripleShotTower" -> new TripleShotTower(imagePath, cost, 200, 400);
+            case "MissileLauncherTower" -> new MissileLauncherTower(imagePath, cost, 500, 300);
+            default -> null;
+
+        };
     }
 
     private void playFadeAnimation(Node node, int row, int column)
@@ -379,4 +361,27 @@ public class MapPane
         }
         return null;
     }
+
+    public Image getLevelUpImage(int level, Tower tower)
+    {
+        if (level == 2)
+        {
+            return switch (tower) {
+                case SingleShotTower singleShotTower -> new Image("SingleShotTowerLevel2.png");
+                case LaserTower laserTower -> new Image("LaserTowerTowerLevel2.png");
+                case TripleShotTower tripleShotTower -> new Image("TripleShotTowerTowerLevel2.png");
+                case null, default -> new Image("MissileLauncherTowerLevel2.png");
+            };
+        }
+        else
+        {
+            return switch (tower) {
+                case SingleShotTower singleShotTower -> new Image("SingleShotTowerLevel3.png");
+                case LaserTower laserTower -> new Image("LaserTowerTowerLevel3.png");
+                case TripleShotTower tripleShotTower -> new Image("TripleShotTowerTowerLevel3.png");
+                case null, default ->new Image("MissileLauncherTowerLevel3.png");
+            };
+        }
+    }
+
 }
