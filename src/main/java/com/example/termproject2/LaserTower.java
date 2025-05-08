@@ -14,11 +14,11 @@ import java.util.List;
 public class LaserTower extends Tower
 {
     LaserTower(int price, int damage, int range) {
-        super("Laser Tower", price, damage, range, 0.1);
+        super("LaserTower1.png", price, damage, range, 0.1);
     }
 
     LaserTower(String ImageName, int price, int damage, int range) {
-        super("Laser Tower", ImageName, price, damage, range, 0.1);
+        super("LaserTower1.png", ImageName, price, damage, range, 0.1);
     }
 
     @Override

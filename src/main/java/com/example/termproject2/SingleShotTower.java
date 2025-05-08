@@ -14,12 +14,12 @@ public class SingleShotTower extends Tower
 {
     SingleShotTower(int price, int damage, int range)
     {
-        super("Single Shot Tower", price, damage, range, 0.5);
+        super("SingleShotTower1.png", price, damage, range, 0.5);
     }
 
     SingleShotTower(String ImageName, int price, int damage, int range)
     {
-        super("Single Shot Tower", ImageName, price, damage, range, 0.5);
+        super("SingleShotTower1.png", ImageName, price, damage, range, 0.5);
     }
 
     @Override

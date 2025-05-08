@@ -15,11 +15,11 @@ import java.util.List;
 public class TripleShotTower extends Tower
 {
     TripleShotTower(int price, int damage, int range) {
-        super("Triple Shot Tower", price, damage, range, 0.5);
+        super("TripleShotTower1.png", price, damage, range, 0.5);
     }
 
     TripleShotTower(String ImageName, int price, int damage, int range) {
-        super("Triple Shot Tower", ImageName, price, damage, range, 0.5);
+        super("TripleShotTower1.png", ImageName, price, damage, range, 0.5);
     }
 
     @Override
