@@ -132,6 +132,17 @@ public abstract class Enemy
             }
         };
         timer.start();
+        st.setOnFinished(event -> {
+            // Düşman hedefe ulaştığında canı azalt
+            Platform.runLater(() -> {
+                _mapPane.lives--;
+                _mapPane.livesLabel.setText("Lives: " + _mapPane.lives);
+            });
+
+            // Düşmanı sahneden kaldır
+            _pane.getChildren().remove(circle);
+            Map.activeEnemies.remove(this);
+        });
     }
 
     public void explode() {
