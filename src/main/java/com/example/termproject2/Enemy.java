@@ -18,6 +18,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.File;
@@ -137,6 +138,11 @@ public abstract class Enemy
             Platform.runLater(() -> {
                 _mapPane.lives--;
                 _mapPane.livesLabel.setText("Lives: " + _mapPane.lives);
+
+                if (_mapPane.lives <= 0) {
+                    GameOverMenu gameOverMenu = new GameOverMenu();
+                    gameOverMenu.show((Stage) _pane.getScene().getWindow());
+                }
             });
 
             // Düşmanı sahneden kaldır

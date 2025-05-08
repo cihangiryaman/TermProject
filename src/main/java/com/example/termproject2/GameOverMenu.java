@@ -47,13 +47,28 @@ public class GameOverMenu extends Application {
         primaryStage.show();
 
     }
+    public void show(Stage stage) {
+        // Game Over text
+        Text text1 = new Text("Game Over!");
+        text1.setFill(Color.WHITE);
+        text1.setFont(Font.font("Courier", FontWeight.BOLD, FontPosture.ITALIC, 30));
 
+        // Back to main menu button
+        bt = new Button("Back to Main Menu");
+        bt.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 15));
+        bt.setStyle("-fx-background-color: #F44336; -fx-text-fill: #FFFFFF; " +
+                "-fx-background-radius: 10; -fx-padding: 20 30 20 30;");
+        bt.setTranslateY(30);
 
+        VBox vb = new VBox(text1, bt);
+        vb.setAlignment(Pos.CENTER);
+        vb.setBackground(new Background(new BackgroundFill(Color.DARKORANGE, CornerRadii.EMPTY, null)));
 
-
-
-
-
+        scene4 = new Scene(vb, 800, 600);
+        stage.setTitle("Game Over");
+        stage.setScene(scene4);
+        stage.show();
+    }
     public static void main(String[] args) {
 
         launch(args);
