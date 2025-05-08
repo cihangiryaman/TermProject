@@ -44,10 +44,6 @@ public class SingleShotTower extends Tower
             set_damage(getDamage() * 2);
             //This one should have the codes that will change the imageView of the castle according to level
         }
-        else
-        {
-            //This one should have something to inform player that the castle already at max level
-        }
     }
 
     private void attackFirstEnemyInRange()
