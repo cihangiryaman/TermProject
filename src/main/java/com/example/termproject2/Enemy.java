@@ -26,6 +26,7 @@ import java.util.ArrayList;
 public abstract class Enemy
 {
     private Pane _pane;
+    private MapPane _mapPane;
     private int _health;
     private double _speed;
     private double _positionX;
@@ -33,17 +34,20 @@ public abstract class Enemy
     private boolean _isExploding = false;
     double tileSize = 40;
     private ImageView _image = new ImageView(new Image("warrior.jpg"));
+    private int _maxHealth;
 
-    Enemy(Pane pane, int initialHealth, double initialSpeed)
+    Enemy(Pane pane, int initialHealth, double initialSpeed, MapPane mapPane)
     {
         _pane = pane;
         _speed = initialSpeed;
         _health = initialHealth;
         _image.setFitHeight(20);
         _image.setFitWidth(20);
+        _mapPane = mapPane;
+        _maxHealth = initialHealth;
     }
 
-    Enemy(Pane pane, String imageName, int initialHealth, double initialSpeed)
+    Enemy(Pane pane, String imageName, int initialHealth, double initialSpeed, MapPane mapPane)
     {
         _pane = pane;
         _speed = initialSpeed;
@@ -51,6 +55,8 @@ public abstract class Enemy
         _image = new ImageView(new Image(imageName));
         _image.setFitHeight(20);
         _image.setFitWidth(20);
+        _mapPane = mapPane;
+        _maxHealth = initialHealth;
     }
 
     PathTransition pt;
@@ -129,6 +135,12 @@ public abstract class Enemy
     }
 
     public void explode() {
+
+        Platform.runLater(() -> {
+            _mapPane.money += _maxHealth / 20;
+            _mapPane.moneyLabel.setText("Money: " + _mapPane.money + "$");
+        });
+
         // 1. Patlama noktasını al (tüm transform'ları hesaba katar)
         double explodeX = circle.getTranslateX() + circle.getCenterX();
         double explodeY = circle.getTranslateY() + circle.getCenterY();
@@ -255,5 +267,11 @@ public abstract class Enemy
     }
     public Circle getCircle() {
         return circle;
+    }
+    public MapPane getMapPane() {
+        return _mapPane;
+    }
+    public void setMapPane(MapPane mapPane) {
+        _mapPane = mapPane;
     }
 }

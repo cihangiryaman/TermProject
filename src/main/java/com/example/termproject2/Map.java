@@ -28,7 +28,6 @@ public class Map extends Application
         map.setAlignment(Pos.CENTER);
 
         double fastEnemyRatio = 0.75;
-        double tankEnemyRatio = 0.25;
 
         int[] waveDelays = pane.textDecoder.waveDelays;
         int[] enemyCountPerWave = pane.textDecoder.enemyCountPerWave;
@@ -51,9 +50,9 @@ public class Map extends Application
                     PauseTransition spawnDelay = new PauseTransition(Duration.seconds(enemySpawnDelayPerWave[i]));
                     spawnDelay.setOnFinished(spawnEvent -> {
                         Enemy enemy = switch (enemyType) {
-                            case "Fast" -> new FastEnemy(map, 900, 2.5);
-                            case "Tank" -> new TankEnemy(map, 1800, 1.2);
-                            default -> new FastEnemy(map, 900, 2.5);
+                            case "Fast" -> new FastEnemy(map, 900, 2.5, pane);
+                            case "Tank" -> new TankEnemy(map, 1800, 1.2, pane);
+                            default -> new FastEnemy(map, 900, 2.5, pane);
                         };
                         activeEnemies.add(enemy);
                         try {
