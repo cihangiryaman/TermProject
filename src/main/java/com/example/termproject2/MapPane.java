@@ -13,6 +13,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -52,6 +53,16 @@ public class MapPane
 
         Timeline timeline = getTimeline(waveDelay);
         timeline.play();
+    }
+
+    private static Pane overlayPane;
+
+    public static void setOverlayPane(Pane pane) {
+        overlayPane = pane;
+    }
+
+    public static Pane getOverlayPane() {
+        return overlayPane;
     }
 
     private Timeline getTimeline(int[] waveDelay) {
@@ -232,7 +243,7 @@ public class MapPane
         if (towerType.equals("SingleShotTower"))
         {
             imagePath = "SingleShotTower" + level + ".png";
-            Tower tower = new SingleShotTower(imagePath, cost, 300, 150);
+            Tower tower = new SingleShotTower(imagePath, cost, 200, 150);
             for (int i = 1; i < level; i++)
             {
                 tower.levelUp();
@@ -242,7 +253,7 @@ public class MapPane
         else if (towerType.equals("LaserTower"))
         {
             imagePath = "LaserTower" + level + ".png";
-            Tower tower = new LaserTower(imagePath, cost, 300, 150);
+            Tower tower = new LaserTower(imagePath, cost, 40, 150);
             for (int i = 1; i < level; i++)
             {
                 tower.levelUp();
@@ -252,7 +263,7 @@ public class MapPane
         else if (towerType.equals("TripleShotTower"))
         {
             imagePath = "TripleShotTower" + level + ".png";
-            Tower tower = new TripleShotTower(imagePath, cost, 300, 150);
+            Tower tower = new TripleShotTower(imagePath, cost, 200, 120);
             for (int i = 1; i < level; i++)
             {
                 tower.levelUp();

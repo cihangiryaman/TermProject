@@ -3,16 +3,17 @@ package com.example.termproject2;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class LaserTower extends Tower
-{
+public class LaserTower extends Tower {
     LaserTower(int price, int damage, int range) {
         super("LaserTower1.png", price, damage, range, 0.1);
     }
@@ -32,10 +33,9 @@ public class LaserTower extends Tower
         shootTimer.play();
     }
 
-    private void attackEnemiesInRange() {
-        double centerX = getPositionX() - 5;
-        double centerY = getPositionY() - 20;
-
+    private void attackEnemiesInRange()
+    {
+        // Menzildeki düşmanları bulma
         List<Enemy> enemiesInRange = new ArrayList<>();
         for (Enemy enemy : Map.activeEnemies) {
             double dx = enemy.getPositionX() - getPositionX();
@@ -46,69 +46,66 @@ public class LaserTower extends Tower
             }
         }
 
-        // En yakın 3 düşmanı sırala ve al
-        enemiesInRange.sort((a, b) -> {
-            double distA = Math.pow(a.getPositionX() - getPositionX(), 2) + Math.pow(a.getPositionY() - getPositionY(), 2);
-            double distB = Math.pow(b.getPositionX() - getPositionX(), 2) + Math.pow(b.getPositionY() - getPositionY(), 2);
-            return Double.compare(distA, distB);
-        });
-
         for (Enemy enemy : enemiesInRange) {
-            fireBulletAt(enemy, centerX, centerY);
+            fireBulletAt(enemy);
         }
     }
 
-    private void fireBulletAt(Enemy enemy, double startX, double startY) {
-        Circle bullet = new Circle(3.5, Color.ORANGERED);
-        bullet.setTranslateX(startX);
-        bullet.setTranslateY(startY - 5);
+    private void fireBulletAt(Enemy enemy)
+    {
+        Pane overlay = MapPane.getOverlayPane();
+        Bounds towerBounds = getParentCell().localToScene(getParentCell().getBoundsInLocal());
+        double towerCenterX = towerBounds.getMinX() + towerBounds.getWidth() / 2;
+        double towerCenterY = towerBounds.getMinY() + towerBounds.getHeight() / 2;
 
-        Pane enemyPane = (Pane) enemy.getCircle().getParent();
-        if (enemyPane != null) {
-            enemyPane.getChildren().add(bullet);
+        Bounds enemyBounds = enemy.getCircle().localToScene(enemy.getCircle().getBoundsInLocal());
+        double enemyCenterX = enemyBounds.getMinX() + enemyBounds.getWidth() / 2;
+        double enemyCenterY = enemyBounds.getMinY() + enemyBounds.getHeight() / 2;
+        Point2D towerPoint = overlay.sceneToLocal(towerCenterX, towerCenterY);
+        Point2D enemyPoint = overlay.sceneToLocal(enemyCenterX, enemyCenterY);
 
-            double dx = enemy.getPositionX() - getPositionX();
-            double dy = enemy.getPositionY() - getPositionY();
-            double distance = Math.sqrt(dx * dx + dy * dy);
-            double bulletSpeed = 300.0; // px/s
-            double durationMillis = (distance / bulletSpeed) * 1000;
+        // Lazer oluşturma
+        Line laser = new Line();
+        laser.setStartX(towerPoint.getX());
+        laser.setStartY(towerPoint.getY());
+        laser.setEndX(enemyPoint.getX());
+        laser.setEndY(enemyPoint.getY());
+        laser.setStroke(Color.RED);
+        laser.setStrokeWidth(2.5);
 
-            TranslateTransition transition = new TranslateTransition(Duration.millis(durationMillis), bullet);
-            transition.setToX(enemy.getPositionX());
-            transition.setToY(enemy.getPositionY() - 12);
-            transition.setInterpolator(Interpolator.EASE_BOTH);
+        // Overlay pane'e ekle
+        overlay.getChildren().add(laser);
 
-            transition.setOnFinished(event1 -> {
-                enemyPane.getChildren().remove(bullet);
-                enemy.setHealth(-getDamage());
+        // Lazer efekti için animasyon
+        FadeTransition fade = new FadeTransition(Duration.millis(100), laser);
+        fade.setFromValue(1.0);
+        fade.setToValue(0.0);
+        fade.setOnFinished(e -> overlay.getChildren().remove(laser));
+        fade.play();
 
-                if (enemy.getHealth() <= 0 && !enemy.isExploding()) {
-                    enemy.setExploding(true);
-                    Platform.runLater(() -> {
-                        enemy.stopMovement();
-                        PauseTransition delay = new PauseTransition(Duration.millis(50));
-                        delay.setOnFinished(ev -> enemy.explode());
-                        delay.play();
-                    });
-                }
+        // Düşmana hasar ver
+        enemy.setHealth(-getDamage());
+        if (enemy.getHealth() <= 0 && !enemy.isExploding()) {
+            enemy.setExploding(true);
+            Platform.runLater(() -> {
+                enemy.stopMovement();
+                PauseTransition delay = new PauseTransition(Duration.millis(50));
+                delay.setOnFinished(ev -> enemy.explode());
+                delay.play();
             });
-
-            transition.play();
         }
     }
 
-    public void levelUp() {
+    public void levelUp()
+    {
         int level = getLevel();
-        if (level < 3)
-        {
+        if (level < 3) {
             level++;
             setLevel(level);
             setprice(getPrice() * 2);
             set_damage(getDamage() * 2);
-        }
-        else
-        {
-
+        } else {
+            // Maksimum seviyeye ulaşılmış
         }
     }
 }

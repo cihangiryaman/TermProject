@@ -7,6 +7,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -26,6 +28,10 @@ public class Map extends Application
         MapPane pane = new MapPane(new File("level5.txt"));
         GridPane map = pane.getPane();
         map.setAlignment(Pos.CENTER);
+
+        // Lazer efektleri için overlay pane oluşturuyoruz
+        Pane laserOverlay = new Pane();
+        laserOverlay.setPickOnBounds(false); // Mouse olaylarının alt katmanlara geçmesini sağlar
 
         double fastEnemyRatio = 0.75;
 
@@ -63,15 +69,15 @@ public class Map extends Application
                     });
                     sequentialTransition.getChildren().add(spawnDelay);
                 }
-
-
             }
         }
 
-        sequentialTransition.play(); // Tüm işlemleri sıralı olarak başlatır
+        sequentialTransition.play();
 
         BorderPane mainLayout = new BorderPane();
-        mainLayout.setCenter(map);
+        StackPane layered = new StackPane(map, laserOverlay);
+        mainLayout.setCenter(layered);
+        MapPane.setOverlayPane(laserOverlay);
         mainLayout.setRight(pane.returnRightPane());
 
         Scene scene = new Scene(mainLayout);

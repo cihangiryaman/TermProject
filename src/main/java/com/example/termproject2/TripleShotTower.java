@@ -12,8 +12,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class TripleShotTower extends Tower
-{
+public class TripleShotTower extends Tower {
     TripleShotTower(int price, int damage, int range) {
         super("TripleShotTower1.png", price, damage, range, 0.5);
     }
@@ -33,78 +32,92 @@ public class TripleShotTower extends Tower
         shootTimer.play();
     }
 
-    private void attackEnemiesInRange() {
-        double centerX = getPositionX() - 5;
-        double centerY = getPositionY() - 20;
+    private void attackEnemiesInRange()
+    {
+        double centerX = getPositionX();
+        double centerY = getPositionY();
 
         List<Enemy> enemiesInRange = new ArrayList<>();
         for (Enemy enemy : Map.activeEnemies) {
-            double dx = enemy.getPositionX() - getPositionX();
-            double dy = enemy.getPositionY() - getPositionY();
+            double dx = enemy.getPositionX() - centerX;
+            double dy = enemy.getPositionY() - centerY;
             double dist2 = dx * dx + dy * dy;
             if (dist2 <= getRange() * getRange()) {
                 enemiesInRange.add(enemy);
             }
         }
 
-        // En yakın 3 düşmanı sırala ve al
+        //en yakın 3 düşman
         enemiesInRange.sort((a, b) -> {
-            double distA = Math.pow(a.getPositionX() - getPositionX(), 2) + Math.pow(a.getPositionY() - getPositionY(), 2);
-            double distB = Math.pow(b.getPositionX() - getPositionX(), 2) + Math.pow(b.getPositionY() - getPositionY(), 2);
+            double distA = Math.pow(a.getPositionX() - centerX, 2) + Math.pow(a.getPositionY() - centerY, 2);
+            double distB = Math.pow(b.getPositionX() - centerX, 2) + Math.pow(b.getPositionY() - centerY, 2);
             return Double.compare(distA, distB);
         });
 
         int shotsFired = 0;
         for (Enemy enemy : enemiesInRange) {
-            if (shotsFired >= 3) break;
-            fireBulletAt(enemy, centerX, centerY);
+            if (shotsFired >= 3)
+                break;
+            fireBulletAt(enemy);
             shotsFired++;
         }
     }
 
-    private void fireBulletAt(Enemy enemy, double startX, double startY) {
-        Circle bullet = new Circle(3.5, Color.ORANGERED);
-        bullet.setTranslateX(startX);
-        bullet.setTranslateY(startY - 5);
+    private void fireBulletAt(Enemy enemy) {
 
-        Pane enemyPane = (Pane) enemy.getCircle().getParent();
-        if (enemyPane != null) {
-            enemyPane.getChildren().add(bullet);
+        javafx.geometry.Bounds towerBounds = getParentCell().localToScene(getParentCell().getBoundsInLocal());
+        double towerCenterX = towerBounds.getMinX() + towerBounds.getWidth() / 2;
+        double towerCenterY = towerBounds.getMinY() + towerBounds.getHeight() / 2;
+        javafx.geometry.Bounds enemyBounds = enemy.getCircle().localToScene(enemy.getCircle().getBoundsInLocal());
+        double enemyCenterX = enemyBounds.getMinX() + enemyBounds.getWidth() / 2;
+        double enemyCenterY = enemyBounds.getMinY() + enemyBounds.getHeight() / 2;
 
-            double dx = enemy.getPositionX() - getPositionX();
-            double dy = enemy.getPositionY() - getPositionY();
-            double distance = Math.sqrt(dx * dx + dy * dy);
-            double bulletSpeed = 300.0; // px/s
-            double durationMillis = (distance / bulletSpeed) * 1000;
+        Pane overlayPane = MapPane.getOverlayPane();
+        javafx.geometry.Point2D towerPoint = overlayPane.sceneToLocal(towerCenterX, towerCenterY);
+        javafx.geometry.Point2D enemyPoint = overlayPane.sceneToLocal(enemyCenterX, enemyCenterY);
 
-            TranslateTransition transition = new TranslateTransition(Duration.millis(durationMillis), bullet);
-            transition.setToX(enemy.getPositionX());
-            transition.setToY(enemy.getPositionY() - 12);
-            transition.setInterpolator(Interpolator.EASE_BOTH);
+        // Mermi oluştur
+        Circle bullet = new Circle(4.5, Color.RED);
+        overlayPane.getChildren().add(bullet);
 
-            transition.setOnFinished(event1 -> {
-                enemyPane.getChildren().remove(bullet);
-                enemy.setHealth(-getDamage());
+        // Mermi başlangıç pozisyonu
+        bullet.setTranslateX(towerPoint.getX());
+        bullet.setTranslateY(towerPoint.getY());
 
-                if (enemy.getHealth() <= 0 && !enemy.isExploding()) {
-                    enemy.setExploding(true);
-                    Platform.runLater(() -> {
-                        enemy.stopMovement();
-                        PauseTransition delay = new PauseTransition(Duration.millis(50));
-                        delay.setOnFinished(ev -> enemy.explode());
-                        delay.play();
-                    });
-                }
-            });
-            transition.play();
-        }
+        // Mermi hızı ve süre hesaplama
+        double dx = enemyPoint.getX() - towerPoint.getX();
+        double dy = enemyPoint.getY() - towerPoint.getY();
+        double distance = Math.sqrt(dx * dx + dy * dy);
+        double bulletSpeed = 200.0; // px/s
+        double durationMillis = (distance / bulletSpeed) * 1000;
+
+        // Mermi hareketi
+        TranslateTransition transition = new TranslateTransition(Duration.millis(durationMillis), bullet);
+        transition.setByX(dx);  // Başlangıç konumundan bu kadar X ilerle
+        transition.setByY(dy);  // Başlangıç konumundan bu kadar Y ilerle
+        transition.setInterpolator(Interpolator.EASE_BOTH);
+
+        transition.setOnFinished(event -> {
+            overlayPane.getChildren().remove(bullet);
+            enemy.setHealth(-getDamage());
+
+            if (enemy.getHealth() <= 0 && !enemy.isExploding()) {
+                enemy.setExploding(true);
+                Platform.runLater(() -> {
+                    enemy.stopMovement();
+                    PauseTransition delay = new PauseTransition(Duration.millis(50));
+                    delay.setOnFinished(ev -> enemy.explode());
+                    delay.play();
+                });
+            }
+        });
+        transition.play();
     }
 
     @Override
     public void levelUp() {
         int level = getLevel();
-        if (level < 3)
-        {
+        if (level < 3) {
             level++;
             setLevel(level);
             setprice(getPrice() * 2);
@@ -112,7 +125,7 @@ public class TripleShotTower extends Tower
         }
         else
         {
-
+            // Maksimum seviye
         }
     }
 }
