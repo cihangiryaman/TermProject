@@ -1,11 +1,9 @@
 package com.example.termproject2;
 
 import javafx.animation.*;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -15,6 +13,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -42,12 +41,12 @@ public class MapPane
     MapPane(File levelFile) {
         textDecoder = new TextDecoder(levelFile);
         lives = 5;
-        money = 1000;
+        money = 2000;
         rows = TextDecoder.getLines(levelFile);
         moneyLabel = new Label("Money: " + money + "$");
         moneyLabel.setFont(new Font("Arial",20));
         livesLabel = new Label("Lives: " + lives);
-        livesLabel.setFont(new Font("Arial",20 ));
+        livesLabel.setFont(new Font("Arial",20));
         int[] waveDelay = textDecoder.waveDelays;
         waveCountdownTime = waveDelay[0];
         waveCountdownLabel = new Label("Next wave in: " + waveCountdownTime + "s");
@@ -56,6 +55,16 @@ public class MapPane
 
         Timeline timeline = getTimeline(waveDelay);
         timeline.play();
+    }
+
+    private static Pane overlayPane;
+
+    public static void setOverlayPane(Pane pane) {
+        overlayPane = pane;
+    }
+
+    public static Pane getOverlayPane() {
+        return overlayPane;
     }
 
     private Timeline getTimeline(int[] waveDelay) {
@@ -131,47 +140,37 @@ public class MapPane
                         String towerType = parts[0];
                         String imagePath = parts[1];
                         int cost = Integer.parseInt(parts[2]);
-                        boolean isTakesCost = Boolean.parseBoolean(parts[3]);
+                        int levelOfCastle = Integer.parseInt(parts[3]);
 
-                        if (money >= cost || isTakesCost) {
-                            if (!isTakesCost)
-                            {
-                                money -= cost;
-                                moneyLabel.setText("Money: " + money + "$");
-                            }
+                        if (money >= cost) {
+                            money -= cost;
+                            moneyLabel.setText("Money: " + money + "$");
                             //Gets the image of the castle and puts on the cell on the map
                             ImageView castleImage = new ImageView(new Image(imagePath));
                             castleImage.setFitWidth(32);
                             castleImage.setFitHeight(60);
-                            castleImage.setId("castleImage");
                             cell.getChildren().add(castleImage);
 
-                            Tower newTower = getTower(towerType, imagePath, cost);
+                            Tower newTower = getTower(towerType, imagePath, cost, levelOfCastle);
 
                             int columnIndex = GridPane.getColumnIndex(cell);
                             int rowIndex = GridPane.getRowIndex(cell);
-                            assert newTower != null;
                             newTower.setPosition(columnIndex * 40 + 20, rowIndex * 40 + 20);
                             activeTowers.add(newTower);
                             newTower.setParentCell(cell);
                             newTower.shoot();
-                            System.out.println(activeTowers.size());
 
                             for (Tower tower : activeTowers) {
                                 StackPane stackPane = tower.getParentCell();
-                                Button upgradeButton = new Button("Upgrade");
-                                upgradeButton.setStyle("-fx-background-radius: 10; -fx-padding: 5 10 5 10;");
-                                upgradeButton.setVisible(false); // Initially hidden
-                                StackPane.setAlignment(upgradeButton, Pos.BOTTOM_CENTER);
-                                StackPane.setMargin(upgradeButton, new Insets(10, 0, 10, 0));
-                                stackPane.getChildren().add(upgradeButton);
                                 stackPane.setOnDragDetected(event1 ->
                                 {
                                     Dragboard dragboard = castleImage.startDragAndDrop(TransferMode.MOVE);
                                     ClipboardContent content = new ClipboardContent();
-                                    boolean isFromMap = true;
+                                    money += tower.getPrice();
+                                    moneyLabel.setText("Money: " + money + "$");
+                                    int level = tower.getLevel();
 
-                                    content.putString(tower.getClass().getSimpleName() + ";" + tower.getImage().getImage().getUrl() + ";" + tower.getPrice() + ";" + isFromMap);
+                                    content.putString(tower.getClass().getSimpleName() + ";" + tower.getImage().getImage().getUrl() + ";" + tower.getPrice() + ";" + level);
                                     dragboard.setContent(content);
 
                                     Circle range = new Circle(tower.getRange());
@@ -190,50 +189,32 @@ public class MapPane
 
                                     dragboard.setDragView(image, image.getWidth() / 2, image.getHeight() / 2);
                                     activeTowers.remove(tower);
-                                    upgradeButton.setVisible(false); // Hide the upgrade button when drag starts
                                     stackPane.getChildren().remove(castleImage);
-                                    stackPane.getChildren().remove(upgradeButton);
                                     event.consume();
                                 });
 
-                                stackPane.setOnMouseEntered(event2 -> {
-                                    upgradeButton.setVisible(true); // Make the button visible when mouse enters
-                                    FadeTransition fadeTransition = new FadeTransition(Duration.millis(300), upgradeButton);
-                                    fadeTransition.setFromValue(0);
-                                    fadeTransition.setToValue(1);
-
-                                    ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(300), upgradeButton);
-                                    scaleTransition.setFromX(0.7);
-                                    scaleTransition.setFromY(0.7);
-                                    scaleTransition.setToX(1);
-                                    scaleTransition.setToY(1);
-                                    new ParallelTransition(fadeTransition, scaleTransition).play();
-                                });
-                                stackPane.setOnMouseExited(e -> {
-                                    PauseTransition delay = new PauseTransition(Duration.millis(200));
-                                    delay.setOnFinished(ev -> {
-                                        if (!stackPane.isHover()) {
-                                            FadeTransition fadeOut = new FadeTransition(Duration.millis(200), upgradeButton);
-                                            fadeOut.setFromValue(1);
-                                            fadeOut.setToValue(0);
-                                            ScaleTransition scaleOut = new ScaleTransition(Duration.millis(200), upgradeButton);
-                                            scaleOut.setFromX(1);
-                                            scaleOut.setFromY(1);
-                                            scaleOut.setToX(0.7);
-                                            scaleOut.setToY(0.7);
-                                            new ParallelTransition(fadeOut, scaleOut).play();
-                                            fadeOut.setOnFinished(ev2 -> upgradeButton.setVisible(false)); // Hide the button after fade-out
-                                        }
-                                    });
-                                    delay.play();
-                                });
-                                upgradeButton.setOnAction(e -> {
-                                    if (tower.getPrice() * 2 < money) {
+                                castleImage.setOnMouseClicked(e -> {
+                                    if (tower.getPrice() * 2 <= money && tower.getLevel() < 3) {
                                         int level = tower.getLevel();
+                                        System.out.println(level);
                                         money -= tower.getPrice() * 2;
                                         moneyLabel.setText("Money: " + money + "$");
                                         tower.levelUp();
+                                        PauseTransition delay = new PauseTransition(Duration.millis(200));
+                                        delay.play();
                                         castleImage.setImage(getLevelUpImage(level, tower));
+
+                                        FadeTransition fadeTransition = new FadeTransition(Duration.millis(300), castleImage);
+                                        fadeTransition.setFromValue(0);
+                                        fadeTransition.setToValue(1);
+
+                                        ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(300), castleImage);
+                                        scaleTransition.setFromX(0.7);
+                                        scaleTransition.setFromY(0.7);
+                                        scaleTransition.setToX(1);
+                                        scaleTransition.setToY(1);
+                                        new ParallelTransition(fadeTransition, scaleTransition).play();
+
                                         System.out.println("Tower upgraded");
                                     }
                                 });
@@ -259,16 +240,48 @@ public class MapPane
         return map;
     }
 
-    private static Tower getTower(String towerType, String imagePath, int cost) {
+    private static Tower getTower(String towerType, String imagePath, int cost, int level) {
 
-        return switch (towerType) {
-            case "SingleShotTower" -> new SingleShotTower(imagePath, cost, 300, 150);
-            case "LaserTower" -> new LaserTower(imagePath, cost, 400, 400);
-            case "TripleShotTower" -> new TripleShotTower(imagePath, cost, 200, 400);
-            case "MissileLauncherTower" -> new MissileLauncherTower(imagePath, cost, 500, 300);
-            default -> null;
-
-        };
+        if (towerType.equals("SingleShotTower"))
+        {
+            imagePath = "SingleShotTower" + level + ".png";
+            Tower tower = new SingleShotTower(imagePath, cost, 200, 150);
+            for (int i = 1; i < level; i++)
+            {
+                tower.levelUp();
+            }
+            return tower;
+        }
+        else if (towerType.equals("LaserTower"))
+        {
+            imagePath = "LaserTower" + level + ".png";
+            Tower tower = new LaserTower(imagePath, cost, 40, 150);
+            for (int i = 1; i < level; i++)
+            {
+                tower.levelUp();
+            }
+            return tower;
+        }
+        else if (towerType.equals("TripleShotTower"))
+        {
+            imagePath = "TripleShotTower" + level + ".png";
+            Tower tower = new TripleShotTower(imagePath, cost, 200, 120);
+            for (int i = 1; i < level; i++)
+            {
+                tower.levelUp();
+            }
+            return tower;
+        }
+        else
+        {
+            imagePath = "MissileLauncherTower" + level + ".png";
+            Tower tower = new MissileLauncherTower(imagePath, cost, 300, 150);
+            for (int i = 1; i < level; i++)
+            {
+                tower.levelUp();
+            }
+            return tower;
+        }
     }
 
     private void playFadeAnimation(Node node, int row, int column)
@@ -284,7 +297,7 @@ public class MapPane
     }
 
     public StackPane returnCastle(Tower tower, Color color) {
-        Rectangle background = new Rectangle(300, 180);
+        Rectangle background = new Rectangle(250, 180);
         background.setFill(color);
         background.setStroke(Color.BLACK);
         background.setArcHeight(10);
@@ -305,15 +318,12 @@ public class MapPane
         contentBox.setAlignment(Pos.CENTER);
         contentBox.setSpacing(5);
 
-
-
         StackPane pane = new StackPane(background, contentBox);
 
         pane.setOnDragDetected(event -> {
             Dragboard dragboard = castleImage.startDragAndDrop(TransferMode.COPY);
             ClipboardContent content = new ClipboardContent();
-            boolean isFromMap = false;
-            content.putString(tower.getClass().getSimpleName() + ";" + tower.getImage().getImage().getUrl() + ";" + tower.getPrice() + ";" + isFromMap);
+            content.putString(tower.getClass().getSimpleName() + ";" + tower.getImage().getImage().getUrl() + ";" + tower.getPrice() + ";" + 1);
             dragboard.setContent(content);
 
             Circle range = new Circle(tower.getRange());
@@ -342,7 +352,7 @@ public class MapPane
         StackPane castle1 = returnCastle(new SingleShotTower("SingleShotTower1.png", 50, 300, 100), Color.WHEAT);
         StackPane castle2 = returnCastle(new LaserTower("LaserTower1.png", 120, 100, 180), Color.WHEAT);
         StackPane castle3 = returnCastle(new TripleShotTower("TripleShotTower1.png", 150, 75, 150), Color.WHEAT);
-        StackPane castle4 = returnCastle(new MissileLauncherTower("Castle3.png", 200, 500, 200), Color.WHEAT);
+        StackPane castle4 = returnCastle(new MissileLauncherTower("TripleShotTower3.png", 200, 500, 200), Color.WHEAT);
 
         VBox rightPane = new VBox(livesLabel, moneyLabel, waveCountdownLabel, castle1, castle2, castle3, castle4);
         rightPane.setAlignment(Pos.CENTER);
@@ -374,7 +384,7 @@ public class MapPane
                 case SingleShotTower singleShotTower -> new Image("SingleShotTower2.png");
                 case LaserTower laserTower -> new Image("LaserTower2.png");
                 case TripleShotTower tripleShotTower -> new Image("TripleShotTower2.png");
-                case null, default -> new Image("MissileLauncherTowerLevel2.png");
+                case null, default -> new Image("MissileLauncherTower2.png");
             };
         }
         else
@@ -382,8 +392,8 @@ public class MapPane
             return switch (tower) {
                 case SingleShotTower singleShotTower -> new Image("SingleShotTower3.png");
                 case LaserTower laserTower -> new Image("LaserTower3.png");
-                case TripleShotTower tripleShotTower -> new Image("TripleShotTower3.png");
-                case null, default ->new Image("MissileLauncherTowerLevel3.png");
+                case TripleShotTower tripleShotTower -> new Image("TripleShotTowerTower3.png");
+                case null, default ->new Image("MissileLauncherTower3.png");
             };
         }
     }

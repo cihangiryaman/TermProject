@@ -15,6 +15,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.File;
@@ -23,29 +24,32 @@ import java.util.ArrayList;
 public abstract class Enemy
 {
     private Pane _pane;
+    private MapPane _mapPane;
     private int _health;
     private double _speed;
     private double _positionX;
     private double _positionY;
     private boolean _isExploding = false;
-    private Rectangle healthBar;
-    private double maxHealthWidth = 20;
-    private double maxHealth;
     double tileSize = 40;
     private ImageView _image = new ImageView(new Image("warrior.jpg"));
+    private Rectangle healthBar;
+    private double maxHealthWidth = 20;
+    private int maxHealth;
 
-    Enemy(Pane pane, int initialHealth, double initialSpeed)
+    Enemy(Pane pane, int initialHealth, double initialSpeed, MapPane mapPane)
     {
         _pane = pane;
         _speed = initialSpeed;
         this.maxHealth = _health = initialHealth;
         _image.setFitHeight(20);
         _image.setFitWidth(20);
+        _mapPane = mapPane;
         healthBar = new Rectangle(maxHealthWidth,3.5,Color.RED);
         healthBar.setTranslateX(-15);
+
     }
 
-    Enemy(Pane pane, String imageName, int initialHealth, double initialSpeed)
+    Enemy(Pane pane, String imageName, int initialHealth, double initialSpeed, MapPane mapPane)
     {
         _pane = pane;
         _speed = initialSpeed;
@@ -53,6 +57,7 @@ public abstract class Enemy
         _image = new ImageView(new Image(imageName));
         _image.setFitHeight(20);
         _image.setFitWidth(20);
+        _mapPane = mapPane;
         healthBar = new Rectangle(maxHealthWidth,3.5,Color.RED);
         healthBar.setTranslateX(-15);
     }
@@ -135,9 +140,31 @@ public abstract class Enemy
             }
         };
         timer.start();
+        st.setOnFinished(event -> {
+            // Düşman hedefe ulaştığında canı azalt
+            Platform.runLater(() -> {
+                _mapPane.lives--;
+                _mapPane.livesLabel.setText("Lives: " + _mapPane.lives);
+
+                if (_mapPane.lives <= 0) {
+                    GameOverMenu gameOverMenu = new GameOverMenu();
+                    gameOverMenu.show((Stage) _pane.getScene().getWindow());
+                }
+            });
+
+            // Düşmanı sahneden kaldır
+            _pane.getChildren().remove(circle);
+            Map.activeEnemies.remove(this);
+        });
     }
 
     public void explode() {
+
+        Platform.runLater(() -> {
+            _mapPane.money += maxHealth / 20;
+            _mapPane.moneyLabel.setText("Money: " + _mapPane.money + "$");
+        });
+
         // 1. Patlama noktasını al (tüm transform'ları hesaba katar)
         double explodeX = circle.getTranslateX() + circle.getCenterX();
         double explodeY = circle.getTranslateY() + circle.getCenterY();
@@ -243,7 +270,7 @@ public abstract class Enemy
             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(200), new KeyValue(healthBar.widthProperty(),widthDuringShoot,Interpolator.EASE_BOTH)));
             timeline.play();
         }
-        if(this._health <= 0){
+        if(this._health <= 0) {
             PauseTransition delay = new PauseTransition(Duration.millis(200));
             delay.setOnFinished(e -> _pane.getChildren().remove(healthBar));
             delay.play();
@@ -267,11 +294,9 @@ public abstract class Enemy
     public boolean isExploding(){
         return _isExploding;
     }
-
     public void setExploding(boolean exploding){
         this._isExploding = exploding;
     }
-
     public void stopMovement(){
         if(st != null){
             st.stop();
@@ -279,5 +304,11 @@ public abstract class Enemy
     }
     public Circle getCircle() {
         return circle;
+    }
+    public MapPane getMapPane() {
+        return _mapPane;
+    }
+    public void setMapPane(MapPane mapPane) {
+        _mapPane = mapPane;
     }
 }
