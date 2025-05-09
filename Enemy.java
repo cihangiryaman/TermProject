@@ -154,6 +154,7 @@ public abstract class Enemy
 
             // Düşmanı sahneden kaldır
             _pane.getChildren().remove(circle);
+            _pane.getChildren().remove(healthbar);
             Map.activeEnemies.remove(this);
         });
     }
