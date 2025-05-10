@@ -1,5 +1,6 @@
 package com.example.termproject2;
 
+import javafx.animation.AnimationTimer;
 import javafx.animation.PauseTransition;
 import javafx.animation.SequentialTransition;
 import javafx.application.Application;
@@ -69,6 +70,27 @@ public class Map extends Application {
         }
 
         sequentialTransition.play();
+        sequentialTransition.setOnFinished(e -> {
+            // Düşmanlar spawnlandı, şimdi aktif düşmanlar bitene kadar bekle
+            AnimationTimer checkWaveEnd = new AnimationTimer() {
+                @Override
+                public void handle(long now) {
+                    if (activeEnemies.isEmpty()) {
+                        this.stop(); // kontrolü durdur
+                        System.out.println("LEVEL BİTTİ!");
+                        currentLevel++;
+                        if (currentLevel < 5) {
+                            currentLevel++;
+                           //Geçiş ekranı
+                        } else {
+                           //Bitiş ekranı ya da ana menüye dönüş ekranı
+                        }
+                    }
+                }
+            };
+            checkWaveEnd.start();
+        });
+
 
         BorderPane mainLayout = new BorderPane();
         StackPane layered = new StackPane(map, laserOverlay);
