@@ -113,7 +113,7 @@ public abstract class Enemy
         }
 
         double totalDuration = coordinates.size() * durationPerTile;
-        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(1.5)); //Delay
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(0.1)); //Delay
 
 
         pt.setPath(path);
