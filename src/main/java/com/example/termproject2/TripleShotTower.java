@@ -7,9 +7,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class TripleShotTower extends Tower {
@@ -18,7 +16,7 @@ public class TripleShotTower extends Tower {
     }
 
     TripleShotTower(String ImageName, int price, int damage, int range) {
-        super("TripleShotTower1.png", ImageName, price, damage, range, 0.5);
+        super("Triple Archer Tower", ImageName, price, damage, range, 0.5);
     }
 
     @Override

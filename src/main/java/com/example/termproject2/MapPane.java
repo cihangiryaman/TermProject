@@ -11,9 +11,9 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
@@ -303,7 +303,9 @@ public class MapPane {
         castleImage.setFitWidth(32);
 
         Label nameLabel = new Label(tower.getName());
-        Label costLabel = new Label("Cost: " + tower.getPrice() + "$");
+        nameLabel.setFont(new Font(16));
+        Label costLabel = new Label(tower.getPrice() + "$");
+        costLabel.setFont(new Font(18));
 
         VBox labelBox = new VBox(nameLabel, costLabel);
         labelBox.setAlignment(Pos.CENTER);

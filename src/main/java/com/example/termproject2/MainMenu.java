@@ -6,10 +6,8 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.VBox;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
@@ -26,12 +24,12 @@ public class MainMenu extends Application
         //Start Button
         bt1 = new Button("Start Game");
         bt1.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-        bt1.setStyle("-fx-background-color: #F44336; -fx-text-fill: #FFFFFF; "+ "-fx-background-radius: 10; -fx-padding: 30 40 30 40;");
+        bt1.setStyle("-fx-background-color: #b06f1a; -fx-text-fill: #FFFFFF; "+ "-fx-background-radius: 10; -fx-padding: 30 40 30 40;");
 
         //How to Play and Exit buttons
         bt2 = new Button("How To Play");
         bt2.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-        bt2.setStyle("-fx-background-color: #F44336; -fx-text-fill: #FFFFFF; "+ "-fx-background-radius: 10; -fx-padding: 20 30 20 30;");
+        bt2.setStyle("-fx-background-color: #b06f1a; -fx-text-fill: #FFFFFF; "+ "-fx-background-radius: 10; -fx-padding: 20 30 20 30;");
 
         Text text1 = new Text("Place towers on a grid to defend against waves of enemies.\r\n"
                 + "•\r\n"
@@ -48,13 +46,21 @@ public class MainMenu extends Application
 
         bt3 = new Button("Exit");
         bt3.setFont(Font.font("Arial", FontWeight.BOLD, 15));
-        bt3.setStyle("-fx-background-color: #F44336; -fx-text-fill: #FFFFFF; "+ "-fx-background-radius: 10; -fx-padding: 5 20 5 20;");
+        bt3.setStyle("-fx-background-color: #b06f1a; -fx-text-fill: #FFFFFF; "+ "-fx-background-radius: 10; -fx-padding: 5 20 5 20;");
         bt3.setTranslateY(30);
 
         //Combining the How To Play and Exit parts with VBox
         VBox vb1 = new VBox(text1,bt3);
         vb1.setAlignment(Pos.CENTER);
-        vb1.setBackground(new Background(new BackgroundFill(Color.DARKORANGE, CornerRadii.EMPTY, null)));
+        Image backgroundImage = new Image("background.png");
+        BackgroundImage background = new BackgroundImage(
+                backgroundImage,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true)
+        );
+        vb1.setBackground(new Background(background));
         scene2 = new Scene(vb1,800,600);
 
         bt1.setOnAction(new EventHandler<ActionEvent>() {
@@ -84,7 +90,16 @@ public class MainMenu extends Application
         //Combining both "Start" and "How To Play" buttons with VBox
         VBox vb = new VBox(30,bt1,bt2);
         vb.setAlignment(Pos.CENTER);
-        vb.setBackground(new Background(new BackgroundFill(Color.DARKORANGE, CornerRadii.EMPTY, null)));
+        Image backgroundImage2 = new Image("background.png");
+        BackgroundImage background2 = new BackgroundImage(
+                backgroundImage2,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true)
+        );
+        vb.setBackground(new Background(background2));
+
 
         scene1 = new Scene(vb, 800, 600);
         stage.setTitle("Game Menu");

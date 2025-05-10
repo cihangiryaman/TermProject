@@ -15,15 +15,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Map extends Application
-{
+public class Map extends Application {
     public static List<Enemy> activeEnemies = new ArrayList<>();
     public static List<Tower> activeTowers = new ArrayList<>();
+    private int currentLevel = 1;
 
     @Override
-    public void start(Stage stage) throws Exception
-    {
-        MapPane pane = new MapPane(new File("level5.txt"));
+    public void start(Stage stage) throws Exception {
+        MapPane pane = new MapPane(new File("level" + currentLevel + ".txt"));
         GridPane map = pane.getPane();
         map.setAlignment(Pos.CENTER);
 
@@ -49,8 +48,7 @@ public class Map extends Application
 
                 Collections.shuffle(enemyQueue);
 
-                for (String enemyType : enemyQueue)
-                {
+                for (String enemyType : enemyQueue) {
                     PauseTransition spawnDelay = new PauseTransition(Duration.seconds(enemySpawnDelayPerWave[i]));
                     spawnDelay.setOnFinished(spawnEvent -> {
                         Enemy enemy = switch (enemyType) {
@@ -60,7 +58,7 @@ public class Map extends Application
                         };
                         activeEnemies.add(enemy);
                         try {
-                            enemy.walk(5);
+                            enemy.walk(currentLevel);
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -78,24 +76,19 @@ public class Map extends Application
         MapPane.setOverlayPane(laserOverlay);
         mainLayout.setRight(pane.returnRightPane());
 
-        // Set background image
-        try {
-            Image backgroundImage = new Image("background.png");
-            BackgroundImage background = new BackgroundImage(
-                    backgroundImage,
-                    BackgroundRepeat.NO_REPEAT,
-                    BackgroundRepeat.NO_REPEAT,
-                    BackgroundPosition.CENTER,
-                    new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true)
-            );
-            mainLayout.setBackground(new Background(background));
-        } catch (Exception e) {
-            System.err.println("Could not load background image: " + e.getMessage());
-        }
+        Image backgroundImage = new Image("background.png");
+        BackgroundImage background = new BackgroundImage(
+                backgroundImage,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true)
+        );
+        mainLayout.setBackground(new Background(background));
 
         Scene scene = new Scene(mainLayout);
 
-        stage.setTitle("Level 5");
+        stage.setTitle("Level " + currentLevel);
         stage.setWidth(1000);
         stage.setHeight(1000);
         stage.setScene(scene);
@@ -106,23 +99,20 @@ public class Map extends Application
 
     private static List<String> getStrings(double fastEnemyRatio, int enemyCountPerWave) {
         int totalEnemies = enemyCountPerWave;
-        int fastEnemies = (int)(totalEnemies * fastEnemyRatio);
-        int tankEnemies = totalEnemies - (int)(totalEnemies * fastEnemyRatio);
+        int fastEnemies = (int) (totalEnemies * fastEnemyRatio);
+        int tankEnemies = totalEnemies - (int) (totalEnemies * fastEnemyRatio);
 
         List<String> enemyQueue = new ArrayList<>();
-        for (int k = 0; k < fastEnemies; k++)
-        {
+        for (int k = 0; k < fastEnemies; k++) {
             enemyQueue.add("Fast");
         }
-        for (int l = 0; l < tankEnemies; l++)
-        {
+        for (int l = 0; l < tankEnemies; l++) {
             enemyQueue.add("Tank");
         }
         return enemyQueue;
     }
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         launch(args);
     }
 }

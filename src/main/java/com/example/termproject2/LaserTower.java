@@ -6,7 +6,6 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
 
@@ -19,7 +18,7 @@ public class LaserTower extends Tower {
     }
 
     LaserTower(String ImageName, int price, int damage, int range) {
-        super("LaserTower1.png", ImageName, price, damage, range, 0.1);
+        super("Light Channeler", ImageName, price, damage, range, 0.1);
     }
 
     @Override

@@ -18,7 +18,7 @@ public class SingleShotTower extends Tower
 
     SingleShotTower(String ImageName, int price, int damage, int range)
     {
-        super("SingleShotTower1.png", ImageName, price, damage, range, 0.5);
+        super("Single Archer Tower", ImageName, price, damage, range, 0.5);
     }
 
     @Override

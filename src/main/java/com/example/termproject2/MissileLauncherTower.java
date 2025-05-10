@@ -22,7 +22,7 @@ public class MissileLauncherTower extends Tower {
     }
 
     MissileLauncherTower(String ImageName, int price, int damage, int range) {
-        super("MissileLauncherTower", ImageName, price, damage, range, 0.8);
+        super("Bomber Tower", ImageName, price, damage, range, 0.8);
         this.explosionRadius = 80;
         this.explosionDamageMultiplier = 0.5;
     }
