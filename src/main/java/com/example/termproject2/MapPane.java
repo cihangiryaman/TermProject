@@ -44,7 +44,9 @@ public class MapPane
         money = 2000;
         rows = TextDecoder.getLines(levelFile);
         moneyLabel = new Label("Money: " + money + "$");
+        moneyLabel.setFont(new Font("Arial",20));
         livesLabel = new Label("Lives: " + lives);
+        livesLabel.setFont(new Font("Arial",20));
         int[] waveDelay = textDecoder.waveDelays;
         waveCountdownTime = waveDelay[0];
         waveCountdownLabel = new Label("Next wave in: " + waveCountdownTime + "s");
@@ -146,7 +148,7 @@ public class MapPane
                             //Gets the image of the castle and puts on the cell on the map
                             ImageView castleImage = new ImageView(new Image(imagePath));
                             castleImage.setFitWidth(32);
-                            castleImage.setFitHeight(32);
+                            castleImage.setFitHeight(60);
                             cell.getChildren().add(castleImage);
 
                             Tower newTower = getTower(towerType, imagePath, cost, levelOfCastle);
@@ -295,14 +297,14 @@ public class MapPane
     }
 
     public StackPane returnCastle(Tower tower, Color color) {
-        Rectangle background = new Rectangle(180, 80);
+        Rectangle background = new Rectangle(250, 180);
         background.setFill(color);
         background.setStroke(Color.BLACK);
         background.setArcHeight(10);
         background.setArcWidth(10);
 
         ImageView castleImage = tower.getImage();
-        castleImage.setFitHeight(32);
+        castleImage.setFitHeight(60);
         castleImage.setFitWidth(32);
 
         Label nameLabel = new Label(tower.getName());
@@ -331,7 +333,7 @@ public class MapPane
 
             ImageView smallView = new ImageView(castleImage.getImage());
             smallView.setFitWidth(32);
-            smallView.setFitHeight(32);
+            smallView.setFitHeight(60);
 
             StackPane visual = new StackPane(range, smallView);
             SnapshotParameters params = new SnapshotParameters();

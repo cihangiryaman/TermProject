@@ -14,10 +14,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.LineTo;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
+import javafx.scene.shape.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -35,29 +32,34 @@ public abstract class Enemy
     private boolean _isExploding = false;
     double tileSize = 40;
     private ImageView _image = new ImageView(new Image("warrior.jpg"));
-    private int _maxHealth;
+    private Rectangle healthBar;
+    private double maxHealthWidth = 20;
+    private int maxHealth;
 
     Enemy(Pane pane, int initialHealth, double initialSpeed, MapPane mapPane)
     {
         _pane = pane;
         _speed = initialSpeed;
-        _health = initialHealth;
+        this.maxHealth = _health = initialHealth;
         _image.setFitHeight(20);
         _image.setFitWidth(20);
         _mapPane = mapPane;
-        _maxHealth = initialHealth;
+        healthBar = new Rectangle(maxHealthWidth,3.5,Color.RED);
+        healthBar.setTranslateX(-15);
+
     }
 
     Enemy(Pane pane, String imageName, int initialHealth, double initialSpeed, MapPane mapPane)
     {
         _pane = pane;
         _speed = initialSpeed;
-        _health = initialHealth;
+        this.maxHealth = _health = initialHealth;
         _image = new ImageView(new Image(imageName));
         _image.setFitHeight(20);
         _image.setFitWidth(20);
         _mapPane = mapPane;
-        _maxHealth = initialHealth;
+        healthBar = new Rectangle(maxHealthWidth,3.5,Color.RED);
+        healthBar.setTranslateX(-15);
     }
 
     PathTransition pt;
@@ -98,6 +100,7 @@ public abstract class Enemy
         }
 
         _pane.getChildren().add(circle);
+        _pane.getChildren().add(healthBar);
 
         path = new Path();
         //Initial path coordinates
@@ -129,7 +132,11 @@ public abstract class Enemy
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                setPosition(circle.getTranslateX() + circle.getCenterX(), circle.getTranslateY() + circle.getCenterY());
+                double x = circle.getCenterX() + circle.getTranslateX();
+                double y = circle.getCenterY() + circle.getTranslateY();
+                setPosition(x,y);
+                healthBar.setTranslateX(x - 10);
+                healthBar.setTranslateY(y - 35);
             }
         };
         timer.start();
@@ -147,6 +154,7 @@ public abstract class Enemy
 
             // Düşmanı sahneden kaldır
             _pane.getChildren().remove(circle);
+            _pane.getChildren().remove(healthBar);
             Map.activeEnemies.remove(this);
         });
     }
@@ -154,7 +162,7 @@ public abstract class Enemy
     public void explode() {
 
         Platform.runLater(() -> {
-            _mapPane.money += _maxHealth / 20;
+            _mapPane.money += maxHealth / 20;
             _mapPane.moneyLabel.setText("Money: " + _mapPane.money + "$");
         });
 
@@ -254,7 +262,20 @@ public abstract class Enemy
     }
 
     public void setHealth(int amount) {
+        int initialHealth = this._health;
         this._health += amount;
+
+        if(this._health < initialHealth){
+            double percent = Math.max(0, Math.min(1, (double)_health/maxHealth));
+            double widthDuringShoot = maxHealthWidth * percent;
+            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(200), new KeyValue(healthBar.widthProperty(),widthDuringShoot,Interpolator.EASE_BOTH)));
+            timeline.play();
+        }
+        if(this._health <= 0) {
+            PauseTransition delay = new PauseTransition(Duration.millis(200));
+            delay.setOnFinished(e -> _pane.getChildren().remove(healthBar));
+            delay.play();
+        }
     }
 
     public double getPositionX()
