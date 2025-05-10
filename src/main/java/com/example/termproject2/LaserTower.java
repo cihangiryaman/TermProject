@@ -27,7 +27,8 @@ public class LaserTower extends Tower {
     {
         attackEnemiesInRange();
         Timeline shootTimer = new Timeline(new KeyFrame(Duration.seconds(getReloadTimeSeconds()), e -> {
-            attackEnemiesInRange();
+            if (!isDeleted())
+                attackEnemiesInRange();
         }));
         shootTimer.setCycleCount(Animation.INDEFINITE);
         shootTimer.play();

@@ -27,7 +27,8 @@ public class SingleShotTower extends Tower
         attackFirstEnemyInRange();
 
         Timeline shootTimer = new Timeline(new KeyFrame(Duration.seconds(getReloadTimeSeconds()), e -> {
-            attackFirstEnemyInRange();
+            if (!isDeleted())
+                attackFirstEnemyInRange();
         }));
         shootTimer.setCycleCount(Animation.INDEFINITE);
         shootTimer.play();

@@ -25,9 +25,11 @@ public abstract class Tower
     private double _reloadTimeSeconds;
     private StackPane parentCell;
     private int level = 1;
+    private boolean isDeleted;
 
     Tower(String name,int price, int damage, int range, double reloadTimeSeconds)
     {
+        isDeleted = false;
         _reloadTimeSeconds = reloadTimeSeconds;
         _name = name;
         _damage = damage;
@@ -41,6 +43,7 @@ public abstract class Tower
 
     Tower(String name,String ImageName, int price, int damage, int range, double reloadTimeSeconds)
     {
+        isDeleted = false;
         _reloadTimeSeconds = reloadTimeSeconds;
         _name = name;
         _damage = damage;
@@ -158,5 +161,14 @@ public abstract class Tower
     public void setLevel(int level)
     {
         this.level = level;
+    }
+    public boolean isDeleted()
+    {
+        return isDeleted;
+    }
+
+    public void delete()
+    {
+        isDeleted = true;
     }
 }

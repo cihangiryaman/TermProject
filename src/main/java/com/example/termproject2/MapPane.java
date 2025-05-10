@@ -27,8 +27,7 @@ import java.util.ArrayList;
 
 import static com.example.termproject2.Map.activeTowers;
 
-public class MapPane
-{
+public class MapPane {
     int money;
     int lives;
     String[] rows;
@@ -45,9 +44,9 @@ public class MapPane
         money = 2000;
         rows = TextDecoder.getLines(levelFile);
         moneyLabel = new Label("Money: " + money + "$");
-        moneyLabel.setFont(new Font("Arial",20));
+        moneyLabel.setFont(new Font("Arial", 20));
         livesLabel = new Label("Lives: " + lives);
-        livesLabel.setFont(new Font("Arial",20));
+        livesLabel.setFont(new Font("Arial", 20));
         int[] waveDelay = textDecoder.waveDelays;
         waveCountdownTime = waveDelay[0];
         waveCountdownLabel = new Label("Next wave in: " + waveCountdownTime + "s");
@@ -86,32 +85,26 @@ public class MapPane
         return timeline;
     }
 
-    public GridPane getPane()
-    {
+    public GridPane getPane() {
         GridPane map = new GridPane();
 
         ArrayList<Cell> grayCells = textDecoder.getGrayCells();
         ArrayList<Cell> cells = textDecoder.cells;
-        for (int i = 0; i < cells.size(); i++)
-        {
+        for (int i = 0; i < cells.size(); i++) {
             StackPane cell = new StackPane();
-            Rectangle rectangle = new Rectangle(40,40);
+            Rectangle rectangle = new Rectangle(40, 40);
 
             if (cells.get(i).isGray)
             {
-                if (i == 0) { // İlk gri hücre
-                    Image caveImage = new Image("cave_entrance.png");
-                    rectangle.setFill(new ImagePattern(caveImage));
-                } else {
-                    Image pathImage = new Image("sand_template.jpg");
-                    rectangle.setFill(new ImagePattern(pathImage));
-                }
+                Image pathImage = new Image("sand_template.jpg");
+                rectangle.setFill(new ImagePattern(pathImage));
                 cell.getChildren().add(rectangle);
             }
             else
             {
-                Image grassImage = new Image("grass_template2.jpg");
-                rectangle.setFill(new ImagePattern(grassImage));
+                // Image grassImage = new Image("grass_template2.jpg");
+                // rectangle.setFill(new ImagePattern(grassImage));
+                rectangle.setFill(Color.DARKGREEN);
                 cell.getChildren().add(rectangle);
 
                 rectangle.setOnDragOver(event ->
@@ -127,15 +120,13 @@ public class MapPane
                     int x = cells.get(finalI).x;
                     int y = cells.get(finalI).y;
                     //Sets cells size to be 40 to prevent strain on the Map
-                    cell.setMinSize(40,40);
-                    cell.setPrefSize(40,40);
-                    cell.setMaxSize(40,40);
+                    cell.setMinSize(40, 40);
+                    cell.setPrefSize(40, 40);
+                    cell.setMaxSize(40, 40);
                     Node node = getNodeAt(map, x, y);
 
-                    if(node instanceof StackPane stackPane)
-                    {
-                        if (stackPane.getChildren().size() > 1)
-                        {
+                    if (node instanceof StackPane stackPane) {
+                        if (stackPane.getChildren().size() > 1) {
                             event.consume();
                         }
                     }
@@ -196,6 +187,7 @@ public class MapPane
                                     Image image = visual.snapshot(params, null);
 
                                     dragboard.setDragView(image, image.getWidth() / 2, image.getHeight() / 2);
+                                    tower.delete();
                                     activeTowers.remove(tower);
                                     stackPane.getChildren().remove(castleImage);
                                     event.consume();
@@ -231,9 +223,7 @@ public class MapPane
                         } else {
                             event.setDropCompleted(false);
                         }
-                    }
-                    else
-                    {
+                    } else {
                         event.setDropCompleted(false);
                     }
                     event.consume();
@@ -250,50 +240,38 @@ public class MapPane
 
     private static Tower getTower(String towerType, String imagePath, int cost, int level) {
 
-        if (towerType.equals("SingleShotTower"))
-        {
+        if (towerType.equals("SingleShotTower")) {
             imagePath = "SingleShotTower" + level + ".png";
             Tower tower = new SingleShotTower(imagePath, cost, 200, 150);
-            for (int i = 1; i < level; i++)
-            {
+            for (int i = 1; i < level; i++) {
                 tower.levelUp();
             }
             return tower;
-        }
-        else if (towerType.equals("LaserTower"))
-        {
+        } else if (towerType.equals("LaserTower")) {
             imagePath = "LaserTower" + level + ".png";
             Tower tower = new LaserTower(imagePath, cost, 40, 150);
-            for (int i = 1; i < level; i++)
-            {
+            for (int i = 1; i < level; i++) {
                 tower.levelUp();
             }
             return tower;
-        }
-        else if (towerType.equals("TripleShotTower"))
-        {
+        } else if (towerType.equals("TripleShotTower")) {
             imagePath = "TripleShotTower" + level + ".png";
             Tower tower = new TripleShotTower(imagePath, cost, 200, 120);
-            for (int i = 1; i < level; i++)
-            {
+            for (int i = 1; i < level; i++) {
                 tower.levelUp();
             }
             return tower;
-        }
-        else
-        {
+        } else {
             imagePath = "MissileLauncherTower" + level + ".png";
             Tower tower = new MissileLauncherTower(imagePath, cost, 300, 150);
-            for (int i = 1; i < level; i++)
-            {
+            for (int i = 1; i < level; i++) {
                 tower.levelUp();
             }
             return tower;
         }
     }
 
-    private void playFadeAnimation(Node node, int row, int column)
-    {
+    private void playFadeAnimation(Node node, int row, int column) {
         /*First sets the node to be invisible then by a duration sets the node to be visible grade by grade. And the setDelay method
         will make sure that animation will start from top most left corner of the map to the bottom most right corner of the map*/
         node.setOpacity(0);
@@ -357,10 +335,10 @@ public class MapPane
 
     //Creates the right pane of the map
     public VBox returnRightPane() {
-        StackPane castle1 = returnCastle(new SingleShotTower("SingleShotTower1.png", 50, 300, 100), Color.WHEAT);
-        StackPane castle2 = returnCastle(new LaserTower("LaserTower1.png", 120, 100, 180), Color.WHEAT);
-        StackPane castle3 = returnCastle(new TripleShotTower("TripleShotTower1.png", 150, 75, 150), Color.WHEAT);
-        StackPane castle4 = returnCastle(new MissileLauncherTower("MissileLauncherTower1.png", 200, 500, 200), Color.WHEAT);
+        StackPane castle1 = returnCastle(new SingleShotTower("SingleShotTower1.png", 50, 300, 150), Color.WHEAT);
+        StackPane castle2 = returnCastle(new LaserTower("LaserTower1.png", 120, 30, 180), Color.WHEAT);
+        StackPane castle3 = returnCastle(new TripleShotTower("TripleShotTower1.png", 150, 300, 150), Color.WHEAT);
+        StackPane castle4 = returnCastle(new MissileLauncherTower("MissileLauncherTower1.png", 400, 500, 200), Color.WHEAT);
 
         VBox rightPane = new VBox(livesLabel, moneyLabel, waveCountdownLabel, castle1, castle2, castle3, castle4);
         rightPane.setAlignment(Pos.CENTER);
@@ -384,24 +362,20 @@ public class MapPane
         return null;
     }
 
-    public Image getLevelUpImage(int level, Tower tower)
-    {
-        if (level == 2)
-        {
+    public Image getLevelUpImage(int level, Tower tower) {
+        if (level == 2) {
             return switch (tower) {
                 case SingleShotTower singleShotTower -> new Image("SingleShotTower2.png");
                 case LaserTower laserTower -> new Image("LaserTower2.png");
                 case TripleShotTower tripleShotTower -> new Image("TripleShotTower2.png");
                 case null, default -> new Image("MissileLauncherTower2.png");
             };
-        }
-        else
-        {
+        } else {
             return switch (tower) {
                 case SingleShotTower singleShotTower -> new Image("SingleShotTower3.png");
                 case LaserTower laserTower -> new Image("LaserTower3.png");
                 case TripleShotTower tripleShotTower -> new Image("TripleShotTowerTower3.png");
-                case null, default ->new Image("MissileLauncherTower3.png");
+                case null, default -> new Image("MissileLauncherTower3.png");
             };
         }
     }

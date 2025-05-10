@@ -11,20 +11,17 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 
-public class MissileLauncherTower extends Tower
-{
+public class MissileLauncherTower extends Tower {
     private final int explosionRadius;
     private final double explosionDamageMultiplier;
 
-    MissileLauncherTower(int price, int damage, int range)
-    {
-        super("MissileLauncherTower","MissileLauncherTower1.png", price, damage, range, 0.8); // Slightly slower reload time than normal tower
+    MissileLauncherTower(int price, int damage, int range) {
+        super("MissileLauncherTower", "MissileLauncherTower1.png", price, damage, range, 0.8); // Slightly slower reload time than normal tower
         this.explosionRadius = 80;
         this.explosionDamageMultiplier = 0.5;
     }
 
-    MissileLauncherTower(String ImageName, int price, int damage, int range)
-    {
+    MissileLauncherTower(String ImageName, int price, int damage, int range) {
         super("MissileLauncherTower", ImageName, price, damage, range, 0.8);
         this.explosionRadius = 80;
         this.explosionDamageMultiplier = 0.5;
@@ -33,13 +30,14 @@ public class MissileLauncherTower extends Tower
     @Override
     public void shoot()
     {
-        attackFirstEnemyInRange();
-
-        Timeline shootTimer = new Timeline(new KeyFrame(Duration.seconds(getReloadTimeSeconds()), e -> {
             attackFirstEnemyInRange();
-        }));
-        shootTimer.setCycleCount(Animation.INDEFINITE);
-        shootTimer.play();
+
+            Timeline shootTimer = new Timeline(new KeyFrame(Duration.seconds(getReloadTimeSeconds()), e -> {
+                if (!isDeleted())
+                    attackFirstEnemyInRange();
+            }));
+            shootTimer.setCycleCount(Animation.INDEFINITE);
+            shootTimer.play();
     }
 
     @Override
@@ -53,8 +51,7 @@ public class MissileLauncherTower extends Tower
         }
     }
 
-    private void attackFirstEnemyInRange()
-    {
+    private void attackFirstEnemyInRange() {
         for (Enemy enemy : Map.activeEnemies) {
             double dx = enemy.getPositionX() - getPositionX();
             double dy = enemy.getPositionY() - getPositionY();
@@ -66,8 +63,7 @@ public class MissileLauncherTower extends Tower
         }
     }
 
-    private void fireExplosiveBulletAt(Enemy targetEnemy)
-    {
+    private void fireExplosiveBulletAt(Enemy targetEnemy) {
         Pane overlay = MapPane.getOverlayPane();
         Bounds towerBounds = getParentCell().localToScene(getParentCell().getBoundsInLocal());
         double towerCenterX = towerBounds.getMinX() + towerBounds.getWidth() / 2;
@@ -161,7 +157,7 @@ public class MissileLauncherTower extends Tower
     }
 
     private void applyAreaDamage(double explosionX, double explosionY) {
-        int splashDamage = (int)(getDamage() * explosionDamageMultiplier);
+        int splashDamage = (int) (getDamage() * explosionDamageMultiplier);
 
         for (Enemy enemy : Map.activeEnemies) {
             if (enemy.isExploding()) continue;
@@ -177,7 +173,7 @@ public class MissileLauncherTower extends Tower
 
             if (distance <= explosionRadius) {
                 double damageMultiplier = 1.0 - (distance / explosionRadius);
-                int actualDamage = (int)(splashDamage * damageMultiplier);
+                int actualDamage = (int) (splashDamage * damageMultiplier);
 
                 enemy.setHealth(-Math.max(1, actualDamage));
 
