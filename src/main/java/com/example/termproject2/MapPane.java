@@ -15,6 +15,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -98,12 +99,19 @@ public class MapPane
 
             if (cells.get(i).isGray)
             {
-                rectangle.setFill(Color.GRAY);
+                if (i == 0) { // İlk gri hücre
+                    Image caveImage = new Image("cave_entrance.png");
+                    rectangle.setFill(new ImagePattern(caveImage));
+                } else {
+                    Image pathImage = new Image("sand_template.jpg");
+                    rectangle.setFill(new ImagePattern(pathImage));
+                }
                 cell.getChildren().add(rectangle);
             }
             else
             {
-                rectangle.setFill(Color.GOLD);
+                Image grassImage = new Image("grass_template2.jpg");
+                rectangle.setFill(new ImagePattern(grassImage));
                 cell.getChildren().add(rectangle);
 
                 rectangle.setOnDragOver(event ->
@@ -297,7 +305,7 @@ public class MapPane
     }
 
     public StackPane returnCastle(Tower tower, Color color) {
-        Rectangle background = new Rectangle(250, 180);
+        Rectangle background = new Rectangle(250, 120);
         background.setFill(color);
         background.setStroke(Color.BLACK);
         background.setArcHeight(10);
@@ -352,7 +360,7 @@ public class MapPane
         StackPane castle1 = returnCastle(new SingleShotTower("SingleShotTower1.png", 50, 300, 100), Color.WHEAT);
         StackPane castle2 = returnCastle(new LaserTower("LaserTower1.png", 120, 100, 180), Color.WHEAT);
         StackPane castle3 = returnCastle(new TripleShotTower("TripleShotTower1.png", 150, 75, 150), Color.WHEAT);
-        StackPane castle4 = returnCastle(new MissileLauncherTower("TripleShotTower3.png", 200, 500, 200), Color.WHEAT);
+        StackPane castle4 = returnCastle(new MissileLauncherTower("MissileLauncherTower1.png", 200, 500, 200), Color.WHEAT);
 
         VBox rightPane = new VBox(livesLabel, moneyLabel, waveCountdownLabel, castle1, castle2, castle3, castle4);
         rightPane.setAlignment(Pos.CENTER);

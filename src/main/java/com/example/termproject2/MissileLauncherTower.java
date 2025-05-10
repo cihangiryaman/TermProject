@@ -3,11 +3,11 @@ package com.example.termproject2;
 public class MissileLauncherTower extends Tower
 {
     MissileLauncherTower(String ImageName, int price, int damage, int range) {
-        super("TripleShotTower3.png", ImageName, price, damage, range, 1);
+        super("MissileLauncherTower1.png", ImageName, price, damage, range, 1);
     }
 
     MissileLauncherTower(int price, int damage, int range) {
-        super("TripleShotTower3.png", price, damage, range, 1);
+        super("MissileLauncherTower1.png", price, damage, range, 1);
     }
 
     public void levelUp()
