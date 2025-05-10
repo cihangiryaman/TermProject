@@ -90,21 +90,30 @@ public class MapPane {
 
         ArrayList<Cell> grayCells = textDecoder.getGrayCells();
         ArrayList<Cell> cells = textDecoder.cells;
+        int counter = 0;
         for (int i = 0; i < cells.size(); i++) {
             StackPane cell = new StackPane();
             Rectangle rectangle = new Rectangle(40, 40);
 
             if (cells.get(i).isGray)
             {
-                Image pathImage = new Image("sand_template.jpg");
-                rectangle.setFill(new ImagePattern(pathImage));
-                cell.getChildren().add(rectangle);
+                if(counter == 0)
+                {
+                    Image pathImage = new Image("cave_entrance.png");
+                    rectangle.setFill(new ImagePattern(pathImage));
+                    cell.getChildren().add(rectangle);
+                    counter++;
+                }
+                else
+                {
+                    Image pathImage = new Image("sand_template.jpg");
+                    rectangle.setFill(new ImagePattern(pathImage));
+                    cell.getChildren().add(rectangle);
+                }
             }
             else
             {
-                // Image grassImage = new Image("grass_template2.jpg");
-                // rectangle.setFill(new ImagePattern(grassImage));
-                rectangle.setFill(Color.DARKGREEN);
+                rectangle.setFill(Color.web("#597110",0));
                 cell.getChildren().add(rectangle);
 
                 rectangle.setOnDragOver(event ->
