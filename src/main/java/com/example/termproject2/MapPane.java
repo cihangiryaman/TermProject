@@ -1,6 +1,10 @@
 package com.example.termproject2;
 
 import javafx.animation.*;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
@@ -53,7 +57,7 @@ public class MapPane {
         waveCountdownLabel.setFont(Font.font("Arial", 18));
         waveCountdownLabel.setTextFill(Paint.valueOf("red"));
 
-        Timeline timeline = getTimeline(waveDelay);
+        Timeline timeline = getTimeline(waveDelay, textDecoder.enemyCountPerWave, textDecoder.enemySpawnDelayPerWave);
         timeline.play();
     }
 
@@ -67,23 +71,49 @@ public class MapPane {
         return overlayPane;
     }
 
-    private Timeline getTimeline(int[] waveDelay) {
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
-            if (waveCountdownTime > 0) {
-                waveCountdownTime--;
-                waveCountdownLabel.setText("Next wave in: " + waveCountdownTime + "s");
-            } else {
-                waveCountdownLabel.setText("Wave started!");
-
-                if (currentWave < waveDelay.length - 1) {
-                    currentWave++;
-                    waveCountdownTime = waveDelay[currentWave];
-                }
-            }
-        }));
+    private Timeline getTimeline(int[] waveDelays, int[] enemyCounts, double[] spawnDelays) {
+        Timeline timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
+
+        final IntegerProperty secondsLeft = new SimpleIntegerProperty(waveDelays[0]);
+        final BooleanProperty isSpawning = new SimpleBooleanProperty(false);
+
+        KeyFrame keyFrame = new KeyFrame(Duration.seconds(1), event -> {
+            if (!isSpawning.get()) {
+                // Geri sayım devam ediyorsa
+                if (secondsLeft.get() > 0) {
+                    waveCountdownLabel.setText("Next wave in: " + secondsLeft.get() + "s");
+                    secondsLeft.set(secondsLeft.get() - 1);
+                } else {
+                    // Wave başladı
+                    waveCountdownLabel.setText("Wave started!");
+                    isSpawning.set(true);
+
+                    // Spawn süresi hesaplanır
+                    double spawnDuration = enemyCounts[currentWave] * spawnDelays[currentWave];
+
+                    Timeline spawnTime = new Timeline(new KeyFrame(Duration.seconds(spawnDuration), ev -> {
+                        currentWave++;
+                        if (currentWave < waveDelays.length) {
+                            secondsLeft.set(waveDelays[currentWave]);
+                            isSpawning.set(false); // Yeni wave için geri sayımı başlat
+                        } else {
+                            // Son wave sonrası yazı kalır
+                            timeline.stop();
+                        }
+                    }));
+                    spawnTime.play();
+                }
+            } else {
+                // Spawn süresi boyunca "Wave started!" yazısı kalacak
+                waveCountdownLabel.setText("Wave started!");
+            }
+        });
+
+        timeline.getKeyFrames().add(keyFrame);
         return timeline;
     }
+
 
     public GridPane getPane() {
         GridPane map = new GridPane();
