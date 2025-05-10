@@ -45,7 +45,7 @@ public class MapPane {
     MapPane(File levelFile) {
         textDecoder = new TextDecoder(levelFile);
         lives = 5;
-        money = 2000;
+        money = 1000;
         rows = TextDecoder.getLines(levelFile);
         moneyLabel = new Label("Money: " + money + "$");
         moneyLabel.setFont(new Font("Arial", 20));
@@ -114,7 +114,6 @@ public class MapPane {
         return timeline;
     }
 
-
     public GridPane getPane() {
         GridPane map = new GridPane();
 
@@ -125,25 +124,18 @@ public class MapPane {
             StackPane cell = new StackPane();
             Rectangle rectangle = new Rectangle(40, 40);
 
-            if (cells.get(i).isGray)
-            {
-                if(counter == 0)
-                {
+            if (cells.get(i).isGray) {
+                if (cells.get(i) == grayCells.getFirst()) {
                     Image pathImage = new Image("cave_entrance.png");
                     rectangle.setFill(new ImagePattern(pathImage));
                     cell.getChildren().add(rectangle);
-                    counter++;
-                }
-                else
-                {
+                } else {
                     Image pathImage = new Image("sand_template.jpg");
                     rectangle.setFill(new ImagePattern(pathImage));
                     cell.getChildren().add(rectangle);
                 }
-            }
-            else
-            {
-                rectangle.setFill(Color.web("#597110",0));
+            } else {
+                rectangle.setFill(Color.web("#597110", 0));
                 cell.getChildren().add(rectangle);
 
                 rectangle.setOnDragOver(event ->
