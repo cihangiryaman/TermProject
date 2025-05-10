@@ -40,34 +40,42 @@ public class Map extends Application {
         SequentialTransition sequentialTransition = new SequentialTransition();
 
         for (int i = 0; i < waveDelays.length; i++) {
+            // 1. Wave başlamadan önce bekleme süresi
             PauseTransition waveDelay = new PauseTransition(Duration.seconds(waveDelays[i]));
             sequentialTransition.getChildren().add(waveDelay);
 
-            for (int j = 0; j < enemyCountPerWave[i]; j++) {
+            // 2. Düşmanları sırala (tek sefer)
+            List<String> enemyQueue = getStrings(fastEnemyRatio, enemyCountPerWave[i]);
+            Collections.shuffle(enemyQueue);
 
-                List<String> enemyQueue = getStrings(fastEnemyRatio, enemyCountPerWave[i]);
+            // 3. Kademeli olarak düşman spawnlama
+            Duration cumulativeDelay = Duration.ZERO;
 
-                Collections.shuffle(enemyQueue);
+            for (String enemyType : enemyQueue) {
+                PauseTransition spawnDelay = new PauseTransition(cumulativeDelay);
 
-                for (String enemyType : enemyQueue) {
-                    PauseTransition spawnDelay = new PauseTransition(Duration.seconds(enemySpawnDelayPerWave[i]));
-                    spawnDelay.setOnFinished(spawnEvent -> {
-                        Enemy enemy = switch (enemyType) {
-                            case "Fast" -> new FastEnemy(map, 900, 2.5, pane);
-                            case "Tank" -> new TankEnemy(map, 1800, 1.2, pane);
-                            default -> new FastEnemy(map, 900, 2.5, pane);
-                        };
-                        activeEnemies.add(enemy);
-                        try {
-                            enemy.walk(currentLevel);
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
-                    sequentialTransition.getChildren().add(spawnDelay);
-                }
+                spawnDelay.setOnFinished(spawnEvent -> {
+                    Enemy enemy = switch (enemyType) {
+                        case "Fast" -> new FastEnemy(map, 900, 2.5, pane);
+                        case "Tank" -> new TankEnemy(map, 1800, 1.2, pane);
+                        default -> new FastEnemy(map, 900, 2.5, pane);
+                    };
+                    activeEnemies.add(enemy);
+                    try {
+                        enemy.walk(currentLevel);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
+                sequentialTransition.getChildren().add(spawnDelay);
+
+                // Bir sonraki düşmanın gecikmesini ayarla
+                cumulativeDelay = cumulativeDelay.add(Duration.seconds(enemySpawnDelayPerWave[i]));
             }
         }
+
+        sequentialTransition.play();
 
         sequentialTransition.play();
         sequentialTransition.setOnFinished(e -> {
