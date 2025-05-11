@@ -276,14 +276,14 @@ public class MapPane {
 
         if (towerType.equals("SingleShotTower")) {
             imagePath = "SingleShotTower" + level + ".png";
-            Tower tower = new SingleShotTower(imagePath, cost, 200, 150);
+            Tower tower = new SingleShotTower(imagePath, cost, 200, 120);
             for (int i = 1; i < level; i++) {
                 tower.levelUp();
             }
             return tower;
         } else if (towerType.equals("LaserTower")) {
             imagePath = "LaserTower" + level + ".png";
-            Tower tower = new LaserTower(imagePath, cost, 40, 150);
+            Tower tower = new LaserTower(imagePath, cost, 40, 100);
             for (int i = 1; i < level; i++) {
                 tower.levelUp();
             }
@@ -297,7 +297,7 @@ public class MapPane {
             return tower;
         } else {
             imagePath = "MissileLauncherTower" + level + ".png";
-            Tower tower = new MissileLauncherTower(imagePath, cost, 300, 150);
+            Tower tower = new MissileLauncherTower(imagePath, cost, 300, 130);
             for (int i = 1; i < level; i++) {
                 tower.levelUp();
             }
@@ -371,10 +371,10 @@ public class MapPane {
 
     //Creates the right pane of the map
     public VBox returnRightPane() {
-        StackPane castle1 = returnCastle(new SingleShotTower("SingleShotTower1.png", 50, 300, 150), Color.WHEAT);
-        StackPane castle2 = returnCastle(new LaserTower("LaserTower1.png", 120, 30,  150), Color.WHEAT);
+        StackPane castle1 = returnCastle(new SingleShotTower("SingleShotTower1.png", 50, 300, 120), Color.WHEAT);
+        StackPane castle2 = returnCastle(new LaserTower("LaserTower1.png", 120, 30,  100), Color.WHEAT);
         StackPane castle3 = returnCastle(new TripleShotTower("TripleShotTower1.png", 150, 300, 120), Color.WHEAT);
-        StackPane castle4 = returnCastle(new MissileLauncherTower("MissileLauncherTower1.png", 400, 500, 150), Color.WHEAT);
+        StackPane castle4 = returnCastle(new MissileLauncherTower("MissileLauncherTower1.png", 400, 500, 130), Color.WHEAT);
 
         VBox rightPane = new VBox(livesLabel, moneyLabel, waveCountdownLabel, castle1, castle2, castle3, castle4);
         rightPane.setAlignment(Pos.CENTER);
