@@ -12,6 +12,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
 
+import static com.example.termproject2.Map.activeTowers;
+
 //150123038 Deniz Arda Şanal
 public class MainMenu extends Application
 {
@@ -21,15 +23,20 @@ public class MainMenu extends Application
     @Override
     public void start(Stage stage) throws Exception
     {
+        Text text = new Text("Tower Defence Game");
+        text.setFont(Font.font("Courier", FontWeight.BOLD, FontPosture.ITALIC, 30));
+        text.setFill(Color.WHITE);
+        text.setTextAlignment(TextAlignment.CENTER);
+
         //Start Button
         bt1 = new Button("Start Game");
         bt1.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-        bt1.setStyle("-fx-background-color: #b06f1a; -fx-text-fill: #FFFFFF; "+ "-fx-background-radius: 10; -fx-padding: 30 40 30 40;");
+        bt1.setStyle("-fx-background-color: #C2B280; -fx-text-fill: #FFFFFF; "+ "-fx-background-radius: 10; -fx-padding: 30 40 30 40;");
 
         //How to Play and Exit buttons
         bt2 = new Button("How To Play");
         bt2.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-        bt2.setStyle("-fx-background-color: #b06f1a; -fx-text-fill: #FFFFFF; "+ "-fx-background-radius: 10; -fx-padding: 20 30 20 30;");
+        bt2.setStyle("-fx-background-color: #C2B280; -fx-text-fill: #FFFFFF; "+ "-fx-background-radius: 10; -fx-padding: 20 30 20 30;");
 
         Text text1 = new Text("Place towers on a grid to defend against waves of enemies.\r\n"
                 + "•\r\n"
@@ -67,6 +74,7 @@ public class MainMenu extends Application
             @Override
             public void handle(ActionEvent arg0) {
                 try {
+                    activeTowers.clear();
                     new Map().start(stage);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -88,7 +96,7 @@ public class MainMenu extends Application
             }
         });
         //Combining both "Start" and "How To Play" buttons with VBox
-        VBox vb = new VBox(30,bt1,bt2);
+        VBox vb = new VBox(30,text,bt1,bt2);
         vb.setAlignment(Pos.CENTER);
         Image backgroundImage2 = new Image("background.png");
         BackgroundImage background2 = new BackgroundImage(

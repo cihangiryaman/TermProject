@@ -6,10 +6,8 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.VBox;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
@@ -35,13 +33,22 @@ public class YouWonMenu extends Application {
         text1.setFont(Font.font("Courier", FontWeight.BOLD, FontPosture.ITALIC, 30));
 
         bt = new Button("Continue to Next Level");
-        bt.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 15));
-        bt.setStyle("-fx-background-color: #F44336; -fx-text-fill: #FFFFFF; "+ "-fx-background-radius: 10; -fx-padding: 20 30 20 30;");
+        bt.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 20));
+        bt.setStyle("-fx-background-color: #C2B280; -fx-text-fill: #FFFFFF; "+ "-fx-background-radius: 10; -fx-padding: 20 30 20 30;");
         bt.setTranslateY(30);
 
         VBox vb = new VBox(text1, bt);
         vb.setAlignment(Pos.CENTER);
         vb.setBackground(new Background(new BackgroundFill(Color.DARKORANGE, CornerRadii.EMPTY,null)));
+        Image backgroundImage = new Image("background.png");
+        BackgroundImage background = new BackgroundImage(
+                backgroundImage,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true)
+        );
+        vb.setBackground(new Background(background));
 
         bt.setOnAction(new EventHandler<ActionEvent>() {
             @Override

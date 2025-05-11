@@ -43,6 +43,7 @@ public class MapPane {
     int currentWave = 0;
 
     MapPane(File levelFile) {
+        activeTowers.clear();
         textDecoder = new TextDecoder(levelFile);
         lives = 5;
         money = 1000;
