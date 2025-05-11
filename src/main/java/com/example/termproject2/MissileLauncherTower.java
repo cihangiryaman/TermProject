@@ -11,6 +11,8 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 
+import static com.example.termproject2.Map.activeTowers;
+
 public class MissileLauncherTower extends Tower {
     private final int explosionRadius;
     private final double explosionDamageMultiplier;
@@ -33,7 +35,7 @@ public class MissileLauncherTower extends Tower {
             attackFirstEnemyInRange();
 
             Timeline shootTimer = new Timeline(new KeyFrame(Duration.seconds(getReloadTimeSeconds()), e -> {
-                if (!isDeleted())
+                if (activeTowers.contains(this))
                     attackFirstEnemyInRange();
             }));
             shootTimer.setCycleCount(Animation.INDEFINITE);

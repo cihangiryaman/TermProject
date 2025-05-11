@@ -12,6 +12,8 @@ import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.termproject2.Map.activeTowers;
+
 public class LaserTower extends Tower {
     LaserTower(int price, int damage, int range) {
         super("LaserTower1.png", price, damage, range, 0.1);
@@ -26,7 +28,7 @@ public class LaserTower extends Tower {
     {
         attackEnemiesInRange();
         Timeline shootTimer = new Timeline(new KeyFrame(Duration.seconds(getReloadTimeSeconds()), e -> {
-            if (!isDeleted())
+            if (activeTowers.contains(this))
                 attackEnemiesInRange();
         }));
         shootTimer.setCycleCount(Animation.INDEFINITE);

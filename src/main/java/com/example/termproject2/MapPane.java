@@ -213,7 +213,7 @@ public class MapPane {
 
                                     ImageView smallView = new ImageView(castleImage.getImage());
                                     smallView.setFitWidth(32);
-                                    smallView.setFitHeight(32);
+                                    smallView.setFitHeight(60);
 
                                     StackPane visual = new StackPane(range, smallView);
                                     SnapshotParameters params = new SnapshotParameters();

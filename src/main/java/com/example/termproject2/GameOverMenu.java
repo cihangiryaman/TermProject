@@ -13,6 +13,8 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import static com.example.termproject2.Map.activeTowers;
+
 //150123038 Deniz Arda Şanal
 public class GameOverMenu extends Application {
 
@@ -54,11 +56,11 @@ public class GameOverMenu extends Application {
 
     }
     public void show(Stage stage) {
+        activeTowers.clear();
         Text text1 = new Text("Game Over!");
         text1.setFill(Color.WHITE);
         text1.setFont(Font.font("Courier", FontWeight.BOLD, FontPosture.ITALIC, 30));
 
-        // Back to main menu button
         bt = new Button("Back to Main Menu");
         bt.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 15));
         bt.setStyle("-fx-background-color: #b06f1a; -fx-text-fill: #FFFFFF; " +

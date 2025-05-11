@@ -13,6 +13,8 @@ import javafx.util.Duration;
 import java.io.File;
 import java.util.ArrayList;
 
+import static com.example.termproject2.Map.activeTowers;
+
 public abstract class Enemy
 {
     private Pane _pane;
@@ -41,8 +43,8 @@ public abstract class Enemy
         healthBar = new Rectangle(maxHealthWidth,3.5,Color.GREEN);
         healthBar.setTranslateX(-15);
         circle.setStroke(Color.TRANSPARENT);
-        image.setFitHeight(55);
-        image.setFitWidth(32);
+        image.setFitHeight(40);
+        image.setFitWidth(40);
 
     }
 
@@ -143,12 +145,12 @@ public abstract class Enemy
         };
         timer.start();
         st.setOnFinished(event -> {
-            // Düşman hedefe ulaştığında canı azalt
             Platform.runLater(() -> {
                 _mapPane.lives--;
                 _mapPane.livesLabel.setText("Lives: " + _mapPane.lives);
 
                 if (_mapPane.lives <= 0) {
+                    activeTowers.clear();
                     GameOverMenu gameOverMenu = new GameOverMenu();
                     gameOverMenu.show((Stage) _pane.getScene().getWindow());
                 }
