@@ -91,7 +91,7 @@ public class MissileLauncherTower extends Tower {
                 Math.pow(enemyPoint.getX() - towerPoint.getX(), 2) +
                         Math.pow(enemyPoint.getY() - towerPoint.getY(), 2)
         );
-        double bulletSpeed = 250.0;
+        double bulletSpeed = 350.0;
         double durationMillis = (distance / bulletSpeed) * 1000;
 
         Timeline timeline = new Timeline();
