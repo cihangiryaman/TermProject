@@ -19,7 +19,14 @@ import java.util.List;
 public class Map extends Application {
     public static List<Enemy> activeEnemies = new ArrayList<>();
     public static List<Tower> activeTowers = new ArrayList<>();
-    private int currentLevel = 3;
+    private int currentLevel = 4;
+
+    public Map(int level){
+        this.currentLevel = level;
+    }
+    public Map(){
+
+    }
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -77,6 +84,7 @@ public class Map extends Application {
 
         sequentialTransition.play();
 
+
         sequentialTransition.play();
         sequentialTransition.setOnFinished(e -> {
             // Düşmanlar spawnlandı, şimdi aktif düşmanlar bitene kadar bekle
@@ -85,13 +93,21 @@ public class Map extends Application {
                 public void handle(long now) {
                     if (activeEnemies.isEmpty()) {
                         this.stop(); // kontrolü durdur
-                        System.out.println("LEVEL BİTTİ!");
+                        for(Tower tower : activeTowers){
+                            tower.delete();
+                        }
+                        activeTowers.clear();
                         currentLevel++;
-                        if (currentLevel < 5) {
-                            currentLevel++;
-                           //Geçiş ekranı
+                        if (currentLevel <= 5) {
+                            new YouWonMenu(currentLevel).start(new Stage()); //sonraki level
+                            stage.close();
                         } else {
-                           //Bitiş ekranı ya da ana menüye dönüş ekranı
+                            try {
+                                new GameOverMenu().start(new Stage()); //bitiş
+                                stage.close();
+                            } catch (Exception ex) {
+                                throw new RuntimeException(ex);
+                            }
                         }
                     }
                 }

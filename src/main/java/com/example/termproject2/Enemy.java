@@ -27,6 +27,8 @@ public abstract class Enemy
     private Rectangle healthBar;
     private double maxHealthWidth = 20;
     private int maxHealth;
+    private Circle circle = new Circle(1,Color.TRANSPARENT);
+    private ImageView image = new ImageView("Enemy.png"); //Image of the Enemy
 
     Enemy(Pane pane, int initialHealth, double initialSpeed, MapPane mapPane)
     {
@@ -36,8 +38,11 @@ public abstract class Enemy
         _image.setFitHeight(20);
         _image.setFitWidth(20);
         _mapPane = mapPane;
-        healthBar = new Rectangle(maxHealthWidth,3.5,Color.RED);
+        healthBar = new Rectangle(maxHealthWidth,3.5,Color.GREEN);
         healthBar.setTranslateX(-15);
+        circle.setStroke(Color.TRANSPARENT);
+        image.setFitHeight(55);
+        image.setFitWidth(32);
 
     }
 
@@ -52,12 +57,14 @@ public abstract class Enemy
         _mapPane = mapPane;
         healthBar = new Rectangle(maxHealthWidth,3.5,Color.RED);
         healthBar.setTranslateX(-15);
+        circle.setStroke(Color.TRANSPARENT);
+        image.setFitHeight(55);
+        image.setFitWidth(32);
     }
 
     PathTransition pt;
     SequentialTransition st;
 
-    Circle circle = new Circle(10,Color.RED);
 
     public void walk(int level) throws Exception {
 
@@ -67,31 +74,32 @@ public abstract class Enemy
         Path path;
         double durationPerTile = 1/_speed;
 
+        double startX = coordinates.getFirst().x * tileSize + tileSize / 2.0;
+        double startY = coordinates.getFirst().y * tileSize + tileSize / 2.0;
+
         if (level == 1) {
-            circle.setCenterX(coordinates.getFirst().x * tileSize + tileSize/2 - 90);
-            circle.setCenterY(coordinates.getFirst().y * tileSize + tileSize/2);
-        }
-        else if (level == 2) {
-            circle.setCenterX(coordinates.getFirst().x * tileSize + tileSize/2 - 10);
-            circle.setCenterY(coordinates.getFirst().y * tileSize + tileSize/2 - 80);
-        }
-        else if (level == 3) {
-            circle.setCenterX(coordinates.getFirst().x * tileSize + tileSize/2 - 210);
-            circle.setCenterY(coordinates.getFirst().y * tileSize + tileSize/2);
-        }
-        else if (level == 4) {
-            circle.setCenterX(coordinates.getFirst().x * tileSize + tileSize/2 - 90);
-            circle.setCenterY(coordinates.getFirst().y * tileSize + tileSize/2);
-        }
-        else if (level == 5) {
-            circle.setCenterX(coordinates.getFirst().x * tileSize + tileSize/2 - 10);
-            circle.setCenterY(coordinates.getFirst().y * tileSize + tileSize/2 - 120);
-        }
-        else {
+            startX -= 90;
+        } else if (level == 2) {
+            startX -= 10;
+            startY -= 80;
+        } else if (level == 3) {
+            startX -= 210;
+        } else if (level == 4) {
+            startX -= 90;
+        } else if (level == 5) {
+            startX -= 10;
+            startY -= 120;
+        } else {
             throw new Exception("Invalid level number.");
         }
+        circle.setCenterX(startX);
+        circle.setCenterY(startY);
+        image.setTranslateX(startX - image.getFitWidth()/2);
+        image.setTranslateY(startY - image.getFitHeight()/2);
+
 
         _pane.getChildren().add(circle);
+        _pane.getChildren().add(image);
         _pane.getChildren().add(healthBar);
 
         path = new Path();
@@ -127,6 +135,8 @@ public abstract class Enemy
                 double x = circle.getCenterX() + circle.getTranslateX();
                 double y = circle.getCenterY() + circle.getTranslateY();
                 setPosition(x,y);
+                image.setTranslateX(x - image.getFitWidth() / 2);
+                image.setTranslateY(y - image.getFitHeight() / 2);
                 healthBar.setTranslateX(x - 10);
                 healthBar.setTranslateY(y - 35);
             }
@@ -147,6 +157,7 @@ public abstract class Enemy
             // Düşmanı sahneden kaldır
             _pane.getChildren().remove(circle);
             _pane.getChildren().remove(healthBar);
+            _pane.getChildren().remove(image);
             Map.activeEnemies.remove(this);
         });
     }
@@ -223,11 +234,12 @@ public abstract class Enemy
         // 8. Sahneye ekle ve bitince temizle
         _pane.getChildren().add(shockwave);
         _pane.getChildren().addAll(particles);
+        _pane.getChildren().removeAll(circle,image);
 
         all.setOnFinished(e -> {
             _pane.getChildren().remove(shockwave);
             _pane.getChildren().removeAll(particles);
-            _pane.getChildren().remove(circle);
+
             Map.activeEnemies.remove(this);
         });
 
@@ -236,9 +248,9 @@ public abstract class Enemy
 
     public Color randomColor() {
         double r = Math.random();
-        if (r < 0.3) return Color.ORANGE;
-        else if (r < 0.6) return Color.RED;
-        else return Color.YELLOW;
+        if (r < 0.3) return Color.DARKGREEN;
+        else if (r < 0.6) return Color.GREEN;
+        else return Color.DARKOLIVEGREEN;
     }
 
     public double getSpeed() {
