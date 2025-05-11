@@ -372,9 +372,9 @@ public class MapPane {
     //Creates the right pane of the map
     public VBox returnRightPane() {
         StackPane castle1 = returnCastle(new SingleShotTower("SingleShotTower1.png", 50, 300, 150), Color.WHEAT);
-        StackPane castle2 = returnCastle(new LaserTower("LaserTower1.png", 120, 30, 180), Color.WHEAT);
-        StackPane castle3 = returnCastle(new TripleShotTower("TripleShotTower1.png", 150, 300, 150), Color.WHEAT);
-        StackPane castle4 = returnCastle(new MissileLauncherTower("MissileLauncherTower1.png", 400, 500, 200), Color.WHEAT);
+        StackPane castle2 = returnCastle(new LaserTower("LaserTower1.png", 120, 30,  150), Color.WHEAT);
+        StackPane castle3 = returnCastle(new TripleShotTower("TripleShotTower1.png", 150, 300, 120), Color.WHEAT);
+        StackPane castle4 = returnCastle(new MissileLauncherTower("MissileLauncherTower1.png", 400, 500, 150), Color.WHEAT);
 
         VBox rightPane = new VBox(livesLabel, moneyLabel, waveCountdownLabel, castle1, castle2, castle3, castle4);
         rightPane.setAlignment(Pos.CENTER);
