@@ -19,7 +19,7 @@ import java.util.List;
 public class Map extends Application {
     public static List<Enemy> activeEnemies = new ArrayList<>();
     public static List<Tower> activeTowers = new ArrayList<>();
-    private int currentLevel = 1;
+    private int currentLevel = 5;
 
     public Map(int level){
         activeTowers.clear();

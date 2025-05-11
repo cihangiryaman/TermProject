@@ -91,7 +91,7 @@ public class MapPane {
                     isSpawning.set(true);
 
                     // Spawn süresi hesaplanır
-                    double spawnDuration = enemyCounts[currentWave] * spawnDelays[currentWave];
+                    double spawnDuration = (enemyCounts[currentWave]-1) * spawnDelays[currentWave];
 
                     Timeline spawnTime = new Timeline(new KeyFrame(Duration.seconds(spawnDuration), ev -> {
                         currentWave++;
@@ -171,18 +171,19 @@ public class MapPane {
                         String towerType = parts[0];
                         String imagePath = parts[1];
                         int cost = Integer.parseInt(parts[2]);
+                        System.out.println("Level of the dropped castle: " + parts[3]);
                         int levelOfCastle = Integer.parseInt(parts[3]);
 
                         if (money >= cost) {
                             money -= cost;
                             moneyLabel.setText("Money: " + money + "$");
                             //Gets the image of the castle and puts on the cell on the map
-                            ImageView castleImage = new ImageView(new Image(imagePath));
+
+                            Tower newTower = getTower(towerType, imagePath, cost, levelOfCastle);
+                            ImageView castleImage = new ImageView(new Image(newTower.get_imagePath()));
                             castleImage.setFitWidth(32);
                             castleImage.setFitHeight(60);
                             cell.getChildren().add(castleImage);
-
-                            Tower newTower = getTower(towerType, imagePath, cost, levelOfCastle);
 
                             int columnIndex = GridPane.getColumnIndex(cell);
                             int rowIndex = GridPane.getRowIndex(cell);
@@ -200,6 +201,7 @@ public class MapPane {
                                     money += tower.getPrice();
                                     moneyLabel.setText("Money: " + money + "$");
                                     int level = tower.getLevel();
+                                    System.out.println("Level of the dragged castle: " + level);
 
                                     content.putString(tower.getClass().getSimpleName() + ";" + tower.getImage().getImage().getUrl() + ";" + tower.getPrice() + ";" + level);
                                     dragboard.setContent(content);
