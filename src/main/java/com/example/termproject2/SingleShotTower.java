@@ -4,6 +4,8 @@ import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -45,16 +47,23 @@ public class SingleShotTower extends Tower
         }
     }
 
-    private void attackFirstEnemyInRange()
-    {
+    private void attackFirstEnemyInRange() {
+        Enemy closestEnemy = null;
+        double closestDistanceSquared = Double.MAX_VALUE;
+
         for (Enemy enemy : Map.activeEnemies) {
             double dx = enemy.getPositionX() - getPositionX();
             double dy = enemy.getPositionY() - getPositionY();
             double dist2 = dx * dx + dy * dy;
-            if (dist2 <= getRange() * getRange()) {
-                fireBulletAt(enemy);
-                break;
+
+            if (dist2 <= getRange() * getRange() && dist2 < closestDistanceSquared) {
+                closestDistanceSquared = dist2;
+                closestEnemy = enemy;
             }
+        }
+
+        if (closestEnemy != null) {
+            fireBulletAt(closestEnemy);
         }
     }
 
@@ -62,54 +71,41 @@ public class SingleShotTower extends Tower
     {
         Pane overlay = MapPane.getOverlayPane();
 
-        // Get tower position in scene coordinates
         Bounds towerBounds = getParentCell().localToScene(getParentCell().getBoundsInLocal());
         double towerCenterX = towerBounds.getMinX() + towerBounds.getWidth() / 2;
         double towerCenterY = towerBounds.getMinY() + towerBounds.getHeight() / 2;
 
-        // Get enemy position in scene coordinates
         Bounds enemyBounds = enemy.getCircle().localToScene(enemy.getCircle().getBoundsInLocal());
         double enemyCenterX = enemyBounds.getMinX() + enemyBounds.getWidth() / 2;
         double enemyCenterY = enemyBounds.getMinY() + enemyBounds.getHeight() / 2;
 
-        // Convert to overlay coordinates
         Point2D towerPoint = overlay.sceneToLocal(towerCenterX, towerCenterY);
         Point2D enemyPoint = overlay.sceneToLocal(enemyCenterX, enemyCenterY);
 
-        // Create bullet
-        Circle bullet = new Circle(5, Color.ORANGERED);
-        // Don't use setTranslateX/Y, set actual position to start at exactly tower center
-        bullet.setCenterX(towerPoint.getX());
-        bullet.setCenterY(towerPoint.getY());
+        // Create arrow image as bullet
+        Image arrowImage = new Image("arrow.png");
+        ImageView arrow = new ImageView(arrowImage);
+        arrow.setFitWidth(20);  // Resize if needed
+        arrow.setFitHeight(8);
+        arrow.setX(towerPoint.getX() - arrow.getFitWidth() / 2);
+        arrow.setY(towerPoint.getY() - arrow.getFitHeight() / 2);
 
-        // Add bullet to overlay
-        overlay.getChildren().add(bullet);
+        // Rotate arrow to face the target
+        double angle = Math.toDegrees(Math.atan2(enemyPoint.getY() - towerPoint.getY(), enemyPoint.getX() - towerPoint.getX()));
+        arrow.setRotate(angle);
 
-        // Calculate bullet movement
-        double distance = Math.sqrt(
-                (enemyPoint.getX() - towerPoint.getX()) * (enemyPoint.getX() - towerPoint.getX()) +
-                        (enemyPoint.getY() - towerPoint.getY()) * (enemyPoint.getY() - towerPoint.getY())
-        );
-        double bulletSpeed = 300.0; // px/s
+        overlay.getChildren().add(arrow);
+
+        double distance = towerPoint.distance(enemyPoint);
+        double bulletSpeed = 350.0;
         double durationMillis = (distance / bulletSpeed) * 1000;
 
-        // Create a timeline to animate the bullet precisely
-        Timeline timeline = new Timeline();
-        timeline.getKeyFrames().add(
-                new KeyFrame(Duration.ZERO,
-                        new javafx.animation.KeyValue(bullet.centerXProperty(), towerPoint.getX()),
-                        new javafx.animation.KeyValue(bullet.centerYProperty(), towerPoint.getY())
-                )
-        );
-        timeline.getKeyFrames().add(
-                new KeyFrame(Duration.millis(durationMillis),
-                        new javafx.animation.KeyValue(bullet.centerXProperty(), enemyPoint.getX(), Interpolator.EASE_BOTH),
-                        new javafx.animation.KeyValue(bullet.centerYProperty(), enemyPoint.getY(), Interpolator.EASE_BOTH)
-                )
-        );
+        TranslateTransition transition = new TranslateTransition(Duration.millis(durationMillis), arrow);
+        transition.setToX(enemyPoint.getX() - towerPoint.getX());
+        transition.setToY(enemyPoint.getY() - towerPoint.getY());
 
-        timeline.setOnFinished(event -> {
-            overlay.getChildren().remove(bullet);
+        transition.setOnFinished(event -> {
+            overlay.getChildren().remove(arrow);
             enemy.setHealth(-getDamage());
 
             if (enemy.getHealth() <= 0 && !enemy.isExploding()) {
@@ -122,6 +118,8 @@ public class SingleShotTower extends Tower
                 });
             }
         });
-        timeline.play();
+
+        transition.play();
     }
+
 }

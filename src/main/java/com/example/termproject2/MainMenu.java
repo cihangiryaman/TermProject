@@ -12,6 +12,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
 
+import static com.example.termproject2.Map.activeEnemies;
 import static com.example.termproject2.Map.activeTowers;
 
 //150123038 Deniz Arda Şanal
@@ -75,6 +76,7 @@ public class MainMenu extends Application
             public void handle(ActionEvent arg0) {
                 try {
                     activeTowers.clear();
+                    activeEnemies.clear();
                     new Map().start(stage);
                 } catch (Exception e) {
                     e.printStackTrace();

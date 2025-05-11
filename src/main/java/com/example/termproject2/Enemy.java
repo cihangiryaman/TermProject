@@ -23,7 +23,7 @@ public abstract class Enemy
     private double _positionY;
     private boolean _isExploding = false;
     double tileSize = 40;
-    private ImageView _image = new ImageView(new Image("warrior.jpg"));
+    private ImageView _image = new ImageView(new Image("Enemy.png"));
     private Rectangle healthBar;
     private double maxHealthWidth = 20;
     private int maxHealth;

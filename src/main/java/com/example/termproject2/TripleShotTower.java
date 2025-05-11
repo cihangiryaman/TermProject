@@ -2,6 +2,8 @@ package com.example.termproject2;
 
 import javafx.animation.*;
 import javafx.application.Platform;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -75,29 +77,36 @@ public class TripleShotTower extends Tower {
         javafx.geometry.Point2D towerPoint = overlayPane.sceneToLocal(towerCenterX, towerCenterY);
         javafx.geometry.Point2D enemyPoint = overlayPane.sceneToLocal(enemyCenterX, enemyCenterY);
 
-        // Mermi oluştur
-        Circle bullet = new Circle(4.5, Color.RED);
-        overlayPane.getChildren().add(bullet);
+        // Ok resmi oluştur
+        Image arrowImage = new Image("arrow.png");
+        ImageView arrow = new ImageView(arrowImage);
+        arrow.setFitWidth(20);  // Gerekirse boyutlandırabilirsiniz
+        arrow.setFitHeight(7);
+        arrow.setX(towerPoint.getX() - arrow.getFitWidth() / 2);
+        arrow.setY(towerPoint.getY() - arrow.getFitHeight() / 2);
 
-        // Mermi başlangıç pozisyonu
-        bullet.setTranslateX(towerPoint.getX());
-        bullet.setTranslateY(towerPoint.getY());
+        // Okun hedefe yönlendirilmesi (90 derece döndürme)
+        double angle = Math.toDegrees(Math.atan2(enemyPoint.getY() - towerPoint.getY(), enemyPoint.getX() - towerPoint.getX()));
+        arrow.setRotate(angle);
 
-        // Mermi hızı ve süre hesaplama
+        // Okun overlayPane'e eklenmesi
+        overlayPane.getChildren().add(arrow);
+
+        // Mermi hızı ve hareket hesaplama
         double dx = enemyPoint.getX() - towerPoint.getX();
         double dy = enemyPoint.getY() - towerPoint.getY();
         double distance = Math.sqrt(dx * dx + dy * dy);
-        double bulletSpeed = 200.0; // px/s
+        double bulletSpeed = 500.0; // px/s
         double durationMillis = (distance / bulletSpeed) * 1000;
 
-        // Mermi hareketi
-        TranslateTransition transition = new TranslateTransition(Duration.millis(durationMillis), bullet);
-        transition.setByX(dx);  // Başlangıç konumundan bu kadar X ilerle
-        transition.setByY(dy);  // Başlangıç konumundan bu kadar Y ilerle
+        // Okun hareketini ayarlama
+        TranslateTransition transition = new TranslateTransition(Duration.millis(durationMillis), arrow);
+        transition.setByX(dx);
+        transition.setByY(dy);
         transition.setInterpolator(Interpolator.EASE_BOTH);
 
         transition.setOnFinished(event -> {
-            overlayPane.getChildren().remove(bullet);
+            overlayPane.getChildren().remove(arrow);
             enemy.setHealth(-getDamage());
 
             if (enemy.getHealth() <= 0 && !enemy.isExploding()) {
@@ -112,6 +121,7 @@ public class TripleShotTower extends Tower {
         });
         transition.play();
     }
+
 
     @Override
     public void levelUp() {

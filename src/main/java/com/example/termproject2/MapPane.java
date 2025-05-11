@@ -276,28 +276,28 @@ public class MapPane {
 
         if (towerType.equals("SingleShotTower")) {
             imagePath = "SingleShotTower" + level + ".png";
-            Tower tower = new SingleShotTower(imagePath, cost, 200, 120);
+            Tower tower = new SingleShotTower(imagePath, cost, 20, 120);
             for (int i = 1; i < level; i++) {
                 tower.levelUp();
             }
             return tower;
         } else if (towerType.equals("LaserTower")) {
             imagePath = "LaserTower" + level + ".png";
-            Tower tower = new LaserTower(imagePath, cost, 40, 100);
+            Tower tower = new LaserTower(imagePath, cost, 1, 100);
             for (int i = 1; i < level; i++) {
                 tower.levelUp();
             }
             return tower;
         } else if (towerType.equals("TripleShotTower")) {
             imagePath = "TripleShotTower" + level + ".png";
-            Tower tower = new TripleShotTower(imagePath, cost, 200, 120);
+            Tower tower = new TripleShotTower(imagePath, cost, 20, 120);
             for (int i = 1; i < level; i++) {
                 tower.levelUp();
             }
             return tower;
         } else {
             imagePath = "MissileLauncherTower" + level + ".png";
-            Tower tower = new MissileLauncherTower(imagePath, cost, 300, 130);
+            Tower tower = new MissileLauncherTower(imagePath, cost, 50, 130);
             for (int i = 1; i < level; i++) {
                 tower.levelUp();
             }

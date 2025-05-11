@@ -52,14 +52,22 @@ public class MissileLauncherTower extends Tower {
     }
 
     private void attackFirstEnemyInRange() {
+        Enemy closestEnemy = null;
+        double closestDistanceSquared = Double.MAX_VALUE;
+
         for (Enemy enemy : Map.activeEnemies) {
             double dx = enemy.getPositionX() - getPositionX();
             double dy = enemy.getPositionY() - getPositionY();
             double dist2 = dx * dx + dy * dy;
-            if (dist2 <= getRange() * getRange()) {
-                fireExplosiveBulletAt(enemy);
-                break;
+
+            if (dist2 <= getRange() * getRange() && dist2 < closestDistanceSquared) {
+                closestDistanceSquared = dist2;
+                closestEnemy = enemy;
             }
+        }
+
+        if (closestEnemy != null) {
+            fireExplosiveBulletAt(closestEnemy);
         }
     }
 
