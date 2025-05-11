@@ -121,6 +121,7 @@ public class TripleShotTower extends Tower {
             setLevel(level);
             setprice(getPrice() * 2);
             set_damage(getDamage() * 2);
+            setimage("TripleShotTower" + level + ".png");
         }
         else
         {

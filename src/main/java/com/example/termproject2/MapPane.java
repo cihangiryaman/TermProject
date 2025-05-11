@@ -406,7 +406,8 @@ public class MapPane {
                 case TripleShotTower tripleShotTower -> new Image("TripleShotTower2.png");
                 case null, default -> new Image("MissileLauncherTower2.png");
             };
-        } else {
+        }
+        else{
             return switch (tower) {
                 case SingleShotTower singleShotTower -> new Image("SingleShotTower3.png");
                 case LaserTower laserTower -> new Image("LaserTower3.png");

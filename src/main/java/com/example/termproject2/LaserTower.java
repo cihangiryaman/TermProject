@@ -57,11 +57,11 @@ public class LaserTower extends Tower {
         Bounds towerBounds = getParentCell().localToScene(getParentCell().getBoundsInLocal());
         double towerCenterX = towerBounds.getMinX() + towerBounds.getWidth() / 2;
         double towerCenterY = towerBounds.getMinY() + towerBounds.getHeight() / 2;
+        Point2D towerPoint = overlay.sceneToLocal(towerCenterX, towerCenterY);
 
         Bounds enemyBounds = enemy.getCircle().localToScene(enemy.getCircle().getBoundsInLocal());
-        double enemyCenterX = enemyBounds.getMinX() + enemyBounds.getWidth() / 2;
-        double enemyCenterY = enemyBounds.getMinY() + enemyBounds.getHeight() / 2;
-        Point2D towerPoint = overlay.sceneToLocal(towerCenterX, towerCenterY);
+        double enemyCenterX = enemyBounds.getCenterX() + enemyBounds.getWidth() / 2;
+        double enemyCenterY = enemyBounds.getCenterY() + enemyBounds.getHeight() / 2;
         Point2D enemyPoint = overlay.sceneToLocal(enemyCenterX, enemyCenterY);
 
         // Lazer oluşturma
@@ -72,8 +72,6 @@ public class LaserTower extends Tower {
         laser.setEndY(enemyPoint.getY());
         laser.setStroke(Color.RED);
         laser.setStrokeWidth(2.5);
-
-        // Overlay pane'e ekle
         overlay.getChildren().add(laser);
 
         // Lazer efekti için animasyon
@@ -83,7 +81,6 @@ public class LaserTower extends Tower {
         fade.setOnFinished(e -> overlay.getChildren().remove(laser));
         fade.play();
 
-        // Düşmana hasar ver
         enemy.setHealth(-getDamage());
         if (enemy.getHealth() <= 0 && !enemy.isExploding()) {
             enemy.setExploding(true);
