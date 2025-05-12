@@ -157,6 +157,8 @@ public class MainMenu extends Application {
         // Sahne ayarları
         stage.setTitle("Game Menu");
         stage.setScene(scene1);
+        stage.setFullScreen(true);
+        stage.setFullScreenExitHint("");
         stage.show();
     }
 

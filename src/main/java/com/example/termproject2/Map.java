@@ -20,7 +20,7 @@ public class Map extends Application {
     public static List<Enemy> activeEnemies = new ArrayList<>();
     public static List<Tower> activeTowers = new ArrayList<>();
     private int currentLevel = 3;
-    private GameDifficulty _difficulty;
+    private static GameDifficulty _difficulty;
     public static SequentialTransition sequentialTransition;
 
     public Map(int level){
