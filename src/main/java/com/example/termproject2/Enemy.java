@@ -30,7 +30,7 @@ public abstract class Enemy
     private double maxHealthWidth = 20;
     private int maxHealth;
     private Circle circle = new Circle(1,Color.TRANSPARENT);
-    private ImageView image = new ImageView("Enemy.png"); //Image of the Enemy
+    ImageView image; //= new ImageView("Enemy.png"); //Image of the Enemy
 
     Enemy(Pane pane, int initialHealth, double initialSpeed, MapPane mapPane)
     {
@@ -43,9 +43,6 @@ public abstract class Enemy
         healthBar = new Rectangle(maxHealthWidth,3.5,Color.GREEN);
         healthBar.setTranslateX(-15);
         circle.setStroke(Color.TRANSPARENT);
-        image.setFitHeight(40);
-        image.setFitWidth(40);
-
     }
 
     Enemy(Pane pane, String imageName, int initialHealth, double initialSpeed, MapPane mapPane)
@@ -60,8 +57,6 @@ public abstract class Enemy
         healthBar = new Rectangle(maxHealthWidth,3.5,Color.RED);
         healthBar.setTranslateX(-15);
         circle.setStroke(Color.TRANSPARENT);
-        image.setFitHeight(55);
-        image.setFitWidth(32);
     }
 
     PathTransition pt;
@@ -152,7 +147,11 @@ public abstract class Enemy
                 if (_mapPane.lives <= 0) {
                     activeTowers.clear();
                     GameOverMenu gameOverMenu = new GameOverMenu();
-                    gameOverMenu.show((Stage) _pane.getScene().getWindow());
+                    try {
+                        gameOverMenu.start((Stage) _pane.getScene().getWindow());
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             });
 
