@@ -25,7 +25,7 @@ public class Map extends Application {
         activeTowers.clear();
         this.currentLevel = level;
     }
-    public Map(){
+    public Map(GameDifficulty difficulty){
         activeTowers.clear();
     }
 
