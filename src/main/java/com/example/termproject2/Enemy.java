@@ -142,8 +142,8 @@ public abstract class Enemy
         st.setOnFinished(event -> {
             Platform.runLater(() -> {
                 _mapPane.lives--;
-                _mapPane.livesLabel.setText("Lives: " + _mapPane.lives);
-
+                if(_mapPane.lives >= 1)
+                    _mapPane.heartImage.setImage(new Image("heart"+_mapPane.lives+".png"));
                 if (_mapPane.lives <= 0) {
                     activeTowers.clear();
                     GameOverMenu gameOverMenu = new GameOverMenu();

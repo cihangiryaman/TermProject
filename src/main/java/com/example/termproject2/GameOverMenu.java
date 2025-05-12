@@ -33,6 +33,15 @@ public class GameOverMenu extends Application {
         bt.setStyle("-fx-background-color: #C2B280; -fx-text-fill: #FFFFFF; "+ "-fx-background-radius: 10; -fx-padding: 20 30 20 30;");
         bt.setTranslateY(30);
 
+        bt.setOnAction(e -> {
+            try {
+                primaryStage.setFullScreen(true);
+                primaryStage.setFullScreenExitHint("");
+                new MainMenu().start(primaryStage);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
 
         VBox vb = new VBox(text1, bt);
         vb.setAlignment(Pos.CENTER);
@@ -53,8 +62,8 @@ public class GameOverMenu extends Application {
         primaryStage.setFullScreen(true);
         primaryStage.setFullScreenExitHint("");
         primaryStage.show();
-
     }
+
     public void show(Stage stage) {
         activeTowers.clear();
         Text text1 = new Text("Game Over!");

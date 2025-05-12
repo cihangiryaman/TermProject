@@ -19,14 +19,17 @@ import java.util.List;
 public class Map extends Application {
     public static List<Enemy> activeEnemies = new ArrayList<>();
     public static List<Tower> activeTowers = new ArrayList<>();
-    private int currentLevel = 1;
+    private int currentLevel = 3;
+    private GameDifficulty _difficulty;
 
     public Map(int level){
         activeTowers.clear();
         this.currentLevel = level;
     }
-    public Map(GameDifficulty difficulty){
+    public Map(GameDifficulty difficulty)
+    {
         activeTowers.clear();
+        _difficulty = difficulty;
     }
 
     @Override
@@ -64,9 +67,9 @@ public class Map extends Application {
 
                 spawnDelay.setOnFinished(spawnEvent -> {
                     Enemy enemy = switch (enemyType) {
-                        case "Fast" -> new FastEnemy(map, 30, 2.5, pane);
-                        case "Tank" -> new TankEnemy(map, 90, 1, pane);
-                        default -> new FastEnemy(map, 30, 2.5, pane);
+                        case "Fast" -> new FastEnemy(map, 30*_difficulty.getDifficulty(), 2 + _difficulty.getDifficulty()/5, pane);
+                        case "Tank" -> new TankEnemy(map, 90*_difficulty.getDifficulty(), 0.75 + _difficulty.getDifficulty()/5, pane);
+                        default -> new FastEnemy(map, 30*_difficulty.getDifficulty(), 2 + _difficulty.getDifficulty()/5, pane);
                     };
                     activeEnemies.add(enemy);
                     try {

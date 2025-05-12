@@ -41,11 +41,15 @@ public class MapPane {
     Label waveCountdownLabel;
     int waveCountdownTime;
     int currentWave = 0;
+    public ImageView heartImage;
 
     MapPane(File levelFile) {
         activeTowers.clear();
+        heartImage = new ImageView(new Image("heart5.png"));
         textDecoder = new TextDecoder(levelFile);
         lives = 5;
+        heartImage.setFitHeight(45);
+        heartImage.setFitWidth(40*lives);
         money = 1000;
         rows = TextDecoder.getLines(levelFile);
         moneyLabel = new Label("Money: " + money + "$");
@@ -376,7 +380,7 @@ public class MapPane {
         StackPane castle3 = returnCastle(new TripleShotTower("TripleShotTower1.png", 150, 300, 120), Color.WHEAT);
         StackPane castle4 = returnCastle(new MissileLauncherTower("MissileLauncherTower1.png", 400, 500, 130), Color.WHEAT);
 
-        VBox rightPane = new VBox(livesLabel, moneyLabel, waveCountdownLabel, castle1, castle2, castle3, castle4);
+        VBox rightPane = new VBox(heartImage, moneyLabel, waveCountdownLabel, castle1, castle2, castle3, castle4);
         rightPane.setAlignment(Pos.CENTER);
         rightPane.setSpacing(5);
 
