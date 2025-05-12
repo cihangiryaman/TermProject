@@ -27,8 +27,8 @@ public abstract class Enemy
     private boolean _isExploding = false;
     double tileSize = 40;
     private ImageView _image = new ImageView(new Image("Enemy.png"));
-    private Rectangle healthBar;
-    private double maxHealthWidth = 20;
+    protected Rectangle healthBar;
+    protected double maxHealthWidth = 20;
     private int maxHealth;
     private Circle circle = new Circle(1,Color.TRANSPARENT);
     ImageView image; //= new ImageView("Enemy.png"); //Image of the Enemy
