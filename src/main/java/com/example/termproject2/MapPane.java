@@ -42,6 +42,8 @@ public class MapPane {
     int waveCountdownTime;
     int currentWave = 0;
     public ImageView heartImage;
+    public boolean isGameOver = false;
+    Timeline waveTimeline;
 
     MapPane(File levelFile) {
         activeTowers.clear();
@@ -62,8 +64,8 @@ public class MapPane {
         waveCountdownLabel.setFont(Font.font("Arial", 18));
         waveCountdownLabel.setTextFill(Paint.valueOf("red"));
 
-        Timeline timeline = getTimeline(waveDelay, textDecoder.enemyCountPerWave, textDecoder.enemySpawnDelayPerWave);
-        timeline.play();
+        waveTimeline = getTimeline(waveDelay, textDecoder.enemyCountPerWave, textDecoder.enemySpawnDelayPerWave);
+        waveTimeline.play();
     }
 
     private static Pane overlayPane;
@@ -76,7 +78,7 @@ public class MapPane {
         return overlayPane;
     }
 
-    private Timeline getTimeline(int[] waveDelays, int[] enemyCounts, double[] spawnDelays) {
+    Timeline getTimeline(int[] waveDelays, int[] enemyCounts, double[] spawnDelays) {
         Timeline timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
 

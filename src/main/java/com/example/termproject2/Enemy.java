@@ -13,6 +13,7 @@ import javafx.util.Duration;
 import java.io.File;
 import java.util.ArrayList;
 
+import static com.example.termproject2.Map.activeEnemies;
 import static com.example.termproject2.Map.activeTowers;
 
 public abstract class Enemy
@@ -144,11 +145,15 @@ public abstract class Enemy
                 _mapPane.lives--;
                 if(_mapPane.lives >= 1)
                     _mapPane.heartImage.setImage(new Image("heart"+_mapPane.lives+".png"));
-                if (_mapPane.lives <= 0) {
+                if (_mapPane.lives <= 0 && !_mapPane.isGameOver) {
+                    _mapPane.isGameOver = true;
+                    Map.sequentialTransition.stop();
+                    _mapPane.waveTimeline.stop();
                     activeTowers.clear();
                     GameOverMenu gameOverMenu = new GameOverMenu();
                     try {
-                        gameOverMenu.start((Stage) _pane.getScene().getWindow());
+                        gameOverMenu.show(StageManager.currentStage);
+                        activeEnemies.clear();
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }

@@ -21,6 +21,7 @@ public class Map extends Application {
     public static List<Tower> activeTowers = new ArrayList<>();
     private int currentLevel = 3;
     private GameDifficulty _difficulty;
+    public static SequentialTransition sequentialTransition;
 
     public Map(int level){
         activeTowers.clear();
@@ -34,6 +35,7 @@ public class Map extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        StageManager.currentStage = stage;
         MapPane pane = new MapPane(new File("level" + currentLevel + ".txt"));
         GridPane map = pane.getPane();
         map.setAlignment(Pos.CENTER);
@@ -48,7 +50,7 @@ public class Map extends Application {
         int[] enemyCountPerWave = pane.textDecoder.enemyCountPerWave;
         double[] enemySpawnDelayPerWave = pane.textDecoder.enemySpawnDelayPerWave;
 
-        SequentialTransition sequentialTransition = new SequentialTransition();
+        sequentialTransition = new SequentialTransition();
 
         for (int i = 0; i < waveDelays.length; i++) {
             // 1. Wave başlamadan önce bekleme süresi

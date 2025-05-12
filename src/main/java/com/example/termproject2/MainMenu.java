@@ -33,6 +33,7 @@ public class MainMenu extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        StageManager.currentStage = stage;
         // Ensure full screen is always set
         stage.setFullScreen(true);
         stage.setFullScreenExitHint("");
