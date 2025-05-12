@@ -77,7 +77,7 @@ public class MainMenu extends Application
                 try {
                     activeTowers.clear();
                     activeEnemies.clear();
-                    new Map().start(stage);
+                    new Map(GameDifficulty.Easy).start(stage);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
