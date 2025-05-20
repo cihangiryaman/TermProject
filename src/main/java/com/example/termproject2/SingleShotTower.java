@@ -44,8 +44,8 @@ public class SingleShotTower extends Tower
         if (level < 3) {
             level++;
             setLevel(level);
-            setprice(getPrice() * 2);
-            set_damage(getDamage() * 2);
+            setprice((int)(getPrice() * 1.5));
+            set_damage((int)(getDamage() * 1.5));
         }
     }
 

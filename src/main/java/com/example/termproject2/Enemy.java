@@ -171,7 +171,7 @@ public abstract class Enemy
     public void explode() {
 
         Platform.runLater(() -> {
-            _mapPane.money += maxHealth / 20;
+            _mapPane.money += this.getClass() == TankEnemy.class ? 20 : 10;
             _mapPane.moneyLabel.setText("Money: " + _mapPane.money + "$");
         });
 

@@ -29,6 +29,7 @@ import javafx.util.Duration;
 import java.io.File;
 import java.util.ArrayList;
 
+import static com.example.termproject2.Map.Difficulty;
 import static com.example.termproject2.Map.activeTowers;
 
 public class MapPane {
@@ -52,7 +53,7 @@ public class MapPane {
         lives = 5;
         heartImage.setFitHeight(45);
         heartImage.setFitWidth(40*lives);
-        money = 1000;
+        money = Difficulty == GameDifficulty.Hard ? 150 : 100;
         rows = TextDecoder.getLines(levelFile);
         moneyLabel = new Label("Money: " + money + "$");
         moneyLabel.setFont(new Font("Arial", 20));
@@ -234,10 +235,10 @@ public class MapPane {
                                 });
 
                                 castleImage.setOnMouseClicked(e -> {
-                                    if (tower.getPrice() * 2 <= money && tower.getLevel() < 3) {
+                                    if (tower.getPrice() * 1.5 <= money && tower.getLevel() < 3) {
                                         int level = tower.getLevel();
                                         System.out.println(level);
-                                        money -= tower.getPrice() * 2;
+                                        money -= (int)(tower.getPrice() * 1.5);
                                         moneyLabel.setText("Money: " + money + "$");
                                         tower.levelUp();
                                         PauseTransition delay = new PauseTransition(Duration.millis(200));
@@ -380,7 +381,7 @@ public class MapPane {
         StackPane castle1 = returnCastle(new SingleShotTower("SingleShotTower1.png", 50, 300, 120), Color.WHEAT);
         StackPane castle2 = returnCastle(new LaserTower("LaserTower1.png", 120, 30,  100), Color.WHEAT);
         StackPane castle3 = returnCastle(new TripleShotTower("TripleShotTower1.png", 150, 300, 120), Color.WHEAT);
-        StackPane castle4 = returnCastle(new MissileLauncherTower("MissileLauncherTower1.png", 400, 500, 130), Color.WHEAT);
+        StackPane castle4 = returnCastle(new MissileLauncherTower("MissileLauncherTower1.png", 200, 300, 130), Color.WHEAT);
 
         VBox rightPane = new VBox(heartImage, moneyLabel, waveCountdownLabel, castle1, castle2, castle3, castle4);
         rightPane.setAlignment(Pos.CENTER);

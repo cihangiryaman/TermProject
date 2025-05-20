@@ -130,9 +130,8 @@ public class TripleShotTower extends Tower {
         if (level < 3) {
             level++;
             setLevel(level);
-            setprice(getPrice() * 2);
-            set_damage(getDamage() * 2);
-            setimage("TripleShotTower" + level + ".png");
+            setprice((int)(getPrice() * 1.5));
+            set_damage((int)(getDamage() * 1.5));
         } else {
             // Maksimum seviye
         }
