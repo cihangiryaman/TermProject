@@ -53,7 +53,7 @@ public class MapPane {
         lives = 5;
         heartImage.setFitHeight(45);
         heartImage.setFitWidth(40*lives);
-        money = Difficulty == GameDifficulty.Hard ? 150 : 100;
+        money = Difficulty == GameDifficulty.Hard ? 500 : 100;
         rows = TextDecoder.getLines(levelFile);
         moneyLabel = new Label("Money: " + money + "$");
         moneyLabel.setFont(new Font("Arial", 20));
@@ -88,32 +88,28 @@ public class MapPane {
 
         KeyFrame keyFrame = new KeyFrame(Duration.seconds(1), event -> {
             if (!isSpawning.get()) {
-                // Geri sayım devam ediyorsa
                 if (secondsLeft.get() > 0) {
                     waveCountdownLabel.setText("Next wave in: " + secondsLeft.get() + "s");
                     secondsLeft.set(secondsLeft.get() - 1);
                 } else {
-                    // Wave başladı
                     waveCountdownLabel.setText("Wave started!");
                     isSpawning.set(true);
 
-                    // Spawn süresi hesaplanır
                     double spawnDuration = (enemyCounts[currentWave]-1) * spawnDelays[currentWave];
 
                     Timeline spawnTime = new Timeline(new KeyFrame(Duration.seconds(spawnDuration), ev -> {
                         currentWave++;
                         if (currentWave < waveDelays.length) {
                             secondsLeft.set(waveDelays[currentWave]);
-                            isSpawning.set(false); // Yeni wave için geri sayımı başlat
+                            isSpawning.set(false);
                         } else {
-                            // Son wave sonrası yazı kalır
                             timeline.stop();
                         }
                     }));
                     spawnTime.play();
                 }
             } else {
-                // Spawn süresi boyunca "Wave started!" yazısı kalacak
+
                 waveCountdownLabel.setText("Wave started!");
             }
         });
@@ -418,7 +414,7 @@ public class MapPane {
             return switch (tower) {
                 case SingleShotTower singleShotTower -> new Image("SingleShotTower3.png");
                 case LaserTower laserTower -> new Image("LaserTower3.png");
-                case TripleShotTower tripleShotTower -> new Image("TripleShotTowerTower3.png");
+                case TripleShotTower tripleShotTower -> new Image("TripleShotTower3.png");
                 case null, default -> new Image("MissileLauncherTower3.png");
             };
         }

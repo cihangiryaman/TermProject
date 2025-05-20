@@ -84,15 +84,13 @@ public class SingleShotTower extends Tower
         Point2D towerPoint = overlay.sceneToLocal(towerCenterX, towerCenterY);
         Point2D enemyPoint = overlay.sceneToLocal(enemyCenterX, enemyCenterY);
 
-        // Create arrow image as bullet
         Image arrowImage = new Image("arrow.png");
         ImageView arrow = new ImageView(arrowImage);
-        arrow.setFitWidth(20);  // Resize if needed
+        arrow.setFitWidth(20);
         arrow.setFitHeight(8);
         arrow.setX(towerPoint.getX() - arrow.getFitWidth() / 2);
         arrow.setY(towerPoint.getY() - arrow.getFitHeight() / 2);
 
-        // Rotate arrow to face the target
         double angle = Math.toDegrees(Math.atan2(enemyPoint.getY() - towerPoint.getY(), enemyPoint.getX() - towerPoint.getX()));
         arrow.setRotate(angle);
 
